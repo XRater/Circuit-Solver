@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Button;
 
 public class Main2Activity extends Activity implements SurfaceHolder.Callback, OnTouchListener {
 
@@ -24,6 +26,18 @@ public class Main2Activity extends Activity implements SurfaceHolder.Callback, O
         setContentView(R.layout.activity_main2);
 
         SurfaceView surface = (SurfaceView) findViewById(R.id.surface);
+        Button newResistor = findViewById(R.id.button1);
+        newResistor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Canvas canvas = surfaceHolder.lockCanvas();
+                Drawer.drawBackground(canvas);
+                Paint paint = new Paint();
+                paint.setColor(Color.YELLOW);
+                canvas.drawRect(new Rect(50, 100, 200, 300), paint);
+                surfaceHolder.unlockCanvasAndPost(canvas);
+            }
+        });
         surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
         surface.setOnTouchListener(this);
