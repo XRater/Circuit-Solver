@@ -53,7 +53,7 @@ public class Main2Activity extends Activity implements SurfaceHolder.Callback, O
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
         Canvas canvas = surfaceHolder.lockCanvas();
-        canvas.drawColor(Color.RED);
+        Drawer.drawBackground(canvas);
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
@@ -76,6 +76,4 @@ public class Main2Activity extends Activity implements SurfaceHolder.Callback, O
         }
         return true;
     }
-
-
 }
