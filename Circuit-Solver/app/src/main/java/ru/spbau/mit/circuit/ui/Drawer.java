@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit;
+package ru.spbau.mit.circuit.ui;
 
 
 import android.graphics.Canvas;

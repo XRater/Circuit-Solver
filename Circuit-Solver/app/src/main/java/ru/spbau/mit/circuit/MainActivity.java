@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import ru.spbau.mit.circuit.ui.Main2Activity;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
