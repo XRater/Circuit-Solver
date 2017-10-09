@@ -6,14 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import ru.spbau.mit.circuit.controler.Controller;
 import ru.spbau.mit.circuit.ui.Main2Activity;
 
 public class MainActivity extends AppCompatActivity {
+    public static Controller controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        controller = new Controller();
     }
 
     public void onNewCircuit(View view) {

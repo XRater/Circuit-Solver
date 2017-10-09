@@ -3,9 +3,6 @@ package ru.spbau.mit.circuit.ui;
 
 import android.app.Activity;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -15,7 +12,6 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 
 import ru.spbau.mit.circuit.R;
-import ru.spbau.mit.circuit.ui.Drawer;
 
 public class Main2Activity extends Activity implements SurfaceHolder.Callback, OnTouchListener {
 
@@ -29,15 +25,29 @@ public class Main2Activity extends Activity implements SurfaceHolder.Callback, O
         setContentView(R.layout.activity_main2);
 
         SurfaceView surface = (SurfaceView) findViewById(R.id.surface);
-        Button newResistor = findViewById(R.id.button1);
+        Button newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Canvas canvas = surfaceHolder.lockCanvas();
-                Drawer.drawBackground(canvas);
-                Paint paint = new Paint();
-                paint.setColor(Color.YELLOW);
-                canvas.drawRect(new Rect(50, 100, 200, 300), paint);
+                DrawableResistor r = new DrawableResistor();
+                r.x = 400;
+                r.y = 400;
+                Drawer.drawables.add(r);
+                Drawer.drawEverything(canvas);
+                surfaceHolder.unlockCanvasAndPost(canvas);
+            }
+        });
+        Button newCapacitor = findViewById(R.id.newCapacitor);
+        newCapacitor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Canvas canvas = surfaceHolder.lockCanvas();
+                DrawableCapacitor c = new DrawableCapacitor();
+                c.x = 800;
+                c.y = 800;
+                Drawer.drawables.add(c);
+                Drawer.drawEverything(canvas);
                 surfaceHolder.unlockCanvasAndPost(canvas);
             }
         });
@@ -49,7 +59,7 @@ public class Main2Activity extends Activity implements SurfaceHolder.Callback, O
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         Canvas canvas = surfaceHolder.lockCanvas();
-        Drawer.drawBackground(canvas);
+        Drawer.drawEverything(canvas);
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
@@ -73,8 +83,8 @@ public class Main2Activity extends Activity implements SurfaceHolder.Callback, O
 
                 mY = motionEvent.getY();
                 Canvas canvas = surfaceHolder.lockCanvas();
-                Drawer.drawBackground(canvas);
-                canvas.drawCircle(mX, mY, 50, new Paint());
+                Drawer.drawEverything(canvas);
+                canvas.drawCircle(mX, mY, 50, Drawer.elementsPaint);
                 surfaceHolder.unlockCanvasAndPost(canvas);
         }
         return true;

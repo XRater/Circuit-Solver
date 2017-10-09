@@ -11,11 +11,20 @@
         android:layout_centerVertical="true" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/newResistor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:text="Button" />
+        android:text="Resistor" />
+
+    <Button
+        android:id="@+id/newCapacitor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/newResistor"
+        android:layout_marginTop="18dp"
+        android:text="Capacitor" />
 
 </RelativeLayout>
