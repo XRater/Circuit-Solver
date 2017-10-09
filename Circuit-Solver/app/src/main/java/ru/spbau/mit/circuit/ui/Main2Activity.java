@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit;
+package ru.spbau.mit.circuit.ui;
 
 
 import android.app.Activity;
@@ -13,6 +13,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+
+import ru.spbau.mit.circuit.R;
+import ru.spbau.mit.circuit.ui.Drawer;
 
 public class Main2Activity extends Activity implements SurfaceHolder.Callback, OnTouchListener {
 
