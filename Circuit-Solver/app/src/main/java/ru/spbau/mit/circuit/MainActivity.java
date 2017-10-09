@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import ru.spbau.mit.circuit.ui.Main2Activity;
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -17,19 +15,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onNewCircuit(View view) {
-        Intent intent = new Intent(MainActivity.this, Main2Activity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+//        startActivity(intent);
     }
 
     public void onLoadCircuit(View view) {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "Load circuit", Toast.LENGTH_SHORT);
-        toast.show();
+//        Toast toast = Toast.makeText(getApplicationContext(),
+//                "Load circuit", Toast.LENGTH_SHORT);
+//        toast.show();
     }
 
     public void onSettings(View view) {
-        Toast toast = Toast.makeText(getApplicationContext(),
-                "Settings", Toast.LENGTH_SHORT);
-        toast.show();
+//        Toast toast = Toast.makeText(getApplicationContext(),
+//                "Settings", Toast.LENGTH_SHORT);
+//        toast.show();
     }
 }
