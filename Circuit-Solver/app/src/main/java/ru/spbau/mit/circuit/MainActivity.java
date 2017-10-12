@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import ru.spbau.mit.circuit.controler.Controller;
-import ru.spbau.mit.circuit.ui.Main2Activity;
+import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 
 public class MainActivity extends AppCompatActivity {
     public static Controller controller;
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onNewCircuit(View view) {
-        Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+        Intent intent = new Intent(MainActivity.this, NewCircuitActivity.class);
         startActivity(intent);
     }
 
