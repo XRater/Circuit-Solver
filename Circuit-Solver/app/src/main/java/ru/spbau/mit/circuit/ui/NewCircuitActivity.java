@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import ru.spbau.mit.circuit.R;
 
-public class Main2Activity extends Activity implements SurfaceHolder.Callback, OnTouchListener {
+public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback, OnTouchListener {
 
     float mX, mY;
     private SurfaceHolder surfaceHolder;
@@ -22,7 +22,7 @@ public class Main2Activity extends Activity implements SurfaceHolder.Callback, O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_new_circuit);
 
         SurfaceView surface = (SurfaceView) findViewById(R.id.surface);
         Button newResistor = findViewById(R.id.newResistor);
@@ -66,7 +66,7 @@ public class Main2Activity extends Activity implements SurfaceHolder.Callback, O
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
         Canvas canvas = surfaceHolder.lockCanvas();
-        Drawer.drawBackground(canvas);
+        Drawer.drawEverything(canvas);
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
