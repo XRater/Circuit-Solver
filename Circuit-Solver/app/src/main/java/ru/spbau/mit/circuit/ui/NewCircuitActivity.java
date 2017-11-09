@@ -10,7 +10,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
-import android.widget.TextView;
 
 import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.model.Element;
@@ -25,7 +24,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     float mX, mY;
     int startX, startY;
     int oldOffsetX = 0, oldOffsetY = 0;
-    TextView tv;
     private SurfaceHolder surfaceHolder;
     private Element choosen = null;
 
@@ -67,8 +65,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
         surface.setOnTouchListener(this);
-
-        tv = findViewById(R.id.textView);
     }
 
     @Override
@@ -115,8 +111,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 mY = motionEvent.getY();
                 for (Drawable d : drawables) {
                     Element e = (Element) d;
-                    if (abs(e.x - mX + offsetX) < 100 && abs(e.y - mY + offsetY) < 100)
+                    if (abs(e.x - mX + offsetX) < 100 && abs(e.y - mY + offsetY) < 100) {
                         choosen = e;
+                    }
                 }
                 if (choosen != null) {
                     choosen.x = (int) mX - offsetX;
@@ -144,7 +141,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     // TODO Notify controller.
                     return true;
                 }
-                choosen = null;
                 startX = 0;
                 startY = 0;
             }

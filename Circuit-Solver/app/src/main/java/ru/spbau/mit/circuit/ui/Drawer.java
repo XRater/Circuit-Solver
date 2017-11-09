@@ -15,7 +15,6 @@ public class Drawer {
     public static Paint elementsPaint;
     public static int highlighted;
     public static int offsetX = 300, offsetY = 300;
-
     static {
         elementsPaint = new Paint();
         elementsPaint.setColor(Color.RED);

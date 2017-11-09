@@ -2,9 +2,12 @@ package ru.spbau.mit.circuit.ui;
 
 import ru.spbau.mit.circuit.model.Resistor;
 
+import static ru.spbau.mit.circuit.ui.Highlighted.NO;
+
 
 public class DrawableResistor extends Resistor implements Drawable {
 
+    public Highlighted highlighted = NO;
     @Override
     public void draw(MyCanvas canvas) {
         //up and down
