@@ -16,4 +16,8 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
         canvas.drawLine(x + Drawer.cellSize / 2, y - Drawer.cellSize * 3 / 4, x + Drawer.cellSize / 2, y + Drawer.cellSize * 3 / 4, Drawer.elementsPaint);
     }
 
+    @Override
+    public void highlight(Highlighted side) {
+        highlighted = side;
+    }
 }

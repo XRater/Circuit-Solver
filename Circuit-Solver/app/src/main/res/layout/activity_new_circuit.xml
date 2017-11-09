@@ -27,4 +27,13 @@
         android:layout_marginTop="18dp"
         android:text="Capacitor" />
 
+    <Button
+        android:id="@+id/drawWire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/newResistor"
+        android:layout_below="@+id/newCapacitor"
+        android:layout_marginTop="131dp"
+        android:text="draw wire" />
+
 </RelativeLayout>

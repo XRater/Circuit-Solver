@@ -22,4 +22,9 @@ public class DrawableResistor extends Resistor implements Drawable {
 
         // TODO vertical
     }
+
+    @Override
+    public void highlight(Highlighted side) {
+        highlighted = side;
+    }
 }

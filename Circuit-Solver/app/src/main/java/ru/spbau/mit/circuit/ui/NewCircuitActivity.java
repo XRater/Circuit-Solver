@@ -33,7 +33,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
         setContentView(R.layout.activity_new_circuit);
 
-        SurfaceView surface = (SurfaceView) findViewById(R.id.surface);
+        final SurfaceView surface = (SurfaceView) findViewById(R.id.surface);
         Button newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +62,14 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 surfaceHolder.unlockCanvasAndPost(canvas);
             }
         });
+        Button drawWire = findViewById(R.id.drawWire);
+        drawWire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                surface.setOnTouchListener(new WireController(surface, NewCircuitActivity.this));
+            }
+        });
+
         surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
         surface.setOnTouchListener(this);

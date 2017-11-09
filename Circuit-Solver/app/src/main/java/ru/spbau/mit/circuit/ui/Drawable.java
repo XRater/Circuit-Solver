@@ -8,6 +8,7 @@ enum Highlighted {
 }
 
 public interface Drawable {
-
     void draw(MyCanvas canvas);
+
+    void highlight(Highlighted side);
 }
