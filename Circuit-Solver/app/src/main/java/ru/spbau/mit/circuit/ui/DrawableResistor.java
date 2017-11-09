@@ -1,13 +1,12 @@
 package ru.spbau.mit.circuit.ui;
 
-import android.graphics.Canvas;
-
 import ru.spbau.mit.circuit.model.Resistor;
 
 
 public class DrawableResistor extends Resistor implements Drawable {
+
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(MyCanvas canvas) {
         //up and down
         canvas.drawLine(x - Drawer.cellSize, y + Drawer.cellSize / 2, x + Drawer.cellSize, y + Drawer.cellSize / 2, Drawer.elementsPaint);
         canvas.drawLine(x - Drawer.cellSize, y - Drawer.cellSize / 2, x + Drawer.cellSize, y - Drawer.cellSize / 2, Drawer.elementsPaint);
