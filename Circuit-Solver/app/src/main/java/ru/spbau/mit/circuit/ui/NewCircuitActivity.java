@@ -41,8 +41,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 Canvas canvas = surfaceHolder.lockCanvas();
                 MyCanvas myCanvas = new MyCanvas(canvas);
                 DrawableResistor r = new DrawableResistor();
-                r.x = 400;
-                r.y = 400;
+                r.x = 5 * Drawer.cellSize;
+                r.y = 5 * Drawer.cellSize;
                 drawables.add(r);
                 Drawer.drawEverything(myCanvas);
                 surfaceHolder.unlockCanvasAndPost(canvas);
@@ -55,8 +55,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 Canvas canvas = surfaceHolder.lockCanvas();
                 MyCanvas myCanvas = new MyCanvas(canvas);
                 DrawableCapacitor c = new DrawableCapacitor();
-                c.x = 800;
-                c.y = 800;
+                c.x = 9 * Drawer.cellSize;
+                c.y = 9 * Drawer.cellSize;
                 drawables.add(c);
                 Drawer.drawEverything(myCanvas);
                 surfaceHolder.unlockCanvasAndPost(canvas);
@@ -66,7 +66,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         drawWire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                surface.setOnTouchListener(new WireController(surface, NewCircuitActivity.this));
+                surface.setOnTouchListener(new WireController(surface, surfaceHolder, NewCircuitActivity.this));
             }
         });
 

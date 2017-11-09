@@ -5,7 +5,7 @@ import ru.spbau.mit.circuit.model.Wire;
 
 public class DrawableWire extends Wire implements Drawable {
     @Override
-    public void draw(MyCanvas canvas) {
+    public void draw(MyCanvas canvas, HighlightedWire side) {
         // TODO Slojna.
     }
 }

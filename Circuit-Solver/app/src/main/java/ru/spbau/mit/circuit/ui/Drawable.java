@@ -1,14 +1,12 @@
 package ru.spbau.mit.circuit.ui;
 
 
-enum Highlighted {
+enum HighlightedWire {
     LEFT,
     RIGHT,
     NO;
 }
 
 public interface Drawable {
-    void draw(MyCanvas canvas);
-
-    void highlight(Highlighted side);
+    void draw(MyCanvas canvas, HighlightedWire side);
 }
