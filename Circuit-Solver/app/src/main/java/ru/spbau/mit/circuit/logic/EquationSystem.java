@@ -17,8 +17,9 @@ public class EquationSystem { //TODO invalid arguments
     Vector solve() {
         normalize();
         ArrayList<Fractional> ans = new ArrayList<>();
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < n; i++) {
             ans.add(equations[i].getCoord(i));
+        }
         return new Vector(ans);
     }
 
@@ -31,13 +32,22 @@ public class EquationSystem { //TODO invalid arguments
                 }
             }
             Fractional k = equations[i].getCoord(i).neg();
-            if (k.isZero())
+            if (k.isZero()) {
                 continue;
+            }
             for (int j = i + 1; j < n; j++) {
                 equations[j].normalize();
                 equations[j].mul(k);
                 equations[j].add(equations[i]);
             }
+        }
+
+        for (int i = n - 1; i > 0; i++) {
+            if (equations[i].getCoord(i).isZero()) {
+                continue;
+            }
+
+//            Fractional k = equations[i].getCoord(i).
         }
     }
 

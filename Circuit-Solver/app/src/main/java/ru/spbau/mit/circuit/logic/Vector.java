@@ -40,7 +40,7 @@ public class Vector {
         if (i == coordinates.size()) {
             return;
         }
-        mul(coordinates.get(i).revert());
+        mul(coordinates.get(i).inverse());
     }
 
     @Override

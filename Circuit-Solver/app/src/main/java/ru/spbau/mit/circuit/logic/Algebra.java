@@ -6,7 +6,7 @@ interface Algebra {
 
     Algebra add(Algebra o);
 
-    Algebra revert();
+    Algebra inverse();
 
     Algebra mul(Algebra o);
 

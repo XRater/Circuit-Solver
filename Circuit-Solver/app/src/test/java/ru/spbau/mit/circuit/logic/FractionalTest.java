@@ -1,9 +1,8 @@
 package ru.spbau.mit.circuit.logic;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class FractionalTest {
 
@@ -40,5 +39,12 @@ public class FractionalTest {
         assertEquals(new Fractional(-1, 2), new Fractional(2, 4).mul(new Fractional(-3, 3)));
         assertEquals(new Fractional(1, 2), new Fractional(2, -4).mul(new Fractional(-3, 3)));
         assertEquals(new Fractional(2, 3), new Fractional(5, 6).mul(new Fractional(4, 5)));
+    }
+
+    @Test
+    public void testInverse() {
+        assertEquals(new Fractional(1, 2), new Fractional(2).inverse());
+        assertEquals(new Fractional(2, 1), new Fractional(1, 2).inverse());
+        assertEquals(new Fractional(-2, 3), new Fractional(6, -4).inverse());
     }
 }

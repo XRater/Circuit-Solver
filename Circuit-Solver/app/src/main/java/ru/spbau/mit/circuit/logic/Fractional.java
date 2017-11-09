@@ -11,8 +11,9 @@ final class Fractional implements Algebra {
     }
 
     Fractional(int a, int b) {
-        if (b == 0)
+        if (b == 0) {
             throw new IllegalArgumentException();
+        }
         this.nominator = a;
         this.denominator = b;
     }
@@ -44,7 +45,7 @@ final class Fractional implements Algebra {
 
     @Override
     public Fractional div(Algebra f) {
-        return this.mul(f.revert());
+        return this.mul(f.inverse());
     }
 
     @Override
@@ -53,7 +54,7 @@ final class Fractional implements Algebra {
     }
 
     @Override
-    public Fractional revert() {
+    public Fractional inverse() {
         return new Fractional(denominator, nominator);
     }
 
@@ -73,8 +74,9 @@ final class Fractional implements Algebra {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Fractional))
+        if (!(obj instanceof Fractional)) {
             return false;
+        }
         Fractional a1 = this.simplify();
         Fractional a2 = ((Fractional) obj).simplify();
         return a1.nominator == a2.nominator && a1.denominator == a2.denominator;
