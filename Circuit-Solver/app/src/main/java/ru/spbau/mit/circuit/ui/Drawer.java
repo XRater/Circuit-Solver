@@ -5,10 +5,6 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.circuit.model.Element;
-
-import static ru.spbau.mit.circuit.MainActivity.controller;
-
 public class Drawer {
     public static ArrayList<Drawable> drawables = new ArrayList<>();
     public static int cellSize = 75;
@@ -39,7 +35,7 @@ public class Drawer {
     }
 
     public static void drawEverything(MyCanvas canvas) {
-        ArrayList<Element> elements = controller.getElements();
+        //ArrayList<Element> elements = controller.getElements();
 
         drawBackground(canvas);
         for (Drawable element : drawables) {

@@ -12,7 +12,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 
 import ru.spbau.mit.circuit.R;
-import ru.spbau.mit.circuit.model.Element;
+import ru.spbau.mit.circuit.model.Point;
 
 import static java.lang.Math.abs;
 import static ru.spbau.mit.circuit.ui.Drawer.drawables;
@@ -25,7 +25,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     int startX, startY;
     int oldOffsetX = 0, oldOffsetY = 0;
     private SurfaceHolder surfaceHolder;
-    private Element choosen = null;
+    private Drawable choosen = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +40,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             public void onClick(View view) {
                 Canvas canvas = surfaceHolder.lockCanvas();
                 MyCanvas myCanvas = new MyCanvas(canvas);
-                DrawableResistor r = new DrawableResistor();
-                r.x = 5 * Drawer.cellSize;
-                r.y = 5 * Drawer.cellSize;
+                DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.cellSize, 5 * Drawer.cellSize));
+                //r.x = 5 * Drawer.cellSize;
+                //r.y = 5 * Drawer.cellSize;
                 drawables.add(r);
                 Drawer.drawEverything(myCanvas);
                 surfaceHolder.unlockCanvasAndPost(canvas);
@@ -54,21 +54,21 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             public void onClick(View view) {
                 Canvas canvas = surfaceHolder.lockCanvas();
                 MyCanvas myCanvas = new MyCanvas(canvas);
-                DrawableCapacitor c = new DrawableCapacitor();
-                c.x = 9 * Drawer.cellSize;
-                c.y = 9 * Drawer.cellSize;
-                drawables.add(c);
-                Drawer.drawEverything(myCanvas);
+//                DrawableCapacitor c = new DrawableCapacitor();
+//                c.x = 9 * Drawer.cellSize;
+//                c.y = 9 * Drawer.cellSize;
+//                drawables.add(c);
+//                Drawer.drawEverything(myCanvas);
                 surfaceHolder.unlockCanvasAndPost(canvas);
             }
         });
-        Button drawWire = findViewById(R.id.drawWire);
-        drawWire.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                surface.setOnTouchListener(new WireController(surface, surfaceHolder, NewCircuitActivity.this));
-            }
-        });
+//        Button drawWire = findViewById(R.id.drawWire);
+//        drawWire.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                surface.setOnTouchListener(new WireController(surface, surfaceHolder, NewCircuitActivity.this));
+//            }
+//        });
 
         surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
@@ -118,14 +118,14 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 mX = motionEvent.getX();
                 mY = motionEvent.getY();
                 for (Drawable d : drawables) {
-                    Element e = (Element) d;
-                    if (abs(e.x - mX + offsetX) < 100 && abs(e.y - mY + offsetY) < 100) {
-                        choosen = e;
+                    //Element e = (Element) d;
+                    if (abs(d.x() - mX + offsetX) < 100 && abs(d.y() - mY + offsetY) < 100) {
+                        choosen = d;
                     }
                 }
                 if (choosen != null) {
-                    choosen.x = (int) mX - offsetX;
-                    choosen.y = (int) mY - offsetY;
+                    choosen.setX((int) mX - offsetX);
+                    choosen.setY((int) mY - offsetY);
 
                 } else {
                     if (startX == 0 && startY == 0) {
@@ -143,8 +143,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
             case MotionEvent.ACTION_UP: {
                 if (choosen != null) { // TODO More pretty.
-                    choosen.x = choosen.x / Drawer.cellSize * Drawer.cellSize;
-                    choosen.y = choosen.y / Drawer.cellSize * Drawer.cellSize;
+                    choosen.setX(choosen.x() / Drawer.cellSize * Drawer.cellSize);
+                    choosen.setY(choosen.y() / Drawer.cellSize * Drawer.cellSize);
                     redraw();
                     // TODO Notify controller.
                     return true;
