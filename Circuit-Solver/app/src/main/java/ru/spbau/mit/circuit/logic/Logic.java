@@ -14,6 +14,10 @@ public class Logic implements View {
 
     @Override
     public void update(Model model) {
+        //TODO
+    }
 
+    public void callculateCurrents() {
+        //TODO
     }
 }
