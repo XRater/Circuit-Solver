@@ -18,8 +18,11 @@ public class Controller {
     }
 
     public void updateView() {
-        logic.update(model);
         ui.update(model);
+    }
+
+    public void calculateCurrents() {
+        logic.callculateCurrents(model);
     }
 
     public void addElement(Element element) {
@@ -28,9 +31,5 @@ public class Controller {
 
     public boolean removeElement(Element element) {
         return model.removeElement(element);
-    }
-
-    public void calculateCurrents() {
-        logic.callculateCurrents();
     }
 }

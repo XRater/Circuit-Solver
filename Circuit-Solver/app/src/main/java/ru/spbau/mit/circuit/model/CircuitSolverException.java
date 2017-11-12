@@ -1,5 +1,5 @@
 package ru.spbau.mit.circuit.model;
 
 
-class CircuitSolverException extends RuntimeException {
+public class CircuitSolverException extends RuntimeException {
 }
