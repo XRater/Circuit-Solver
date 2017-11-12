@@ -18,12 +18,36 @@ abstract public class Element {
         this.to = to;
     }
 
-    public double getVoltage() {
-        return voltage;
+    public Point getFrom() {
+        return from;
+    }
+
+    public void setFrom(Point from) {
+        this.from = from;
+    }
+
+    public Point getTo() {
+        return to;
+    }
+
+    public void setTo(Point to) {
+        this.to = to;
     }
 
     public double getCurrent() {
         return current;
+    }
+
+    public void setCurrent(double current) {
+        this.current = current;
+    }
+
+    public double getVoltage() {
+        return voltage;
+    }
+
+    public void setVoltage(double voltage) {
+        this.voltage = voltage;
     }
 
     public boolean isVertical() {
