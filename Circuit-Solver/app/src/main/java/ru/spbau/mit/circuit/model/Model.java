@@ -9,4 +9,12 @@ public class Model {
     public ArrayList<Element> getElements() {
         return elements;
     }
+
+    public void addElement(Element element) {
+        elements.add(element);
+    }
+
+    public boolean removeElement(Element element) {
+        return elements.remove(element);
+    }
 }

@@ -6,16 +6,17 @@ import java.util.ArrayList;
 import ru.spbau.mit.circuit.logic.Logic;
 import ru.spbau.mit.circuit.model.Element;
 import ru.spbau.mit.circuit.model.Model;
+import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {
 
-    private Model model;
     private final ArrayList<View> views;
+    private Model model;
 
     public Controller() {
         views = new ArrayList<>();
         views.add(new Logic(this));
-        //TODO add UI here
+        views.add(new UI(this));
     }
 
     public void updateView() {
@@ -23,5 +24,11 @@ public class Controller {
             view.update(model);
     }
 
-    //TODO events from views
+    public void addElement(Element element) {
+        model.addElement(element);
+    }
+
+    public boolean removeElement(Element element) {
+        return model.removeElement(element);
+    }
 }
