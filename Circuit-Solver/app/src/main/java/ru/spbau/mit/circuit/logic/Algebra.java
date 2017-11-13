@@ -1,6 +1,6 @@
 package ru.spbau.mit.circuit.logic;
 
-
+@Deprecated
 interface Algebra {
     boolean isZero();
 

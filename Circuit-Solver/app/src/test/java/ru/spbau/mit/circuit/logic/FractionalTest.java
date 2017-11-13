@@ -1,11 +1,8 @@
 package ru.spbau.mit.circuit.logic;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-
 public class FractionalTest {
 
+/*
     @Test
     public void testSimplify() {
         assertEquals(new Fractional(1, 2), new Fractional(2, 4).simplify());
@@ -47,4 +44,6 @@ public class FractionalTest {
         assertEquals(new Fractional(2, 1), new Fractional(1, 2).inverse());
         assertEquals(new Fractional(-2, 3), new Fractional(6, -4).inverse());
     }
+*/
+
 }

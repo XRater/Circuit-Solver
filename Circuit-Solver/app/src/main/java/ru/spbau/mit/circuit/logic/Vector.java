@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+@Deprecated
 public class Vector {
     private final ArrayList<Fractional> coordinates = new ArrayList<>();
 

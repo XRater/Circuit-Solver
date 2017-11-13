@@ -1,6 +1,6 @@
 package ru.spbau.mit.circuit.logic;
 
-
+@Deprecated
 final class Fractional implements Algebra {
     private final int nominator;
     private final int denominator;

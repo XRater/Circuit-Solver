@@ -3,6 +3,7 @@ package ru.spbau.mit.circuit.logic;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class EquationSystem { //TODO invalid arguments
 
     private final int n;
