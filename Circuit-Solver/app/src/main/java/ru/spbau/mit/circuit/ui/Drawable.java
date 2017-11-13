@@ -1,20 +1,20 @@
 package ru.spbau.mit.circuit.ui;
 
 
-enum HighlightedWire {
-    LEFT,
-    RIGHT,
-    NO;
-}
+import ru.spbau.mit.circuit.model.Point;
 
 public interface Drawable {
-    void draw(MyCanvas canvas, HighlightedWire side);
+    void draw(MyCanvas canvas);
 
-    public int x();
+    int x();
 
-    public int y();
+    int y();
 
-    public void setX(int x);
+    void setX(int x);
 
-    public void setY(int y);
+    void setY(int y);
+
+    Point getPoint();
+
+    void updatePosition(int nx, int ny);
 }

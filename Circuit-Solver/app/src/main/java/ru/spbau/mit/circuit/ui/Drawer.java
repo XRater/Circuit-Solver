@@ -5,13 +5,18 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
+import ru.spbau.mit.circuit.model.Point;
+
 public class Drawer {
+    public static final int cellSize = 100;
+    public static final int fieldSize = 30;
     public static ArrayList<Drawable> drawables = new ArrayList<>();
-    public static int cellSize = 75;
+    public static ArrayList<DrawableWire> wires = new ArrayList<>();
     public static Paint elementsPaint;
     public static Paint hightligthPaint;
-    public static int highlighted;
-    public static int offsetX = 300, offsetY = 300;
+    public static Point highlighted = new Point(300, 300);
+    public static int offsetX = 0;
+    public static int offsetY = 0; //fieldSize * cellSize / 2;
     static {
         elementsPaint = new Paint();
         elementsPaint.setColor(Color.RED);
@@ -26,11 +31,11 @@ public class Drawer {
         canvas.drawColor(Color.BLACK);
         Paint paint = new Paint();
         paint.setColor(Color.GREEN);
-        for (int i = -25 * cellSize; i <= 25 * cellSize; i += cellSize) {
-            canvas.drawLine(-25 * cellSize, i, 25 * cellSize, i, paint);
+        for (int i = 0; i <= fieldSize * cellSize; i += cellSize) {
+            canvas.drawLine(0, i, fieldSize * cellSize, i, paint);
         }
-        for (int i = -25 * cellSize; i <= 25 * cellSize; i += cellSize) {
-            canvas.drawLine(i, -25 * cellSize, i, 25 * cellSize, paint);
+        for (int i = 0; i <= fieldSize * cellSize; i += cellSize) {
+            canvas.drawLine(i, 0, i, fieldSize * cellSize, paint);
         }
     }
 
@@ -39,8 +44,14 @@ public class Drawer {
 
         drawBackground(canvas);
         for (Drawable element : drawables) {
-            element.draw(canvas, HighlightedWire.NO);
+            element.draw(canvas);
         }
+        for (DrawableWire wire : wires) {
+            wire.draw(canvas);
+        }
+        if (highlighted != null)
+            canvas.drawCircle(highlighted.x(), highlighted.y(), cellSize / 5, hightligthPaint);
+
     }
 
 }

@@ -30,4 +30,12 @@ public class Point {
         Point p = (Point) obj;
         return p.x == x && p.y == y;
     }
+
+    public int distance(Point other) {
+        return (int) Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y));
+    }
+
+    public int distance(float x, float y) {
+        return (int) Math.sqrt((this.x - x) * (this.x - x) + (this.y - y) * (this.y - y));
+    }
 }

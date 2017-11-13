@@ -20,7 +20,7 @@ public class DrawableResistor extends Resistor implements Drawable {
     }
 
     @Override
-    public void draw(MyCanvas canvas, HighlightedWire side) {
+    public void draw(MyCanvas canvas) {
         //up and down
         canvas.drawLine(x - Drawer.cellSize, y + Drawer.cellSize / 2, x + Drawer.cellSize, y + Drawer.cellSize / 2, Drawer.elementsPaint);
         canvas.drawLine(x - Drawer.cellSize, y - Drawer.cellSize / 2, x + Drawer.cellSize, y - Drawer.cellSize / 2, Drawer.elementsPaint);
@@ -28,16 +28,9 @@ public class DrawableResistor extends Resistor implements Drawable {
         canvas.drawLine(x - Drawer.cellSize, y - Drawer.cellSize / 2, x - Drawer.cellSize, y + Drawer.cellSize / 2, Drawer.elementsPaint);
         canvas.drawLine(x + Drawer.cellSize, y - Drawer.cellSize / 2, x + Drawer.cellSize, y + Drawer.cellSize / 2, Drawer.elementsPaint);
         //wires
-        if (side == HighlightedWire.LEFT) {
-            canvas.drawLine(x - Drawer.cellSize * 2, y, x - Drawer.cellSize, y, Drawer.hightligthPaint);
-        } else {
-            canvas.drawLine(x - Drawer.cellSize * 2, y, x - Drawer.cellSize, y, Drawer.elementsPaint);
-        }
-        if (side == HighlightedWire.RIGHT) {
-            canvas.drawLine(x + Drawer.cellSize * 2, y, x + Drawer.cellSize, y, Drawer.hightligthPaint);
-        } else {
-            canvas.drawLine(x + Drawer.cellSize * 2, y, x + Drawer.cellSize, y, Drawer.elementsPaint);
-        }
+        canvas.drawLine(x - Drawer.cellSize * 2, y, x - Drawer.cellSize, y, Drawer.elementsPaint);
+        canvas.drawLine(x + Drawer.cellSize * 2, y, x + Drawer.cellSize, y, Drawer.elementsPaint);
+
         // TODO vertical
     }
 
@@ -57,5 +50,15 @@ public class DrawableResistor extends Resistor implements Drawable {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    @Override
+    public Point getPoint() {
+        return new Point(x, y);
+    }
+
+    @Override
+    public void updatePosition(int nx, int ny) {
+        this.setPosition(new Point(nx - 2 * Drawer.cellSize, ny), new Point(nx + 2 * Drawer.cellSize, ny));
     }
 }

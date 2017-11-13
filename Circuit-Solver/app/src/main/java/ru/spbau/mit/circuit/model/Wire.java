@@ -2,9 +2,12 @@ package ru.spbau.mit.circuit.model;
 
 
 public class Wire extends Element {
+    public Element neighbour1, neighbour2;
 
-    public Wire(Point from, Point to) {
+    public Wire(Point from, Point to, Element e1, Element e2) {
         super(from, to);
+        neighbour1 = e1;
+        neighbour2 = e2;
     }
 
     @Override

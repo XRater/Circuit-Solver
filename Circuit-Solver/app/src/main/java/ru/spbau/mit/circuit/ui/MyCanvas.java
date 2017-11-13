@@ -20,6 +20,10 @@ public class MyCanvas {
         canvas.drawColor(color);
     }
 
+    public void drawCircle(float cx, float cy, float radius, @NonNull Paint paint) {
+        canvas.drawCircle(cx + Drawer.offsetX, cy + Drawer.offsetY, radius, paint);
+    }
+
     public float getHeight() {
         return canvas.getHeight();
     }

@@ -18,6 +18,10 @@ abstract public class Element {
         this.to = to;
     }
 
+    public void setPosition(Point to, Point from) {
+        this.to = to;
+        this.from = from;
+    }
     public Point getFrom() {
         return from;
     }
