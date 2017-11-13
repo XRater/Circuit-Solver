@@ -31,43 +31,45 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
         setContentView(R.layout.activity_new_circuit);
 
-        final SurfaceView surface = (SurfaceView) findViewById(R.id.surface);
+        final SurfaceView surface = findViewById(R.id.surface);
         Button newResistor = findViewById(R.id.newResistor);
-        newResistor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.cellSize, 5 * Drawer.cellSize));
-                drawables.add(r);
-                redraw();
-            }
+        newResistor.setOnClickListener(view -> {
+            DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.cellSize, 5 * Drawer.cellSize));
+            drawables.add(r);
+            redraw();
         });
 
         Button newCapacitor = findViewById(R.id.newCapacitor);
-        newCapacitor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Canvas canvas = surfaceHolder.lockCanvas();
-                MyCanvas myCanvas = new MyCanvas(canvas);
-//                DrawableCapacitor c = new DrawableCapacitor();
-//                c.x = 9 * Drawer.cellSize;
-//                c.y = 9 * Drawer.cellSize;
-//                drawables.add(c);
-//                Drawer.drawEverything(myCanvas);
-                surfaceHolder.unlockCanvasAndPost(canvas);
-            }
+        newCapacitor.setOnClickListener(view -> {
+            DrawableCapacitor r = new DrawableCapacitor(new Point(5 * Drawer.cellSize, 5 * Drawer.cellSize));
+            drawables.add(r);
+            redraw();
+        });
+
+        Button newBattery = findViewById(R.id.newBattery);
+        newBattery.setOnClickListener(view -> {
+            DrawableBattery b = new DrawableBattery(new Point(7 * Drawer.cellSize, 7 * Drawer.cellSize));
+            drawables.add(b);
+            redraw();
         });
 
         Button drawWire = findViewById(R.id.drawWire);
-        drawWire.setOnClickListener(new View.OnClickListener() {
+        drawWire.setOnClickListener(view -> {
+            if (!inWireMode) {
+                inWireMode = true;
+                surface.setOnTouchListener(wireController);
+            } else {
+                inWireMode = false;
+                surface.setOnTouchListener(NewCircuitActivity.this);
+            }
+        });
+
+        Button play = findViewById(R.id.play);
+        newBattery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!inWireMode) {
-                    inWireMode = true;
-                    surface.setOnTouchListener(wireController);
-                } else {
-                    inWireMode = false;
-                    surface.setOnTouchListener(NewCircuitActivity.this);
-                }
+
+                redraw();
             }
         });
 

@@ -44,21 +44,18 @@ public class DrawableResistor extends Resistor implements Drawable {
         return y;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    @Override
-    public Point getPoint() {
-        return new Point(x, y);
-    }
+//    public void setX(int x) {
+//        this.x = x;
+//    }
+//
+//    public void setY(int y) {
+//        this.y = y;
+//    }
 
     @Override
     public void updatePosition(int nx, int ny) {
+        x = nx;
+        y = ny;
         this.setPosition(new Point(nx - 2 * Drawer.cellSize, ny), new Point(nx + 2 * Drawer.cellSize, ny));
     }
 }

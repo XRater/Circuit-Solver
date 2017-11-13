@@ -1,18 +1,18 @@
 package ru.spbau.mit.circuit.ui;
 
-import ru.spbau.mit.circuit.model.Capacitor;
+import ru.spbau.mit.circuit.model.Battery;
 import ru.spbau.mit.circuit.model.Point;
 
 
-public class DrawableCapacitor extends Capacitor implements Drawable {
+public class DrawableBattery extends Battery implements Drawable {
     private int x;
     private int y;
 
-    protected DrawableCapacitor(Point from, Point to) {
+    protected DrawableBattery(Point from, Point to) {
         super(from, to);
     }
 
-    public DrawableCapacitor(Point center) {
+    public DrawableBattery(Point center) {
         super(new Point(center.x() - 2 * Drawer.cellSize, center.y()),
                 new Point(center.x() + 2 * Drawer.cellSize, center.y()));
         x = center.x();
@@ -21,10 +21,10 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
 
     @Override
     public void draw(MyCanvas canvas) {
-        canvas.drawLine(x - Drawer.cellSize * 2, y, x - Drawer.cellSize / 2, y, Drawer.elementsPaint);
-        canvas.drawLine(x + Drawer.cellSize * 2, y, x + Drawer.cellSize / 2, y, Drawer.elementsPaint);
-        canvas.drawLine(x - Drawer.cellSize / 2, y - Drawer.cellSize * 3 / 4, x - Drawer.cellSize / 2, y + Drawer.cellSize * 3 / 4, Drawer.elementsPaint);
-        canvas.drawLine(x + Drawer.cellSize / 2, y - Drawer.cellSize * 3 / 4, x + Drawer.cellSize / 2, y + Drawer.cellSize * 3 / 4, Drawer.elementsPaint);
+        canvas.drawLine(x - Drawer.cellSize * 2, y, x - Drawer.cellSize / 3, y, Drawer.elementsPaint);
+        canvas.drawLine(x + Drawer.cellSize * 2, y, x + Drawer.cellSize / 3, y, Drawer.elementsPaint);
+        canvas.drawLine(x - Drawer.cellSize / 3, y - Drawer.cellSize * 3 / 7, x - Drawer.cellSize / 3, y + Drawer.cellSize * 3 / 7, Drawer.elementsPaint);
+        canvas.drawLine(x + Drawer.cellSize / 3, y - Drawer.cellSize * 3 / 4, x + Drawer.cellSize / 3, y + Drawer.cellSize * 3 / 4, Drawer.elementsPaint);
     }
 
     @Override
@@ -44,3 +44,4 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
         this.setPosition(new Point(nx - 2 * Drawer.cellSize, ny), new Point(nx + 2 * Drawer.cellSize, ny));
     }
 }
+

@@ -24,6 +24,10 @@ public class MyCanvas {
         canvas.drawCircle(cx + Drawer.offsetX, cy + Drawer.offsetY, radius, paint);
     }
 
+    public void drawText(String text, float x, float y, @NonNull Paint paint) {
+        canvas.drawText(text, x + Drawer.offsetX, Drawer.offsetY, paint);
+    }
+
     public float getHeight() {
         return canvas.getHeight();
     }

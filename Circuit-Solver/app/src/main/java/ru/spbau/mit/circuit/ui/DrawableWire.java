@@ -12,7 +12,7 @@ public class DrawableWire extends Wire implements Drawable {
 
     @Override
     public void draw(MyCanvas canvas) {
-        canvas.drawLine(getFrom().x(), getFrom().y(), getTo().x(), getTo().y(), Drawer.hightligthPaint);
+        canvas.drawLine(getFrom().x(), getFrom().y(), getTo().x(), getTo().y(), Drawer.highlightPaint);
     }
 
     @Override

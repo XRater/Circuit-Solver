@@ -35,32 +35,41 @@ public class WireController implements View.OnTouchListener {
         float mX, mY;
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                mX = motionEvent.getX() - offsetX;
-                mY = motionEvent.getY() - offsetY;
-                Point rounded = new Point(Math.round(mX / cellSize) * cellSize, Math.round(mY / cellSize) * cellSize);
-                Point scaled = new Point(Math.round(mX / cellSize), Math.round(mY / cellSize));
+                mX = motionEvent.getX();
+                mY = motionEvent.getY();
+                Point current = new Point((int) mX - offsetX, (int) mY - offsetY);
+                //Point scaled = new Point(Math.round(mX / cellSize), Math.round(mY / cellSize));
 
                 for (Drawable d : drawables) {
                     Element e = (Element) d;
-                    if (rounded.equals(e.getFrom()) || rounded.equals(e.getTo())) {
-                        if (highlighted == null) {
-                            chosen = e;
-                            highlighted = rounded;
-                        } else {
-                            addWire(rounded, e);
-                            chosen = null;
-                            highlighted = null;
-                        }
-                        activity.redraw();
-                        return true;
+                    if (current.distance(e.getFrom()) < cellSize) {
+                        current = e.getFrom();
+                    } else if (current.distance(e.getTo()) < cellSize) {
+                        current = e.getTo();
+                    } else {
+                        continue;
                     }
+
+                    if (highlighted == null) {
+                        chosen = e;
+                        highlighted = current;
+                    } else {
+                        addSimpleWire(current, e);
+                        chosen = null;
+                        highlighted = null;
+                    }
+                    activity.redraw();
+                    return true;
+
                 }
 
+                Point scaled = new Point(Math.round(mX / cellSize), Math.round(mY / cellSize));
+                current = new Point(scaled.x() * cellSize, scaled.y() * cellSize);
                 if (hasWire(scaled)) {
                     if (highlighted != null) {
-                        highlighted = rounded;
+                        highlighted = current;
                     } else {
-                        addWire(rounded, null);
+                        addSimpleWire(current, null);
                         chosen = null;
                         highlighted = null;
                     }
@@ -81,7 +90,7 @@ public class WireController implements View.OnTouchListener {
                 verticalWires[p.x()][max(p.y() - 1, 0)].have || verticalWires[p.x()][p.y()].have;
     }
 
-    public void addWire(Point p, Element other) {
+    public void addSimpleWire(Point p, Element other) {
         int x1 = highlighted.x() / cellSize;
         int y1 = highlighted.y() / cellSize;
         int x2 = p.x() / cellSize;
@@ -97,12 +106,12 @@ public class WireController implements View.OnTouchListener {
                     start = new Point(i * cellSize, y1 * cellSize);
                 }
             } else if (start != null) {
-                this.addWire(start, new Point(i * cellSize, y1 * cellSize), other);
+                this.addSimpleWire(start, new Point(i * cellSize, y1 * cellSize), other);
                 start = null;
             }
         }
         if (start != null) {
-            this.addWire(start, new Point(x2 * cellSize, y1 * cellSize), other);
+            this.addSimpleWire(start, new Point(x2 * cellSize, y1 * cellSize), other);
         }
 
         start = null;
@@ -113,16 +122,16 @@ public class WireController implements View.OnTouchListener {
                     start = new Point(x2 * cellSize, i * cellSize);
                 }
             } else if (start != null) {
-                addWire(start, new Point(x2 * cellSize, i * cellSize), other);
+                addSimpleWire(start, new Point(x2 * cellSize, i * cellSize), other);
                 start = null;
             }
         }
         if (start != null) {
-            addWire(start, new Point(x2 * cellSize, y2 * cellSize), other);
+            addSimpleWire(start, new Point(x2 * cellSize, y2 * cellSize), other);
         }
     }
 
-    private void addWire(Point from, Point to, Element e) {
+    private void addSimpleWire(Point from, Point to, Element e) {
         Drawer.wires.add(new DrawableWire(from, to, chosen, e));
     }
 }

@@ -10,21 +10,24 @@ import ru.spbau.mit.circuit.model.Point;
 public class Drawer {
     public static final int cellSize = 100;
     public static final int fieldSize = 30;
+
     public static ArrayList<Drawable> drawables = new ArrayList<>();
     public static ArrayList<DrawableWire> wires = new ArrayList<>();
-    public static Paint elementsPaint;
-    public static Paint hightligthPaint;
-    public static Point highlighted = new Point(300, 300);
+
+    public static Paint elementsPaint = new Paint();
+    public static Paint highlightPaint = new Paint();
+
+    public static Point highlighted;
+
     public static int offsetX = 0;
-    public static int offsetY = 0; //fieldSize * cellSize / 2;
+    public static int offsetY = 0;
+
     static {
-        elementsPaint = new Paint();
         elementsPaint.setColor(Color.RED);
         elementsPaint.setStrokeWidth(5);
 
-        hightligthPaint = new Paint();
-        hightligthPaint.setColor(Color.YELLOW);
-        hightligthPaint.setStrokeWidth(5);
+        highlightPaint.setColor(Color.YELLOW);
+        highlightPaint.setStrokeWidth(5);
     }
 
     public static void drawBackground(MyCanvas canvas) {
@@ -50,8 +53,9 @@ public class Drawer {
             wire.draw(canvas);
         }
         if (highlighted != null)
-            canvas.drawCircle(highlighted.x(), highlighted.y(), cellSize / 5, hightligthPaint);
+            canvas.drawCircle(highlighted.x(), highlighted.y(), cellSize / 5, highlightPaint);
 
+        canvas.drawText("hello", 400, 400, highlightPaint);
     }
 
 }
