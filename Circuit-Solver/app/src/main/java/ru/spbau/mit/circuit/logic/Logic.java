@@ -11,7 +11,7 @@ public class Logic {
         this.controller = controller;
     }
 
-    public void callculateCurrents(Model model) {
+    public void calculateCurrents(Model model) {
         //TODO
     }
 }
