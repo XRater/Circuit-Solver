@@ -22,7 +22,7 @@ public class Controller {
     }
 
     public void calculateCurrents() {
-        logic.callculateCurrents(model);
+        logic.calculateCurrents(model);
     }
 
     public void addElement(Element element) {
