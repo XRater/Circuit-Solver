@@ -23,17 +23,18 @@ public class Drawer {
     public static int offsetY = 0;
 
     static {
-        elementsPaint.setColor(Color.RED);
-        elementsPaint.setStrokeWidth(5);
+        elementsPaint.setColor(Color.rgb(0, 119, 179));
+        elementsPaint.setStrokeWidth(7.5f);
 
-        highlightPaint.setColor(Color.YELLOW);
-        highlightPaint.setStrokeWidth(5);
+        highlightPaint.setColor(Color.rgb(0, 102, 153));
+        highlightPaint.setStrokeWidth(6.02f);
     }
 
     public static void drawBackground(MyCanvas canvas) {
-        canvas.drawColor(Color.BLACK);
+        canvas.drawColor(Color.rgb(218, 195, 148));
         Paint paint = new Paint();
-        paint.setColor(Color.GREEN);
+        paint.setColor(Color.rgb(239, 236, 174));
+        paint.setStrokeWidth(1);
         for (int i = 0; i <= fieldSize * cellSize; i += cellSize) {
             canvas.drawLine(0, i, fieldSize * cellSize, i, paint);
         }

@@ -96,26 +96,36 @@ public class WireController implements View.OnTouchListener {
         int y1 = highlighted.y() / cellSize;
         int x2 = p.x() / cellSize;
         int y2 = p.y() / cellSize;
-        // FIXME
-        x1 = Math.min(x1, x2);
-        y1 = Math.min(y1, y2);
-        Point start = null;
+        int height = y1;
+        if (x1 > x2) {
+            int t = x1;
+            x1 = x2;
+            x2 = t;
+            height = y2;
+        }
+
         // TODO KRASIVO
+        Point start = null;
         for (int i = x1; i < x2; i++) {
-            if (!horizontalWires[i][y1].have) {
-                horizontalWires[i][y1].addElementaryWire(chosen, other);
+            if (!horizontalWires[i][height].have) {
+                horizontalWires[i][height].addElementaryWire(chosen, other);
                 if (start == null) {
-                    start = new Point(i * cellSize, y1 * cellSize);
+                    start = new Point(i * cellSize, height * cellSize);
                 }
             } else if (start != null) {
-                this.addSimpleWire(start, new Point(i * cellSize, y1 * cellSize), other);
+                this.addSimpleWire(start, new Point(i * cellSize, height * cellSize), other);
                 start = null;
             }
         }
         if (start != null) {
-            this.addSimpleWire(start, new Point(x2 * cellSize, y1 * cellSize), other);
+            this.addSimpleWire(start, new Point(x2 * cellSize, height * cellSize), other);
         }
 
+        if (y1 > y2) {
+            int t = y1;
+            y1 = y2;
+            y2 = t;
+        }
         start = null;
         for (int i = y1; i < y2; i++) {
             if (!verticalWires[x2][i].have) {
