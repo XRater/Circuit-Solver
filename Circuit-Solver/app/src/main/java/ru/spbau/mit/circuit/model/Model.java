@@ -17,4 +17,14 @@ public class Model {
     public boolean removeElement(Element element) {
         return elements.remove(element);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Model:\n");
+        for (Element e : elements) {
+            sb.append(e).append("\n");
+        }
+        return sb.toString();
+    }
 }
