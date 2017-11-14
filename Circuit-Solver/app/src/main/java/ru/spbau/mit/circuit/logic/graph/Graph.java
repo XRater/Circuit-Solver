@@ -14,13 +14,16 @@ public class Graph {
 
     public Graph(Model model) {
 
+        int number = 0; //FOR DEBUG
         for (Element element : model.getElements()) {
             if (!nodes.containsKey(element.getFrom())) {
-                VisitableNode node = new VisitableNode();
+                System.out.println(element.getFrom().toString() + " " + number);
+                VisitableNode node = new VisitableNode(number++);
                 nodes.put(element.getFrom(), node);
             }
             if (!nodes.containsKey(element.getTo())) {
-                VisitableNode node = new VisitableNode();
+                System.out.println(element.getTo().toString() + " " + number);
+                VisitableNode node = new VisitableNode(number++);
                 nodes.put(element.getTo(), node);
             }
         }
@@ -36,6 +39,7 @@ public class Graph {
             if (!node.visited) {
                 ConnectedGraph graph = addAdjacentEdges(new ConnectedGraph(node), node);
                 graphs.add(graph);
+                graph.addEdges();
             }
         }
         return graphs;
@@ -50,8 +54,8 @@ public class Graph {
     private ConnectedGraph addAdjacentEdges(ConnectedGraph graph, VisitableNode node) {
         node.visited = true;
         for (Edge edge : node.getEdges()) {
-            VisitableNode u = (VisitableNode) edge.u();
-            VisitableNode v = (VisitableNode) edge.v();
+            VisitableNode u = (VisitableNode) edge.to();
+            VisitableNode v = (VisitableNode) edge.from();
             if (!u.visited) {
                 graph.add(u, edge);
                 addAdjacentEdges(graph, u);
@@ -66,5 +70,9 @@ public class Graph {
 
     private class VisitableNode extends Node {
         private boolean visited;
+
+        public VisitableNode(int ID) {
+            super(ID);
+        }
     }
 }

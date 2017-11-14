@@ -20,11 +20,12 @@ public class Logic {
     public static void main(String[] args) {
         Model model = new Model();
         model.addElement(new Wire(new Point(1, 0), new Point(1, 1)));
-//        model.addElement(new Wire(new Point(1, 1), new Point(0, 1)));
+        model.addElement(new Wire(new Point(1, 1), new Point(0, 1)));
         model.addElement(new Wire(new Point(0, 1), new Point(0, 0)));
-//        model.addElement(new Wire(new Point(0, 0), new Point(1, 0)));
-//        model.addElement(new Wire(new Point(0, 0), new Point(1, 0)));
-//        model.addElement(new Wire(new Point(0, 0), new Point(1, 0)));
+        model.addElement(new Wire(new Point(0, 0), new Point(1, 0)));
+        model.addElement(new Wire(new Point(0, 0), new Point(0, 2)));
+        model.addElement(new Wire(new Point(0, 1), new Point(0, 2)));
+        model.addElement(new Wire(new Point(1, 2), new Point(0, 2)));
         Logic logic = new Logic(new Controller());
         logic.calculateCurrents(model);
         //        g.print();
@@ -33,6 +34,9 @@ public class Logic {
     public void calculateCurrents(Model model) {
         Graph g = new Graph(model);
         List<ConnectedGraph> components = g.decompose();
-        System.out.println(components.size());
+        for (ConnectedGraph component : components) {
+            component.solve();
+        }
+//        System.out.println(components.size());
     }
 }

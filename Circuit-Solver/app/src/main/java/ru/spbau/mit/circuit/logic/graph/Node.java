@@ -7,6 +7,16 @@ import java.util.List;
 
 class Node {
     private final List<Edge> edges = new LinkedList<>();
+    public int ID; //FOR DEBUG
+
+    public Node(int ID) {
+        this.ID = ID;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(ID);
+    }
 
     public List<Edge> getEdges() {
         return edges;

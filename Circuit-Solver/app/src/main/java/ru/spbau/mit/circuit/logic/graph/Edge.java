@@ -8,15 +8,36 @@ import ru.spbau.mit.circuit.model.Resistor;
 class Edge {
 
     private final Element element;
-    private final Node u;
-    private final Node v;
-    public int ID; //FOR TESTS
+    private final Node from;
+    private final Node to;
+    private int index = -1;
     private boolean inTree;
 
-    Edge(Element element, Node u, Node v) {
+    Edge(Element element, Node from, Node to) {
         this.element = element;
-        this.u = u;
-        this.v = v;
+        this.from = from;
+        this.to = to;
+    }
+
+    @Override
+    public String toString() {
+        return "Edge " + String.valueOf(index) + ": (" + from + ", " + to + ")";
+    }
+
+    public Node from() {
+        return to;
+    }
+
+    public Node to() {
+        return from;
+    }
+
+    public int index() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public double getVoltage() {
@@ -33,14 +54,6 @@ class Edge {
             return resistor.getResistance();
         }
         return 0;
-    }
-
-    public Node v() {
-        return v;
-    }
-
-    public Node u() {
-        return u;
     }
 
     public void addToTree() {
