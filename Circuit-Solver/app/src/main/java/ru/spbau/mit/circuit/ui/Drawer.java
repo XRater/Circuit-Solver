@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
+import ru.spbau.mit.circuit.model.Element;
 import ru.spbau.mit.circuit.model.Point;
 
 public class Drawer {
@@ -25,9 +26,10 @@ public class Drawer {
     static {
         elementsPaint.setColor(Color.rgb(0, 119, 179));
         elementsPaint.setStrokeWidth(7.5f);
+        elementsPaint.setTextSize(50);
 
         highlightPaint.setColor(Color.rgb(0, 102, 153));
-        highlightPaint.setStrokeWidth(6.02f);
+        highlightPaint.setStrokeWidth(6);
     }
 
     public static void drawBackground(MyCanvas canvas) {
@@ -56,7 +58,12 @@ public class Drawer {
         if (highlighted != null)
             canvas.drawCircle(highlighted.x(), highlighted.y(), cellSize / 5, highlightPaint);
 
-        canvas.drawText("hello", 400, 400, highlightPaint);
     }
 
+    public static void showCurrents(MyCanvas canvas) {
+        for (Drawable d : drawables) {
+            Element e = (Element) d;
+            canvas.drawText(e.getCurrent() + "A", d.x(), d.y() - cellSize, elementsPaint);
+        }
+    }
 }

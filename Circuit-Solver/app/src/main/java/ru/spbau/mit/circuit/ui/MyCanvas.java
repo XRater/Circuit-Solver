@@ -25,7 +25,7 @@ public class MyCanvas {
     }
 
     public void drawText(String text, float x, float y, @NonNull Paint paint) {
-        canvas.drawText(text, x + Drawer.offsetX, Drawer.offsetY, paint);
+        canvas.drawText(text, x + Drawer.offsetX, y + Drawer.offsetY, paint);
     }
 
     public float getHeight() {

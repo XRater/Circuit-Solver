@@ -68,7 +68,11 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             @Override
             public void onClick(View view) {
                 MainActivity.ui.calculateCurrents();
-                redraw();
+                Canvas canvas = surfaceHolder.lockCanvas();
+                MyCanvas myCanvas = new MyCanvas(canvas);
+                Drawer.drawEverything(myCanvas);
+                Drawer.showCurrents(myCanvas);
+                surfaceHolder.unlockCanvasAndPost(canvas);
             }
         });
 
