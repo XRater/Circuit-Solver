@@ -1,6 +1,5 @@
 package ru.spbau.mit.circuit.controler;
 
-
 import ru.spbau.mit.circuit.logic.Logic;
 import ru.spbau.mit.circuit.model.Element;
 import ru.spbau.mit.circuit.model.Model;
