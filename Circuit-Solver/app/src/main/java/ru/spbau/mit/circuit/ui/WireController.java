@@ -3,6 +3,7 @@ package ru.spbau.mit.circuit.ui;
 import android.view.MotionEvent;
 import android.view.View;
 
+import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.model.Element;
 import ru.spbau.mit.circuit.model.Point;
 
@@ -95,6 +96,7 @@ public class WireController implements View.OnTouchListener {
         int y1 = highlighted.y() / cellSize;
         int x2 = p.x() / cellSize;
         int y2 = p.y() / cellSize;
+        // FIXME
         x1 = Math.min(x1, x2);
         y1 = Math.min(y1, y2);
         Point start = null;
@@ -132,6 +134,8 @@ public class WireController implements View.OnTouchListener {
     }
 
     private void addSimpleWire(Point from, Point to, Element e) {
-        Drawer.wires.add(new DrawableWire(from, to, chosen, e));
+        DrawableWire w = new DrawableWire(from, to, chosen, e);
+        Drawer.wires.add(w);
+        MainActivity.ui.addToModel(w);
     }
 }

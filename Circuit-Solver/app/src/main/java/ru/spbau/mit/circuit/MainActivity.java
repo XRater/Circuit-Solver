@@ -8,15 +8,16 @@ import android.widget.Toast;
 
 import ru.spbau.mit.circuit.controler.Controller;
 import ru.spbau.mit.circuit.ui.NewCircuitActivity;
+import ru.spbau.mit.circuit.ui.UI;
 
 public class MainActivity extends AppCompatActivity {
-    public static Controller controller;
+    private static final Controller controller = new Controller();
+    public static final UI ui = controller.getUi();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        controller = new Controller();
     }
 
     public void onNewCircuit(View view) {

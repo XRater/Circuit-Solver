@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 
+import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
+import ru.spbau.mit.circuit.model.Element;
 import ru.spbau.mit.circuit.model.Point;
 
 import static ru.spbau.mit.circuit.ui.Drawer.drawables;
@@ -35,22 +37,19 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         Button newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
             DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.cellSize, 5 * Drawer.cellSize));
-            drawables.add(r);
-            redraw();
+            addElement(r);
         });
 
         Button newCapacitor = findViewById(R.id.newCapacitor);
         newCapacitor.setOnClickListener(view -> {
-            DrawableCapacitor r = new DrawableCapacitor(new Point(5 * Drawer.cellSize, 5 * Drawer.cellSize));
-            drawables.add(r);
-            redraw();
+            DrawableCapacitor c = new DrawableCapacitor(new Point(5 * Drawer.cellSize, 5 * Drawer.cellSize));
+            addElement(c);
         });
 
         Button newBattery = findViewById(R.id.newBattery);
         newBattery.setOnClickListener(view -> {
             DrawableBattery b = new DrawableBattery(new Point(7 * Drawer.cellSize, 7 * Drawer.cellSize));
-            drawables.add(b);
-            redraw();
+            addElement(b);
         });
 
         Button drawWire = findViewById(R.id.drawWire);
@@ -65,10 +64,10 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         });
 
         Button play = findViewById(R.id.play);
-        newBattery.setOnClickListener(new View.OnClickListener() {
+        play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                MainActivity.ui.calculateCurrents();
                 redraw();
             }
         });
@@ -138,11 +137,11 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             }
 
             case MotionEvent.ACTION_UP: {
-                if (chosen != null) { // TODO More pretty.
+                if (chosen != null) { // TODO More pretty.(!)
                     chosen.setX(chosen.x() / Drawer.cellSize * Drawer.cellSize);
                     chosen.setY(chosen.y() / Drawer.cellSize * Drawer.cellSize);
                     redraw();
-                    // TODO Notify controller.
+                    // TODO Notify controller. Hope it is already done.
                     chosen.updatePosition(chosen.x(), chosen.y());
                     return true;
                 }
@@ -158,5 +157,12 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         MyCanvas myCanvas = new MyCanvas(canvas);
         Drawer.drawEverything(myCanvas);
         surfaceHolder.unlockCanvasAndPost(canvas);
+    }
+
+
+    private void addElement(Drawable e) {
+        drawables.add(e);
+        MainActivity.ui.addToModel((Element) e);
+        redraw();
     }
 }

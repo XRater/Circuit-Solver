@@ -17,11 +17,25 @@ public class Controller {
         ui = new UI(this);
     }
 
+    public Logic getLogic() {
+        return logic;
+    }
+
+    public UI getUi() {
+        return ui;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
     public void updateView() {
-        ui.update(model);
+        ui.load(model);
     }
 
     public void calculateCurrents() {
+        for (Element e : model.getElements())
+            System.out.println(e);
         logic.callculateCurrents(model);
     }
 
@@ -32,4 +46,5 @@ public class Controller {
     public boolean removeElement(Element element) {
         return model.removeElement(element);
     }
+
 }
