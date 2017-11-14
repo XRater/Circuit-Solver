@@ -19,8 +19,8 @@ public class Logic {
         Graph g = new Graph(model);
         List<ConnectedGraph> components = g.decompose();
         for (ConnectedGraph component : components) {
-            System.out.println(component);
-            System.out.println();
+//            System.out.println(component);
+//            System.out.println();
             component.solve();
             component.setCurrents();
         }

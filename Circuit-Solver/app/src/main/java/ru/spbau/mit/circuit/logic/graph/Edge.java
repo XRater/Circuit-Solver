@@ -82,9 +82,18 @@ class Edge {
         return 0;
     }
 
+    Node getAdjacent(Edge e) {
+        if (to.equals(e.to) || to.equals(e.from)) {
+            return to;
+        }
+        if (from.equals(e.from) || from.equals(e.to)) {
+            return from;
+        }
+        return null;
+    }
+
     boolean adjacent(Edge e) {
-        return e.to.equals(to) || e.to.equals(from) ||
-                e.from.equals(to) || e.from.equals(from);
+        return getAdjacent(e) != null;
     }
 
     Node getPair(Node node) {
