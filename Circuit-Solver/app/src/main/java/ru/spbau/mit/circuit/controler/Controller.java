@@ -8,14 +8,9 @@ import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {
 
-    private final Logic logic;
-    private final UI ui;
-    private Model model;
-
-    public Controller() {
-        logic = new Logic(this);
-        ui = new UI(this);
-    }
+    private final Logic logic = new Logic(this);
+    private final UI ui = new UI(this);
+    private Model model = new Model();
 
     public Logic getLogic() {
         return logic;
