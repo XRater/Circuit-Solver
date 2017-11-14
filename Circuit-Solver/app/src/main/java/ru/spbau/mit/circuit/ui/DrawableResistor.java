@@ -33,7 +33,7 @@ public class DrawableResistor extends Resistor implements Drawable {
 
         // TODO vertical
 
-        canvas.drawText(resistance + "Om", x, y, Drawer.elementsPaint);
+        canvas.drawText(getResistance() + "Om", x, y, Drawer.elementsPaint);
     }
 
     @Override
