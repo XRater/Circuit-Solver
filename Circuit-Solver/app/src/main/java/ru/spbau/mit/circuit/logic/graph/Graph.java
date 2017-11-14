@@ -71,8 +71,9 @@ public class Graph {
     private class VisitableNode extends Node {
         private boolean visited;
 
-        public VisitableNode(int ID) {
+        private VisitableNode(int ID) {
             super(ID);
         }
     }
+
 }

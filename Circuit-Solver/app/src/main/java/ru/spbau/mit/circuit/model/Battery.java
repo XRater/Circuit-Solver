@@ -2,9 +2,14 @@ package ru.spbau.mit.circuit.model;
 
 public class Battery extends Element {
 
-    private double voltage;
+    private double voltage = 10;
 
-    protected Battery(Point from, Point to) {
+    public Battery(Point from, Point to) {
         super(from, to);
+    }
+
+    @Override
+    public double getVoltage() {
+        return voltage;
     }
 }

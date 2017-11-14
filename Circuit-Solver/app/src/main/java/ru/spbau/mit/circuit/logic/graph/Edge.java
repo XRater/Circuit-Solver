@@ -32,15 +32,15 @@ class Edge {
         return from;
     }
 
-    public int index() {
+    int index() {
         return index;
     }
 
-    public void setIndex(int index) {
+    void setIndex(int index) {
         this.index = index;
     }
 
-    public double getVoltage() {
+    double getVoltage() {
         if (element instanceof Battery) {
             Battery battery = (Battery) element;
             return battery.getVoltage();
@@ -48,7 +48,7 @@ class Edge {
         return 0;
     }
 
-    public double getResistance() {
+    double getResistance() {
         if (element instanceof Resistor) {
             Resistor resistor = (Resistor) element;
             return resistor.getResistance();
@@ -56,11 +56,41 @@ class Edge {
         return 0;
     }
 
-    public void addToTree() {
+    void setCurrent(double current) {
+        element.setCurrent(current);
+    }
+
+    void addToTree() {
         inTree = true;
     }
 
-    public boolean isInTree() {
+    void removeFromTree() {
+        inTree = false;
+    }
+
+    boolean isInTree() {
         return inTree;
+    }
+
+    double getDirection(Node node) {
+        if (node == from) {
+            return -1;
+        }
+        if (node == to) {
+            return 1;
+        }
+        return 0;
+    }
+
+    boolean adjacent(Edge e) {
+        return e.to.equals(to) || e.to.equals(from) ||
+                e.from.equals(to) || e.from.equals(from);
+    }
+
+    Node getPair(Node node) {
+        if (!from.equals(node) && !to.equals(node)) {
+            throw new IllegalArgumentException();
+        }
+        return from.equals(node) ? to : from;
     }
 }

@@ -1,9 +1,9 @@
 package ru.spbau.mit.circuit.model;
 
 public class Resistor extends Element {
-    private double resistance;
+    private double resistance = 1;
 
-    protected Resistor(Point from, Point to) {
+    public Resistor(Point from, Point to) {
         super(from, to);
     }
 

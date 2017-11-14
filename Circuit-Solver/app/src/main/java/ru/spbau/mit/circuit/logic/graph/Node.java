@@ -1,15 +1,18 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.RealVector;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 class Node {
     private final List<Edge> edges = new LinkedList<>();
-    public int ID; //FOR DEBUG
+    private int ID; //FOR DEBUG
 
-    public Node(int ID) {
+    Node(int ID) {
         this.ID = ID;
     }
 
@@ -18,7 +21,7 @@ class Node {
         return String.valueOf(ID);
     }
 
-    public List<Edge> getEdges() {
+    List<Edge> getEdges() {
         return edges;
     }
 
@@ -26,21 +29,29 @@ class Node {
         edges.add(e);
     }
 
-    public Iterable<Edge> getTreeEdges() {
+    Iterable<Edge> getTreeEdges() {
         return this::treeEdgesIterator;
     }
 
-    public Iterator<Edge> treeEdgesIterator() {
+    Iterator<Edge> treeEdgesIterator() {
         return new treeIterator();
+    }
+
+    RealVector getEquation(int size) {
+        RealVector equation = new ArrayRealVector(size);
+        for (Edge edge : edges) {
+            equation.setEntry(edge.index(), edge.getDirection(this));
+        }
+        return equation;
     }
 
     private class treeIterator implements Iterator<Edge> {
 
+        Edge e;
         private Iterator<Edge> iterator = edges.iterator();
 
         @Override
         public boolean hasNext() {
-            Edge e;
             while (iterator.hasNext()) {
                 e = iterator.next();
                 if (e.isInTree()) {
@@ -52,14 +63,10 @@ class Node {
 
         @Override
         public Edge next() {
-            Edge e;
-            while (iterator.hasNext()) {
+            while (e != null && !e.isInTree()) {
                 e = iterator.next();
-                if (e.isInTree()) {
-                    return e;
-                }
             }
-            return null;
+            return e;
         }
     }
 }
