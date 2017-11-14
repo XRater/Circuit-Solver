@@ -12,7 +12,7 @@ public class UI {
         this.controller = controller;
     }
 
-    public void update(Model model) {
+    public void load(Model model) {
         //TODO
     }
 }

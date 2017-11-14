@@ -65,4 +65,9 @@ abstract public class Element {
     public void flip() {
         //TODO
     }
+
+    @Override
+    public String toString() {
+        return from.toString() + ":" + to.toString();
+    }
 }
