@@ -28,9 +28,7 @@ public class Controller {
     }
 
     public void calculateCurrents() {
-        for (Element e : model.getElements())
-            System.out.println(e);
-        logic.callculateCurrents(model);
+        logic.calculateCurrents(model);
     }
 
     public void addElement(Element element) {

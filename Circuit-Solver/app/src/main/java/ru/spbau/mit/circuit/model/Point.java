@@ -18,17 +18,25 @@ public class Point {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + this.x;
+        hash = 71 * hash + this.y;
+        return hash;
+    }
+
+    @Override
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Point)) {
-            return false;
+        if (obj instanceof Point) {
+            Point p = (Point) obj;
+            return p.x == x && p.y == y;
         }
-        Point p = (Point) obj;
-        return p.x == x && p.y == y;
+        return false;
     }
 
     public int distance(Point other) {
