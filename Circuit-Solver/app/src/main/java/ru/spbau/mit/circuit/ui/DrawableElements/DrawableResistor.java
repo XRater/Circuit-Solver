@@ -1,12 +1,11 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
-import ru.spbau.mit.circuit.model.elements.Resistor;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.Drawer;
 import ru.spbau.mit.circuit.ui.MyCanvas;
 
 
-public class DrawableResistor extends Resistor implements Drawable {
+public class DrawableResistor extends FiledElement {
     private int x;
     private int y;
 
