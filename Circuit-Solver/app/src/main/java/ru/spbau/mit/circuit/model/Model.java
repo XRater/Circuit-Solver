@@ -3,7 +3,7 @@ package ru.spbau.mit.circuit.model;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.circuit.model.Elements.Element;
+import ru.spbau.mit.circuit.model.elements.Element;
 
 public class Model {
     private ArrayList<Element> elements = new ArrayList<>();
@@ -28,5 +28,9 @@ public class Model {
             sb.append(e).append("\n");
         }
         return sb.toString();
+    }
+
+    public void clear() {
+        elements.clear();
     }
 }

@@ -1,6 +1,6 @@
-package ru.spbau.mit.circuit.model.Elements;
+package ru.spbau.mit.circuit.model.elements;
 
-import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.point.Point;
 
 public class Resistor extends Element {
     private double resistance = 1;

@@ -1,7 +1,7 @@
-package ru.spbau.mit.circuit.model.Elements;
+package ru.spbau.mit.circuit.model.elements;
 
-import ru.spbau.mit.circuit.model.InvalidPointException;
-import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.point.InvalidPointException;
+import ru.spbau.mit.circuit.model.point.Point;
 
 abstract public class Element {
     private Point from;

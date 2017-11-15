@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onNewCircuit(View view) {
+        controller.clearModel();
         Intent intent = new Intent(MainActivity.this, NewCircuitActivity.class);
         startActivity(intent);
     }

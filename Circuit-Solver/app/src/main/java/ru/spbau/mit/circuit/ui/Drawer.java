@@ -5,8 +5,8 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.circuit.model.Elements.Element;
-import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
@@ -57,15 +57,18 @@ public class Drawer {
         for (DrawableWire wire : wires) {
             wire.draw(canvas);
         }
-        if (highlighted != null)
+        if (highlighted != null) {
             canvas.drawCircle(highlighted.x(), highlighted.y(), cellSize / 5, highlightPaint);
+        }
 
     }
 
     public static void showCurrents(MyCanvas canvas) {
         for (Drawable d : drawables) {
             Element e = (Element) d;
-            canvas.drawText(e.getCurrent() + "A", d.x() - cellSize / 4, d.y() - cellSize / 2, elementsPaint);
+            canvas.drawText(Math.abs(e.getCurrent()) + "A", d.x() - cellSize / 4, d.y() -
+                            cellSize / 2,
+                    elementsPaint);
         }
     }
 }

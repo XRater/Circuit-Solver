@@ -1,8 +1,8 @@
-package ru.spbau.mit.circuit.model.Elements;
+package ru.spbau.mit.circuit.model.elements;
 
 
 import ru.spbau.mit.circuit.model.CircuitSolverException;
-import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.point.Point;
 
 public class Wire extends Element {
     public Element neighbour1, neighbour2;
