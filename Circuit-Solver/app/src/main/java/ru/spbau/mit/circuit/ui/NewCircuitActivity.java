@@ -41,22 +41,22 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         final SurfaceView surface = findViewById(R.id.surface);
         Button newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
-            DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.cellSize, 5 * Drawer
-                    .cellSize));
+            DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.CELL_SIZE, 5 * Drawer
+                    .CELL_SIZE));
             addElement(r);
         });
 
         Button newCapacitor = findViewById(R.id.newCapacitor);
         newCapacitor.setOnClickListener(view -> {
-            DrawableCapacitor c = new DrawableCapacitor(new Point(5 * Drawer.cellSize, 5 * Drawer
-                    .cellSize));
+            DrawableCapacitor c = new DrawableCapacitor(new Point(5 * Drawer.CELL_SIZE, 5 * Drawer
+                    .CELL_SIZE));
             addElement(c);
         });
 
         Button newBattery = findViewById(R.id.newBattery);
         newBattery.setOnClickListener(view -> {
-            DrawableBattery b = new DrawableBattery(new Point(7 * Drawer.cellSize, 7 * Drawer
-                    .cellSize));
+            DrawableBattery b = new DrawableBattery(new Point(7 * Drawer.CELL_SIZE, 7 * Drawer
+                    .CELL_SIZE));
             addElement(b);
         });
 
@@ -127,7 +127,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 float mX = motionEvent.getX();
                 float mY = motionEvent.getY();
                 for (Drawable d : drawables) {
-                    if (d.getPoint().distance(mX - offsetX, mY - offsetY) < 2 * Drawer.cellSize) {
+//                    if (d.getPoint().distance(mX - offsetX, mY - offsetY) < 2 * Drawer
+// .CELL_SIZE) {
+                    if (d.getPoint().isInSquare(mX - offsetX, mY - offsetY, Drawer.CELL_SIZE / 2)) {
                         chosen = d;
                     }
                 }
@@ -151,8 +153,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
             case MotionEvent.ACTION_UP: {
                 if (chosen != null) { // TODO More pretty.(!)
-                    chosen.setX(chosen.x() / Drawer.cellSize * Drawer.cellSize);
-                    chosen.setY(chosen.y() / Drawer.cellSize * Drawer.cellSize);
+                    chosen.setX(chosen.x() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
+                    chosen.setY(chosen.y() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
                     redraw();
                     chosen.updatePosition(chosen.x(), chosen.y());
                     return true;

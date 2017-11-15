@@ -15,22 +15,22 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
     }
 
     public DrawableCapacitor(Point center) {
-        super(new Point(center.x() - 2 * Drawer.cellSize, center.y()),
-                new Point(center.x() + 2 * Drawer.cellSize, center.y()));
+        super(new Point(center.x() - 2 * Drawer.CELL_SIZE, center.y()),
+                new Point(center.x() + 2 * Drawer.CELL_SIZE, center.y()));
         x = center.x();
         y = center.y();
     }
 
     @Override
     public void draw(MyCanvas canvas) {
-        canvas.drawLine(x - Drawer.cellSize * 2, y, x - Drawer.cellSize / 2, y, Drawer
+        canvas.drawLine(x - Drawer.CELL_SIZE * 2, y, x - Drawer.CELL_SIZE / 2, y, Drawer
                 .elementsPaint);
-        canvas.drawLine(x + Drawer.cellSize * 2, y, x + Drawer.cellSize / 2, y, Drawer
+        canvas.drawLine(x + Drawer.CELL_SIZE * 2, y, x + Drawer.CELL_SIZE / 2, y, Drawer
                 .elementsPaint);
-        canvas.drawLine(x - Drawer.cellSize / 2, y - Drawer.cellSize * 3 / 4, x - Drawer.cellSize
-                / 2, y + Drawer.cellSize * 3 / 4, Drawer.elementsPaint);
-        canvas.drawLine(x + Drawer.cellSize / 2, y - Drawer.cellSize * 3 / 4, x + Drawer.cellSize
-                / 2, y + Drawer.cellSize * 3 / 4, Drawer.elementsPaint);
+        canvas.drawLine(x - Drawer.CELL_SIZE / 2, y - Drawer.CELL_SIZE * 3 / 4, x - Drawer.CELL_SIZE
+                / 2, y + Drawer.CELL_SIZE * 3 / 4, Drawer.elementsPaint);
+        canvas.drawLine(x + Drawer.CELL_SIZE / 2, y - Drawer.CELL_SIZE * 3 / 4, x + Drawer.CELL_SIZE
+                / 2, y + Drawer.CELL_SIZE * 3 / 4, Drawer.elementsPaint);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
     public void updatePosition(int nx, int ny) {
         x = nx;
         y = ny;
-        this.setPosition(new Point(nx - 2 * Drawer.cellSize, ny), new Point(nx + 2 * Drawer
-                .cellSize, ny));
+        this.setPosition(new Point(nx - 2 * Drawer.CELL_SIZE, ny), new Point(nx + 2 * Drawer
+                .CELL_SIZE, ny));
     }
 }

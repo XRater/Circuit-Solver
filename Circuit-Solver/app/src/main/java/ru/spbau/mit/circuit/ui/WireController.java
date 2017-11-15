@@ -10,23 +10,23 @@ import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 import static java.lang.Math.max;
-import static ru.spbau.mit.circuit.ui.Drawer.cellSize;
+import static ru.spbau.mit.circuit.ui.Drawer.CELL_SIZE;
+import static ru.spbau.mit.circuit.ui.Drawer.FIELD_SIZE;
 import static ru.spbau.mit.circuit.ui.Drawer.drawables;
-import static ru.spbau.mit.circuit.ui.Drawer.fieldSize;
 import static ru.spbau.mit.circuit.ui.Drawer.highlighted;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetX;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetY;
 
 public class WireController implements View.OnTouchListener {
-    private elementaryWire horizontalWires[][] = new elementaryWire[fieldSize][fieldSize];
-    private elementaryWire verticalWires[][] = new elementaryWire[fieldSize][fieldSize];
+    private elementaryWire horizontalWires[][] = new elementaryWire[FIELD_SIZE][FIELD_SIZE];
+    private elementaryWire verticalWires[][] = new elementaryWire[FIELD_SIZE][FIELD_SIZE];
     private Element chosen;
     private NewCircuitActivity activity;
 
     public WireController(NewCircuitActivity newCircuitActivity) {
         activity = newCircuitActivity;
-        for (int i = 0; i < fieldSize; i++) {
-            for (int j = 0; j < fieldSize; j++) {
+        for (int i = 0; i < FIELD_SIZE; i++) {
+            for (int j = 0; j < FIELD_SIZE; j++) {
                 horizontalWires[i][j] = new elementaryWire();
                 verticalWires[i][j] = new elementaryWire();
             }
@@ -41,13 +41,13 @@ public class WireController implements View.OnTouchListener {
                 mX = motionEvent.getX();
                 mY = motionEvent.getY();
                 Point current = new Point((int) mX - offsetX, (int) mY - offsetY);
-                //Point scaled = new Point(Math.round(mX / cellSize), Math.round(mY / cellSize));
+                //Point scaled = new Point(Math.round(mX / CELL_SIZE), Math.round(mY / CELL_SIZE));
 
                 for (Drawable d : drawables) {
                     Element e = (Element) d;
-                    if (current.distance(e.getFrom()) < cellSize) {
+                    if (current.distance(e.getFrom()) < CELL_SIZE) {
                         current = e.getFrom();
-                    } else if (current.distance(e.getTo()) < cellSize) {
+                    } else if (current.distance(e.getTo()) < CELL_SIZE) {
                         current = e.getTo();
                     } else {
                         continue;
@@ -66,8 +66,8 @@ public class WireController implements View.OnTouchListener {
 
                 }
 
-                Point scaled = new Point(Math.round(mX / cellSize), Math.round(mY / cellSize));
-                current = new Point(scaled.x() * cellSize, scaled.y() * cellSize);
+                Point scaled = new Point(Math.round(mX / CELL_SIZE), Math.round(mY / CELL_SIZE));
+                current = new Point(scaled.x() * CELL_SIZE, scaled.y() * CELL_SIZE);
                 if (hasWire(scaled)) {
                     if (highlighted != null) {
                         highlighted = current;
@@ -95,10 +95,10 @@ public class WireController implements View.OnTouchListener {
     }
 
     public void addSimpleWire(Point p, Element other) {
-        int x1 = highlighted.x() / cellSize;
-        int y1 = highlighted.y() / cellSize;
-        int x2 = p.x() / cellSize;
-        int y2 = p.y() / cellSize;
+        int x1 = highlighted.x() / CELL_SIZE;
+        int y1 = highlighted.y() / CELL_SIZE;
+        int x2 = p.x() / CELL_SIZE;
+        int y2 = p.y() / CELL_SIZE;
         int height = y1;
         if (x1 > x2) {
             int t = x1;
@@ -113,15 +113,15 @@ public class WireController implements View.OnTouchListener {
             if (!horizontalWires[i][height].have) {
                 horizontalWires[i][height].addElementaryWire(chosen, other);
                 if (start == null) {
-                    start = new Point(i * cellSize, height * cellSize);
+                    start = new Point(i * CELL_SIZE, height * CELL_SIZE);
                 }
             } else if (start != null) {
-                this.addSimpleWire(start, new Point(i * cellSize, height * cellSize), other);
+                this.addSimpleWire(start, new Point(i * CELL_SIZE, height * CELL_SIZE), other);
                 start = null;
             }
         }
         if (start != null) {
-            this.addSimpleWire(start, new Point(x2 * cellSize, height * cellSize), other);
+            this.addSimpleWire(start, new Point(x2 * CELL_SIZE, height * CELL_SIZE), other);
         }
 
         if (y1 > y2) {
@@ -134,15 +134,15 @@ public class WireController implements View.OnTouchListener {
             if (!verticalWires[x2][i].have) {
                 verticalWires[x2][i].addElementaryWire(chosen, other);
                 if (start == null) {
-                    start = new Point(x2 * cellSize, i * cellSize);
+                    start = new Point(x2 * CELL_SIZE, i * CELL_SIZE);
                 }
             } else if (start != null) {
-                addSimpleWire(start, new Point(x2 * cellSize, i * cellSize), other);
+                addSimpleWire(start, new Point(x2 * CELL_SIZE, i * CELL_SIZE), other);
                 start = null;
             }
         }
         if (start != null) {
-            addSimpleWire(start, new Point(x2 * cellSize, y2 * cellSize), other);
+            addSimpleWire(start, new Point(x2 * CELL_SIZE, y2 * CELL_SIZE), other);
         }
     }
 

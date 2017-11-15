@@ -47,4 +47,8 @@ public class Point {
     public int distance(float x, float y) {
         return (int) Math.sqrt((this.x - x) * (this.x - x) + (this.y - y) * (this.y - y));
     }
+
+    public boolean isInSquare(float x, float y, float dist) {
+        return Math.abs(this.x - x) < dist && Math.abs(this.y - y) < dist;
+    }
 }

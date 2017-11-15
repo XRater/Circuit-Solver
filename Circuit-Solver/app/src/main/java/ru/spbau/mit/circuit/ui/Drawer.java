@@ -11,8 +11,8 @@ import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class Drawer {
-    public static final int cellSize = 80;
-    public static final int fieldSize = 30;
+    public static final int CELL_SIZE = 80;
+    public static final int FIELD_SIZE = 30;
 
     public static ArrayList<Drawable> drawables = new ArrayList<>();
     public static ArrayList<DrawableWire> wires = new ArrayList<>();
@@ -39,11 +39,11 @@ public class Drawer {
         Paint paint = new Paint();
         paint.setColor(Color.rgb(239, 236, 174));
         paint.setStrokeWidth(1);
-        for (int i = 0; i <= fieldSize * cellSize; i += cellSize) {
-            canvas.drawLine(0, i, fieldSize * cellSize, i, paint);
+        for (int i = 0; i <= FIELD_SIZE * CELL_SIZE; i += CELL_SIZE) {
+            canvas.drawLine(0, i, FIELD_SIZE * CELL_SIZE, i, paint);
         }
-        for (int i = 0; i <= fieldSize * cellSize; i += cellSize) {
-            canvas.drawLine(i, 0, i, fieldSize * cellSize, paint);
+        for (int i = 0; i <= FIELD_SIZE * CELL_SIZE; i += CELL_SIZE) {
+            canvas.drawLine(i, 0, i, FIELD_SIZE * CELL_SIZE, paint);
         }
     }
 
@@ -58,7 +58,7 @@ public class Drawer {
             wire.draw(canvas);
         }
         if (highlighted != null) {
-            canvas.drawCircle(highlighted.x(), highlighted.y(), cellSize / 5, highlightPaint);
+            canvas.drawCircle(highlighted.x(), highlighted.y(), CELL_SIZE / 5, highlightPaint);
         }
 
     }
@@ -66,8 +66,8 @@ public class Drawer {
     public static void showCurrents(MyCanvas canvas) {
         for (Drawable d : drawables) {
             Element e = (Element) d;
-            canvas.drawText(Math.abs(e.getCurrent()) + "A", d.x() - cellSize / 4, d.y() -
-                            cellSize / 2,
+            canvas.drawText(Math.abs(e.getCurrent()) + "A", d.x() - CELL_SIZE / 4, d.y() -
+                            CELL_SIZE / 2,
                     elementsPaint);
         }
     }

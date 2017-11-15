@@ -4,19 +4,30 @@ import ru.spbau.mit.circuit.model.elements.Resistor;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.Drawer;
 import ru.spbau.mit.circuit.ui.MyCanvas;
+import ru.spbau.mit.circuit.ui.Node;
 
 
 public class DrawableResistor extends Resistor implements Drawable {
     private int x;
     private int y;
 
+    private Node node;
+
     protected DrawableResistor(Point from, Point to) {
         super(from, to);
     }
 
+    public DrawableResistor(Node node) {
+        super(new Point(node.point().x() - 2 * Drawer.CELL_SIZE, node.point().y()),
+                new Point(node.point().x() + 2 * Drawer.CELL_SIZE, node.point().y()));
+        x = node.point().x();
+        y = node.point().y();
+        this.node = node;
+    }
+
     public DrawableResistor(Point center) {
-        super(new Point(center.x() - 2 * Drawer.cellSize, center.y()),
-                new Point(center.x() + 2 * Drawer.cellSize, center.y()));
+        super(new Point(center.x() - 2 * Drawer.CELL_SIZE, center.y()),
+                new Point(center.x() + 2 * Drawer.CELL_SIZE, center.y()));
         x = center.x();
         y = center.y();
     }
@@ -24,23 +35,23 @@ public class DrawableResistor extends Resistor implements Drawable {
     @Override
     public void draw(MyCanvas canvas) {
         //up and down
-        canvas.drawLine(x - Drawer.cellSize, y + Drawer.cellSize / 2, x + Drawer.cellSize, y +
-                Drawer.cellSize / 2, Drawer.elementsPaint);
-        canvas.drawLine(x - Drawer.cellSize, y - Drawer.cellSize / 2, x + Drawer.cellSize, y -
-                Drawer.cellSize / 2, Drawer.elementsPaint);
+        canvas.drawLine(x - Drawer.CELL_SIZE, y + Drawer.CELL_SIZE / 2, x + Drawer.CELL_SIZE, y +
+                Drawer.CELL_SIZE / 2, Drawer.elementsPaint);
+        canvas.drawLine(x - Drawer.CELL_SIZE, y - Drawer.CELL_SIZE / 2, x + Drawer.CELL_SIZE, y -
+                Drawer.CELL_SIZE / 2, Drawer.elementsPaint);
         //left and right
-        canvas.drawLine(x - Drawer.cellSize, y - Drawer.cellSize / 2, x - Drawer.cellSize, y +
-                Drawer.cellSize / 2, Drawer.elementsPaint);
-        canvas.drawLine(x + Drawer.cellSize, y - Drawer.cellSize / 2, x + Drawer.cellSize, y +
-                Drawer.cellSize / 2, Drawer.elementsPaint);
+        canvas.drawLine(x - Drawer.CELL_SIZE, y - Drawer.CELL_SIZE / 2, x - Drawer.CELL_SIZE, y +
+                Drawer.CELL_SIZE / 2, Drawer.elementsPaint);
+        canvas.drawLine(x + Drawer.CELL_SIZE, y - Drawer.CELL_SIZE / 2, x + Drawer.CELL_SIZE, y +
+                Drawer.CELL_SIZE / 2, Drawer.elementsPaint);
         //wires
-        canvas.drawLine(x - Drawer.cellSize * 2, y, x - Drawer.cellSize, y, Drawer.elementsPaint);
-        canvas.drawLine(x + Drawer.cellSize * 2, y, x + Drawer.cellSize, y, Drawer.elementsPaint);
+        canvas.drawLine(x - Drawer.CELL_SIZE * 2, y, x - Drawer.CELL_SIZE, y, Drawer.elementsPaint);
+        canvas.drawLine(x + Drawer.CELL_SIZE * 2, y, x + Drawer.CELL_SIZE, y, Drawer.elementsPaint);
 
         // TODO vertical
 
-        canvas.drawText((int) getResistance() + "\u03A9", x - Drawer.cellSize / 4, y + Drawer
-                .cellSize / 4, Drawer.elementsPaint);
+        canvas.drawText((int) getResistance() + "\u03A9", x - Drawer.CELL_SIZE / 4, y + Drawer
+                .CELL_SIZE / 4, Drawer.elementsPaint);
     }
 
     @Override
@@ -65,7 +76,7 @@ public class DrawableResistor extends Resistor implements Drawable {
     public void updatePosition(int nx, int ny) {
         x = nx;
         y = ny;
-        this.setPosition(new Point(nx - 2 * Drawer.cellSize, ny), new Point(nx + 2 * Drawer
-                .cellSize, ny));
+        this.setPosition(new Point(nx - 2 * Drawer.CELL_SIZE, ny), new Point(nx + 2 * Drawer
+                .CELL_SIZE, ny));
     }
 }

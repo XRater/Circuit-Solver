@@ -15,13 +15,9 @@ public interface Drawable {
         this.updatePosition(x, y());
     }
 
-    ;
-
     default void setY(int y) {
         this.updatePosition(x(), y);
     }
-
-    ;
 
     default Point getPoint() {
         return new Point(x(), y());
