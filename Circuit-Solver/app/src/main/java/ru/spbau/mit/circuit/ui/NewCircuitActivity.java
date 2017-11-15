@@ -120,6 +120,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 chosen = null;
                 startX = 0;
                 startY = 0;
+                System.out.println("Down");
                 return true;
             }
 
@@ -132,6 +133,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 // .CELL_SIZE) {
                         if (d.clickedInside(mX - offsetX, mY - offsetY)) {
                             chosen = d;
+                            System.out.println(chosen.toString());
                         }
                     }
                 }
@@ -150,6 +152,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     Drawer.offsetY = oldOffsetY + Math.round(mY) - startY;
                 }
                 redraw();
+                System.out.println("Move");
                 return true;
             }
 
@@ -165,6 +168,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 }
                 startX = 0;
                 startY = 0;
+                System.out.println("Up");
+                return true;
             }
         }
         return true;

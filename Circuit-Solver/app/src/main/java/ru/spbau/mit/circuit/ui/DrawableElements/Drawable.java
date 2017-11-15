@@ -28,8 +28,8 @@ public interface Drawable {
 
     // TODO it is temporary
     default boolean clickedInside(int x, int y) {
-        Point one = new Point(x() + Drawer.CELL_SIZE / 2, y);
-        Point two = new Point(x() - Drawer.CELL_SIZE / 2, y);
+        Point one = new Point(x() + Drawer.CELL_SIZE / 2, y());
+        Point two = new Point(x() - Drawer.CELL_SIZE / 2, y());
         if (one.isInSquare(x, y, Drawer.CELL_SIZE / 2) || two.isInSquare(x, y, Drawer.CELL_SIZE / 2))
             return true;
         return false;

@@ -43,10 +43,11 @@ public class ConnectedGraph {
         DecompositionSolver solver = null;
         try {
             solver = new LUDecomposition(system).getSolver();
+            solution = solver.solve(voltages);
         } catch (SingularMatrixException e) {
             throw new CircuitShortingException();
         }
-        solution = solver.solve(voltages);
+        //solution = solver.solve(voltages);
 
         System.out.println(solution);
     }
