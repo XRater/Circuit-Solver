@@ -4,8 +4,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import ru.spbau.mit.circuit.MainActivity;
-import ru.spbau.mit.circuit.model.Point;
 import ru.spbau.mit.circuit.model.Elements.Element;
+import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
+import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 import static java.lang.Math.max;
 import static ru.spbau.mit.circuit.ui.Drawer.cellSize;
@@ -87,8 +89,7 @@ public class WireController implements View.OnTouchListener {
     }
 
     public boolean hasWire(Point p) {
-        return horizontalWires[max(p.x() - 1, 0)][p.y()].have || horizontalWires[p.x()][p.y()]
-                .have ||
+        return horizontalWires[max(p.x() - 1, 0)][p.y()].have || horizontalWires[p.x()][p.y()].have ||
                 verticalWires[p.x()][max(p.y() - 1, 0)].have || verticalWires[p.x()][p.y()].have;
     }
 
