@@ -1,5 +1,6 @@
 package ru.spbau.mit.circuit.controler;
 
+import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.elements.Element;
@@ -27,7 +28,7 @@ public class Controller {
         ui.load(model);
     }
 
-    public void calculateCurrents() {
+    public void calculateCurrents() throws CircuitShortingException {
         logic.calculateCurrents(model);
     }
 

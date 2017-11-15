@@ -35,19 +35,19 @@ public class WireController implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        float mX, mY;
+        int mX, mY;
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                mX = motionEvent.getX();
-                mY = motionEvent.getY();
-                Point current = new Point(Math.round(mX) - offsetX, Math.round(mY) - offsetY);
+                mX = Math.round(motionEvent.getX());
+                mY = Math.round(motionEvent.getY());
+                Point current = new Point(mX - offsetX, mY - offsetY);
                 //Point scaled = new Point(Math.round(mX / CELL_SIZE), Math.round(mY / CELL_SIZE));
 
                 for (Drawable d : drawables) {
                     Element e = (Element) d;
-                    if (current.distance(e.getFrom()) < CELL_SIZE) {
+                    if (e.getFrom().isInSquare(mX - offsetX, mY - offsetY, CELL_SIZE / 2)) {
                         current = e.getFrom();
-                    } else if (current.distance(e.getTo()) < CELL_SIZE) {
+                    } else if (e.getTo().isInSquare(mX - offsetX, mY - offsetY, CELL_SIZE / 2)) {
                         current = e.getTo();
                     } else {
                         continue;
@@ -66,8 +66,8 @@ public class WireController implements View.OnTouchListener {
 
                 }
 
-                Point scaled = new Point(Math.round(mX / CELL_SIZE), Math.round(mY / CELL_SIZE));
-                current = new Point(scaled.x() * CELL_SIZE, scaled.y() * CELL_SIZE);
+                current = new Point(Drawer.round(mX), Drawer.round(mY));
+                Point scaled = new Point(current.x() / CELL_SIZE, current.y() / CELL_SIZE);
                 if (hasWire(scaled)) {
                     if (highlighted != null) {
                         highlighted = current;

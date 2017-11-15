@@ -9,9 +9,11 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
+import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
@@ -75,7 +77,13 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.ui.calculateCurrents();
+                try {
+                    MainActivity.ui.calculateCurrents();
+                } catch (CircuitShortingException e) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Battery is shorted.", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
                 Canvas canvas = surfaceHolder.lockCanvas();
                 MyCanvas myCanvas = new MyCanvas(canvas);
                 Drawer.drawEverything(myCanvas);
@@ -108,12 +116,12 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
         switch (motionEvent.getAction()) {
-//            case MotionEvent.ACTION_DOWN: {
-//                chosen = null;
-//                startX = 0;
-//                startY = 0;
-//                return true;
-//            }
+            case MotionEvent.ACTION_DOWN: {
+                chosen = null;
+                startX = 0;
+                startY = 0;
+                return true;
+            }
 
             case MotionEvent.ACTION_MOVE: {
                 int mX = Math.round(motionEvent.getX());
