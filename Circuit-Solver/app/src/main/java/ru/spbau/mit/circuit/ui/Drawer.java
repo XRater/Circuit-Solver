@@ -5,11 +5,13 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.circuit.model.Element;
+import ru.spbau.mit.circuit.model.Elements.Element;
 import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
+import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class Drawer {
-    public static final int cellSize = 100;
+    public static final int cellSize = 80;
     public static final int fieldSize = 30;
 
     public static ArrayList<Drawable> drawables = new ArrayList<>();
@@ -63,7 +65,7 @@ public class Drawer {
     public static void showCurrents(MyCanvas canvas) {
         for (Drawable d : drawables) {
             Element e = (Element) d;
-            canvas.drawText(e.getCurrent() + "A", d.x(), d.y() - cellSize, elementsPaint);
+            canvas.drawText(e.getCurrent() + "A", d.x() - cellSize / 4, d.y() - cellSize / 2, elementsPaint);
         }
     }
 }

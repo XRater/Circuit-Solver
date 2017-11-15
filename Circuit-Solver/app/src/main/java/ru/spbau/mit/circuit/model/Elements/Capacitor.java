@@ -1,4 +1,6 @@
-package ru.spbau.mit.circuit.model;
+package ru.spbau.mit.circuit.model.Elements;
+
+import ru.spbau.mit.circuit.model.Point;
 
 public class Capacitor extends Element {
     private float capacity;

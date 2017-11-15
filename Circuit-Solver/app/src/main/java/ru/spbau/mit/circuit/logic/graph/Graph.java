@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import ru.spbau.mit.circuit.model.Element;
+import ru.spbau.mit.circuit.model.Elements.Element;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.Point;
 

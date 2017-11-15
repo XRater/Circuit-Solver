@@ -4,8 +4,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import ru.spbau.mit.circuit.MainActivity;
-import ru.spbau.mit.circuit.model.Element;
+import ru.spbau.mit.circuit.model.Elements.Element;
 import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
+import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 import static java.lang.Math.max;
 import static ru.spbau.mit.circuit.ui.Drawer.cellSize;

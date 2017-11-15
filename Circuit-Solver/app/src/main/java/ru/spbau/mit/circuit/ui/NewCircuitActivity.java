@@ -12,8 +12,12 @@ import android.widget.Button;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
-import ru.spbau.mit.circuit.model.Element;
+import ru.spbau.mit.circuit.model.Elements.Element;
 import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
+import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
+import ru.spbau.mit.circuit.ui.DrawableElements.DrawableCapacitor;
+import ru.spbau.mit.circuit.ui.DrawableElements.DrawableResistor;
 
 import static ru.spbau.mit.circuit.ui.Drawer.drawables;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetX;
@@ -59,6 +63,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 surface.setOnTouchListener(wireController);
             } else {
                 inWireMode = false;
+                Drawer.highlighted = null;
                 surface.setOnTouchListener(NewCircuitActivity.this);
             }
         });
@@ -145,7 +150,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     chosen.setX(chosen.x() / Drawer.cellSize * Drawer.cellSize);
                     chosen.setY(chosen.y() / Drawer.cellSize * Drawer.cellSize);
                     redraw();
-                    // TODO Notify controller. Hope it is already done.
                     chosen.updatePosition(chosen.x(), chosen.y());
                     return true;
                 }

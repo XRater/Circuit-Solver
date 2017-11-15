@@ -1,7 +1,7 @@
 package ru.spbau.mit.circuit.ui;
 
 import ru.spbau.mit.circuit.controler.Controller;
-import ru.spbau.mit.circuit.model.Element;
+import ru.spbau.mit.circuit.model.Elements.Element;
 import ru.spbau.mit.circuit.model.Model;
 
 public class UI {
