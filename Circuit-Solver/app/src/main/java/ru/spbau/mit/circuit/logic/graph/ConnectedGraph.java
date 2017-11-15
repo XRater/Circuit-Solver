@@ -6,11 +6,14 @@ import org.apache.commons.math3.linear.DecompositionSolver;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
+import org.apache.commons.math3.linear.SingularMatrixException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import ru.spbau.mit.circuit.logic.CircuitShortingException;
 
 public class ConnectedGraph {
 
@@ -31,13 +34,18 @@ public class ConnectedGraph {
         n++;
     }
 
-    public void solve() {
+    public void solve() throws CircuitShortingException {
         findCycles();
         RealMatrix system = constructSystem();
         RealVector voltages = constructAnswer();
         System.out.println(voltages);
 
-        DecompositionSolver solver = new LUDecomposition(system).getSolver();
+        DecompositionSolver solver = null;
+        try {
+            solver = new LUDecomposition(system).getSolver();
+        } catch (SingularMatrixException e) {
+            throw new CircuitShortingException();
+        }
         solution = solver.solve(voltages);
 
         System.out.println(solution);
