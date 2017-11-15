@@ -27,7 +27,7 @@ class Cycle {
         Node curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
         for (Edge edge : edges) {
-            voltage += edge.getVoltage() * edge.getDirection(curr);
+            voltage += edge.getVoltage();
             curr = edge.getPair(curr);
         }
         return voltage;

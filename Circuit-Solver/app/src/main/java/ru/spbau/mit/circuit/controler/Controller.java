@@ -39,7 +39,4 @@ public class Controller {
         return model.removeElement(element);
     }
 
-    public void clearModel() {
-        model.clear();
-    }
 }

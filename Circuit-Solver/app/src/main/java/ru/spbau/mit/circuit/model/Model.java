@@ -29,8 +29,4 @@ public class Model {
         }
         return sb.toString();
     }
-
-    public void clear() {
-        elements.clear();
-    }
 }
