@@ -71,4 +71,10 @@ public class Drawer {
                     elementsPaint);
         }
     }
+
+    static int round(int x) {
+        int offset = x % Drawer.CELL_SIZE;
+        x -= offset;
+        return offset < (Drawer.CELL_SIZE / 2) ? x : x + Drawer.CELL_SIZE;
+    }
 }

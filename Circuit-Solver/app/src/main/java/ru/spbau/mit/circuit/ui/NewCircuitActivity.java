@@ -134,18 +134,19 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     }
                 }
                 if (chosen != null) {
-                    chosen.setX((int) mX - offsetX);
-                    chosen.setY((int) mY - offsetY);
+                    System.out.println(Math.round(mX) - offsetX);
+                    chosen.setX(Math.round(mX) - offsetX);
+                    chosen.setY(Math.round(mY) - offsetY);
 
                 } else {
                     if (startX == 0 && startY == 0) {
-                        startX = (int) mX;
-                        startY = (int) mY;
+                        startX = Math.round(mX);
+                        startY = Math.round(mY);
                         oldOffsetX = Drawer.offsetX;
                         oldOffsetY = Drawer.offsetY;
                     }
-                    Drawer.offsetX = oldOffsetX + (int) mX - startX;
-                    Drawer.offsetY = oldOffsetY + (int) mY - startY;
+                    Drawer.offsetX = oldOffsetX + Math.round(mX) - startX;
+                    Drawer.offsetY = oldOffsetY + Math.round(mY) - startY;
                 }
                 redraw();
                 return true;
@@ -153,8 +154,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
             case MotionEvent.ACTION_UP: {
                 if (chosen != null) { // TODO More pretty.(!)
-                    chosen.setX(chosen.x() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
-                    chosen.setY(chosen.y() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
+                    chosen.setX(Drawer.round(chosen.x()));
+                    chosen.setY(Drawer.round(chosen.y()));
+//                    chosen.setY(chosen.y() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
                     redraw();
                     chosen.updatePosition(chosen.x(), chosen.y());
                     return true;

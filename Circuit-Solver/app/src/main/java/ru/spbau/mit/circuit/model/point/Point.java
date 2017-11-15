@@ -49,6 +49,6 @@ public class Point {
     }
 
     public boolean isInSquare(float x, float y, float dist) {
-        return Math.abs(this.x - x) < dist && Math.abs(this.y - y) < dist;
+        return Math.abs(this.x - x) < dist && Math.abs(this.y - y) <= dist;
     }
 }
