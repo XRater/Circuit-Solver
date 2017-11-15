@@ -5,8 +5,8 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.Elements.Element;
 
 public class Drawer {
     public static final int cellSize = 100;

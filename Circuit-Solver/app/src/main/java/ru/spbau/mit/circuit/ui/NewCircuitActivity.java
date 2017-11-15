@@ -12,8 +12,8 @@ import android.widget.Button;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.Elements.Element;
 
 import static ru.spbau.mit.circuit.ui.Drawer.drawables;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetX;

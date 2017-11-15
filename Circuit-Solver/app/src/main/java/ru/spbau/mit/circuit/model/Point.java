@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit.model.point;
+package ru.spbau.mit.circuit.model;
 
 public class Point {
     private final int x;

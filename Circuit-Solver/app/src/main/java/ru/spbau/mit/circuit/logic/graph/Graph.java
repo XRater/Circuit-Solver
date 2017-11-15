@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.Elements.Element;
 
 public class Graph {
 

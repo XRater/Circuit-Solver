@@ -2,7 +2,7 @@ package ru.spbau.mit.circuit.controler;
 
 import ru.spbau.mit.circuit.logic.Logic;
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.Elements.Element;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {

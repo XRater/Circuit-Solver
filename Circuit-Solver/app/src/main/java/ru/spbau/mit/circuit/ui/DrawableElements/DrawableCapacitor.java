@@ -1,8 +1,9 @@
-package ru.spbau.mit.circuit.ui;
+package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import ru.spbau.mit.circuit.model.Point;
 import ru.spbau.mit.circuit.model.Elements.Capacitor;
-
+import ru.spbau.mit.circuit.ui.Drawer;
+import ru.spbau.mit.circuit.ui.MyCanvas;
 
 public class DrawableCapacitor extends Capacitor implements Drawable {
     private int x;

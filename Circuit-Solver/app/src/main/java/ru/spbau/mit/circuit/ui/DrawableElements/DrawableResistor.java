@@ -1,8 +1,9 @@
-package ru.spbau.mit.circuit.ui;
+package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import ru.spbau.mit.circuit.model.Point;
 import ru.spbau.mit.circuit.model.Elements.Resistor;
-
+import ru.spbau.mit.circuit.ui.Drawer;
+import ru.spbau.mit.circuit.ui.MyCanvas;
 
 public class DrawableResistor extends Resistor implements Drawable {
     private int x;
@@ -37,8 +38,8 @@ public class DrawableResistor extends Resistor implements Drawable {
 
         // TODO vertical
 
-        // FIXME move to center
-        canvas.drawText(getResistance() + "Om", x, y, Drawer.elementsPaint);
+        canvas.drawText((int) getResistance() + "\u03A9", x - Drawer.cellSize / 4, y + Drawer
+                .cellSize / 4, Drawer.elementsPaint);
     }
 
     @Override

@@ -1,8 +1,9 @@
-package ru.spbau.mit.circuit.ui;
+package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import ru.spbau.mit.circuit.model.Point;
 import ru.spbau.mit.circuit.model.Elements.Battery;
-
+import ru.spbau.mit.circuit.ui.Drawer;
+import ru.spbau.mit.circuit.ui.MyCanvas;
 
 public class DrawableBattery extends Battery implements Drawable {
     private int x;
