@@ -3,34 +3,34 @@ package ru.spbau.mit.circuit.model;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.CircuitItem;
 
 public class Model {
-    private ArrayList<Element> elements = new ArrayList<>();
+    private ArrayList<CircuitItem> circuitItems = new ArrayList<>();
 
-    public ArrayList<Element> getElements() {
-        return elements;
+    public ArrayList<CircuitItem> getCircuitItems() {
+        return circuitItems;
     }
 
-    public void addElement(Element element) {
-        elements.add(element);
+    public void addElement(CircuitItem circuitItem) {
+        circuitItems.add(circuitItem);
     }
 
-    public boolean removeElement(Element element) {
-        return elements.remove(element);
+    public boolean removeElement(CircuitItem circuitItem) {
+        return circuitItems.remove(circuitItem);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Model:\n");
-        for (Element e : elements) {
+        for (CircuitItem e : circuitItems) {
             sb.append(e).append("\n");
         }
         return sb.toString();
     }
 
     public void clear() {
-        elements.clear();
+        circuitItems.clear();
     }
 }

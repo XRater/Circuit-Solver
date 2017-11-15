@@ -1,6 +1,6 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.CircuitItem;
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.Drawer;
@@ -8,7 +8,7 @@ import ru.spbau.mit.circuit.ui.MyCanvas;
 
 
 public class DrawableWire extends Wire implements Drawable {
-    public DrawableWire(Point from, Point to, Element e1, Element e2) {
+    public DrawableWire(Point from, Point to, CircuitItem e1, CircuitItem e2) {
         super(from, to, e1, e2);
     }
 

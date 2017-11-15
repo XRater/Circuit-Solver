@@ -23,5 +23,6 @@ public interface Drawable {
         return new Point(x(), y());
     }
 
-    void updatePosition(int nx, int ny);
+    default void updatePosition(int nx, int ny) {
+    }
 }

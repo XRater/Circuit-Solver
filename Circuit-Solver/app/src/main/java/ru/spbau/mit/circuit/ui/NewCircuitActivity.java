@@ -12,7 +12,7 @@ import android.widget.Button;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.CircuitItem;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
@@ -116,7 +116,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 //                mX = motionEvent.getX();
 //                mY = motionEvent.getY();
 //                for (Drawable d : drawables) {
-//                    Element e = (Element) d;
+//                    CircuitItem e = (CircuitItem) d;
 //                    if (abs(e.x - mX + offsetX) < 100 && abs(e.y - mY + offsetY) < 100)
 //                        chosen = e;
 //                }
@@ -156,7 +156,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     chosen.setX(chosen.x() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
                     chosen.setY(chosen.y() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
                     redraw();
-                    chosen.updatePosition(chosen.x(), chosen.y());
+                    chosen.setPosition(new Point(chosen.x(), chosen.y()));
                     return true;
                 }
                 startX = 0;
@@ -176,7 +176,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
     private void addElement(Drawable e) {
         drawables.add(e);
-        MainActivity.ui.addToModel((Element) e);
+        MainActivity.ui.addToModel((CircuitItem) e);
         redraw();
     }
 }

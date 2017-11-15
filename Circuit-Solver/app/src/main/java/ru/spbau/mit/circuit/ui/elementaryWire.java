@@ -1,15 +1,15 @@
 package ru.spbau.mit.circuit.ui;
 
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.CircuitItem;
 
 public class elementaryWire {
     public boolean have = false;
-    public Element element1;
-    public Element element2;
+    public CircuitItem circuitItem1;
+    public CircuitItem circuitItem2;
 
-    public void addElementaryWire(Element chosen, Element other) {
+    public void addElementaryWire(CircuitItem chosen, CircuitItem other) {
         have = true;
-        element1 = chosen;
-        element2 = other;
+        circuitItem1 = chosen;
+        circuitItem2 = other;
     }
 }

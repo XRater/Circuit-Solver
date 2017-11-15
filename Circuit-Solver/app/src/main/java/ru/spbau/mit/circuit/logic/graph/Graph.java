@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.CircuitItem;
 import ru.spbau.mit.circuit.model.point.Point;
 
 public class Graph {
@@ -15,21 +15,22 @@ public class Graph {
     public Graph(Model model) {
 
         int number = 0; //FOR DEBUG
-        for (Element element : model.getElements()) {
-            if (!nodes.containsKey(element.getFrom())) {
-                System.out.println(element.getFrom().toString() + " " + number);
+        for (CircuitItem circuitItem : model.getCircuitItems()) {
+            if (!nodes.containsKey(circuitItem.getFrom())) {
+                System.out.println(circuitItem.getFrom().toString() + " " + number);
                 VisitableNode node = new VisitableNode(number++);
-                nodes.put(element.getFrom(), node);
+                nodes.put(circuitItem.getFrom(), node);
             }
-            if (!nodes.containsKey(element.getTo())) {
-                System.out.println(element.getTo().toString() + " " + number);
+            if (!nodes.containsKey(circuitItem.getTo())) {
+                System.out.println(circuitItem.getTo().toString() + " " + number);
                 VisitableNode node = new VisitableNode(number++);
-                nodes.put(element.getTo(), node);
+                nodes.put(circuitItem.getTo(), node);
             }
         }
 
-        for (Element element : model.getElements()) {
-            addNewEdge(nodes.get(element.getFrom()), nodes.get(element.getTo()), element);
+        for (CircuitItem circuitItem : model.getCircuitItems()) {
+            addNewEdge(nodes.get(circuitItem.getFrom()), nodes.get(circuitItem.getTo()),
+                    circuitItem);
         }
     }
 
@@ -45,8 +46,8 @@ public class Graph {
         return graphs;
     }
 
-    private void addNewEdge(Node u, Node v, Element element) {
-        Edge e = new Edge(element, u, v);
+    private void addNewEdge(Node u, Node v, CircuitItem circuitItem) {
+        Edge e = new Edge(circuitItem, u, v);
         u.add(e);
         v.add(e);
     }

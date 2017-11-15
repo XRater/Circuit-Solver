@@ -2,7 +2,7 @@ package ru.spbau.mit.circuit.ui;
 
 import ru.spbau.mit.circuit.controler.Controller;
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.CircuitItem;
 
 public class UI {
     private final Controller controller;
@@ -19,7 +19,7 @@ public class UI {
         controller.calculateCurrents();
     }
 
-    public void addToModel(Element e) {
+    public void addToModel(CircuitItem e) {
         controller.addElement(e);
     }
 }

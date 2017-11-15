@@ -2,7 +2,7 @@ package ru.spbau.mit.circuit.controler;
 
 import ru.spbau.mit.circuit.logic.Logic;
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.CircuitItem;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {
@@ -31,12 +31,12 @@ public class Controller {
         logic.calculateCurrents(model);
     }
 
-    public void addElement(Element element) {
-        model.addElement(element);
+    public void addElement(CircuitItem circuitItem) {
+        model.addElement(circuitItem);
     }
 
-    public boolean removeElement(Element element) {
-        return model.removeElement(element);
+    public boolean removeElement(CircuitItem circuitItem) {
+        return model.removeElement(circuitItem);
     }
 
     public void clearModel() {

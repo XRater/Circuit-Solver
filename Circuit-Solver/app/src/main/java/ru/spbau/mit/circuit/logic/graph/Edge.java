@@ -2,19 +2,19 @@ package ru.spbau.mit.circuit.logic.graph;
 
 
 import ru.spbau.mit.circuit.model.elements.Battery;
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.CircuitItem;
 import ru.spbau.mit.circuit.model.elements.Resistor;
 
 class Edge {
 
-    private final Element element;
+    private final CircuitItem circuitItem;
     private final Node from;
     private final Node to;
     private int index = -1;
     private boolean inTree;
 
-    Edge(Element element, Node from, Node to) {
-        this.element = element;
+    Edge(CircuitItem circuitItem, Node from, Node to) {
+        this.circuitItem = circuitItem;
         this.from = from;
         this.to = to;
     }
@@ -41,23 +41,23 @@ class Edge {
     }
 
     double getVoltage() {
-        if (element instanceof Battery) {
-            Battery battery = (Battery) element;
+        if (circuitItem instanceof Battery) {
+            Battery battery = (Battery) circuitItem;
             return battery.getVoltage();
         }
         return 0;
     }
 
     double getResistance() {
-        if (element instanceof Resistor) {
-            Resistor resistor = (Resistor) element;
+        if (circuitItem instanceof Resistor) {
+            Resistor resistor = (Resistor) circuitItem;
             return resistor.getResistance();
         }
         return 0;
     }
 
     void setCurrent(double current) {
-        element.setCurrent(current);
+        circuitItem.setCurrent(current);
     }
 
     void addToTree() {

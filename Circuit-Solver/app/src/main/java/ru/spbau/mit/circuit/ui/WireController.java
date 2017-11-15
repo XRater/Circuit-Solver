@@ -4,7 +4,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import ru.spbau.mit.circuit.MainActivity;
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.CircuitItem;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
@@ -20,7 +20,7 @@ import static ru.spbau.mit.circuit.ui.Drawer.offsetY;
 public class WireController implements View.OnTouchListener {
     private elementaryWire horizontalWires[][] = new elementaryWire[FIELD_SIZE][FIELD_SIZE];
     private elementaryWire verticalWires[][] = new elementaryWire[FIELD_SIZE][FIELD_SIZE];
-    private Element chosen;
+    private CircuitItem chosen;
     private NewCircuitActivity activity;
 
     public WireController(NewCircuitActivity newCircuitActivity) {
@@ -44,7 +44,7 @@ public class WireController implements View.OnTouchListener {
                 //Point scaled = new Point(Math.round(mX / CELL_SIZE), Math.round(mY / CELL_SIZE));
 
                 for (Drawable d : drawables) {
-                    Element e = (Element) d;
+                    CircuitItem e = (CircuitItem) d;
                     if (current.distance(e.getFrom()) < CELL_SIZE) {
                         current = e.getFrom();
                     } else if (current.distance(e.getTo()) < CELL_SIZE) {
@@ -94,7 +94,7 @@ public class WireController implements View.OnTouchListener {
                 verticalWires[p.x()][max(p.y() - 1, 0)].have || verticalWires[p.x()][p.y()].have;
     }
 
-    public void addSimpleWire(Point p, Element other) {
+    public void addSimpleWire(Point p, CircuitItem other) {
         int x1 = highlighted.x() / CELL_SIZE;
         int y1 = highlighted.y() / CELL_SIZE;
         int x2 = p.x() / CELL_SIZE;
@@ -146,7 +146,7 @@ public class WireController implements View.OnTouchListener {
         }
     }
 
-    private void addSimpleWire(Point from, Point to, Element e) {
+    private void addSimpleWire(Point from, Point to, CircuitItem e) {
         DrawableWire w = new DrawableWire(from, to, chosen, e);
         Drawer.wires.add(w);
         MainActivity.ui.addToModel(w);
