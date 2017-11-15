@@ -23,8 +23,7 @@ import static ru.spbau.mit.circuit.ui.Drawer.drawables;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetX;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetY;
 
-public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
-        OnTouchListener {
+public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback, OnTouchListener {
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
     private boolean inWireMode;
@@ -109,32 +108,26 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     public boolean onTouch(View view, MotionEvent motionEvent) {
 
         switch (motionEvent.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
-                chosen = null;
-                startX = 0;
-                startY = 0;
-//                mX = motionEvent.getX();
-//                mY = motionEvent.getY();
-//                for (Drawable d : drawables) {
-//                    Element e = (Element) d;
-//                    if (abs(e.x - mX + offsetX) < 100 && abs(e.y - mY + offsetY) < 100)
-//                        chosen = e;
-//                }
-                return true;
-            }
+//            case MotionEvent.ACTION_DOWN: {
+//                chosen = null;
+//                startX = 0;
+//                startY = 0;
+//                return true;
+//            }
 
             case MotionEvent.ACTION_MOVE: {
-                float mX = motionEvent.getX();
-                float mY = motionEvent.getY();
-                for (Drawable d : drawables) {
+                int mX = Math.round(motionEvent.getX());
+                int mY = Math.round(motionEvent.getY());
+                if (chosen == null) {
+                    for (Drawable d : drawables) {
 //                    if (d.getPoint().distance(mX - offsetX, mY - offsetY) < 2 * Drawer
 // .CELL_SIZE) {
-                    if (d.getPoint().isInSquare(mX - offsetX, mY - offsetY, Drawer.CELL_SIZE / 2)) {
-                        chosen = d;
+                        if (d.clickedInside(mX - offsetX, mY - offsetY)) {
+                            chosen = d;
+                        }
                     }
                 }
                 if (chosen != null) {
-                    System.out.println(Math.round(mX) - offsetX);
                     chosen.setX(Math.round(mX) - offsetX);
                     chosen.setY(Math.round(mY) - offsetY);
 
@@ -159,6 +152,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 //                    chosen.setY(chosen.y() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
                     redraw();
                     chosen.updatePosition(chosen.x(), chosen.y());
+                    chosen = null;
                     return true;
                 }
                 startX = 0;

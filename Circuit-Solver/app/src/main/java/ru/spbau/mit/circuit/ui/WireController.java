@@ -40,7 +40,7 @@ public class WireController implements View.OnTouchListener {
             case MotionEvent.ACTION_DOWN: {
                 mX = motionEvent.getX();
                 mY = motionEvent.getY();
-                Point current = new Point((int) mX - offsetX, (int) mY - offsetY);
+                Point current = new Point(Math.round(mX) - offsetX, Math.round(mY) - offsetY);
                 //Point scaled = new Point(Math.round(mX / CELL_SIZE), Math.round(mY / CELL_SIZE));
 
                 for (Drawable d : drawables) {
