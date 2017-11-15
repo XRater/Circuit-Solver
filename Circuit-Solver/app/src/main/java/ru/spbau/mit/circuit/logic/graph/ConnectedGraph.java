@@ -111,12 +111,11 @@ public class ConnectedGraph {
         }
         for (Edge edge : from.getTreeEdges()) {
             edge.removeFromTree();
-            path.push(edge);
             if (findPath(path, edge.getPair(from), to)) {
+                path.push(edge);
                 edge.addToTree();
                 return true;
             }
-            path.pop();
             edge.addToTree();
         }
         return false;
