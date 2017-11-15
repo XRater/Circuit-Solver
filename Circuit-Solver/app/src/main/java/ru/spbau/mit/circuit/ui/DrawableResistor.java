@@ -1,7 +1,7 @@
 package ru.spbau.mit.circuit.ui;
 
-import ru.spbau.mit.circuit.model.Point;
-import ru.spbau.mit.circuit.model.Resistor;
+import ru.spbau.mit.circuit.model.elements.Resistor;
+import ru.spbau.mit.circuit.model.point.Point;
 
 
 public class DrawableResistor extends Resistor implements Drawable {

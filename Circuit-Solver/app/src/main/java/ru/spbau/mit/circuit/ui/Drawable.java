@@ -1,7 +1,7 @@
 package ru.spbau.mit.circuit.ui;
 
 
-import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.point.Point;
 
 public interface Drawable {
     void draw(MyCanvas canvas);

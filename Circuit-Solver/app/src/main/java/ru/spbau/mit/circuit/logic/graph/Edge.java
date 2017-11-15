@@ -1,9 +1,9 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
-import ru.spbau.mit.circuit.model.Battery;
-import ru.spbau.mit.circuit.model.Element;
-import ru.spbau.mit.circuit.model.Resistor;
+import ru.spbau.mit.circuit.model.elements.Battery;
+import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.Resistor;
 
 class Edge {
 

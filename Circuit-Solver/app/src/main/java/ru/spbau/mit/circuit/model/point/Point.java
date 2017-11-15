@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit.model;
+package ru.spbau.mit.circuit.model.point;
 
 public class Point {
     private final int x;
@@ -40,7 +40,8 @@ public class Point {
     }
 
     public int distance(Point other) {
-        return (int) Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) * (this.y - other.y));
+        return (int) Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) *
+                (this.y - other.y));
     }
 
     public int distance(float x, float y) {

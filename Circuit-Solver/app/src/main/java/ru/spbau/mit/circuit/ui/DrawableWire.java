@@ -1,8 +1,8 @@
 package ru.spbau.mit.circuit.ui;
 
-import ru.spbau.mit.circuit.model.Element;
-import ru.spbau.mit.circuit.model.Point;
-import ru.spbau.mit.circuit.model.Wire;
+import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.point.Point;
 
 
 public class DrawableWire extends Wire implements Drawable {
@@ -12,7 +12,8 @@ public class DrawableWire extends Wire implements Drawable {
 
     @Override
     public void draw(MyCanvas canvas) {
-        canvas.drawLine(getFrom().x(), getFrom().y(), getTo().x(), getTo().y(), Drawer.highlightPaint);
+        canvas.drawLine(getFrom().x(), getFrom().y(), getTo().x(), getTo().y(), Drawer
+                .highlightPaint);
     }
 
     @Override

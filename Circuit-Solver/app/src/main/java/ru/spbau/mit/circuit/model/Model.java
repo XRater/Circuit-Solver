@@ -3,6 +3,8 @@ package ru.spbau.mit.circuit.model;
 
 import java.util.ArrayList;
 
+import ru.spbau.mit.circuit.model.elements.Element;
+
 public class Model {
     private ArrayList<Element> elements = new ArrayList<>();
 

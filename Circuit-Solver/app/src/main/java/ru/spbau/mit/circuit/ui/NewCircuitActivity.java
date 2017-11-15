@@ -12,14 +12,15 @@ import android.widget.Button;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
-import ru.spbau.mit.circuit.model.Element;
-import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.point.Point;
 
 import static ru.spbau.mit.circuit.ui.Drawer.drawables;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetX;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetY;
 
-public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback, OnTouchListener {
+public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
+        OnTouchListener {
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
     private boolean inWireMode;
@@ -36,19 +37,22 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         final SurfaceView surface = findViewById(R.id.surface);
         Button newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
-            DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.cellSize, 5 * Drawer.cellSize));
+            DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.cellSize, 5 * Drawer
+                    .cellSize));
             addElement(r);
         });
 
         Button newCapacitor = findViewById(R.id.newCapacitor);
         newCapacitor.setOnClickListener(view -> {
-            DrawableCapacitor c = new DrawableCapacitor(new Point(5 * Drawer.cellSize, 5 * Drawer.cellSize));
+            DrawableCapacitor c = new DrawableCapacitor(new Point(5 * Drawer.cellSize, 5 * Drawer
+                    .cellSize));
             addElement(c);
         });
 
         Button newBattery = findViewById(R.id.newBattery);
         newBattery.setOnClickListener(view -> {
-            DrawableBattery b = new DrawableBattery(new Point(7 * Drawer.cellSize, 7 * Drawer.cellSize));
+            DrawableBattery b = new DrawableBattery(new Point(7 * Drawer.cellSize, 7 * Drawer
+                    .cellSize));
             addElement(b);
         });
 

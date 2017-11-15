@@ -1,6 +1,6 @@
 package ru.spbau.mit.circuit.ui;
 
-import ru.spbau.mit.circuit.model.Element;
+import ru.spbau.mit.circuit.model.elements.Element;
 
 public class elementaryWire {
     public boolean have = false;
