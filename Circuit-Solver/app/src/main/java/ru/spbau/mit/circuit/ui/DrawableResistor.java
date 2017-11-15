@@ -37,6 +37,7 @@ public class DrawableResistor extends Resistor implements Drawable {
 
         // TODO vertical
 
+        // FIXME move to center
         canvas.drawText(getResistance() + "Om", x, y, Drawer.elementsPaint);
     }
 

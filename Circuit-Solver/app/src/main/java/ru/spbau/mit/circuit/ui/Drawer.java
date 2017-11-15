@@ -55,15 +55,17 @@ public class Drawer {
         for (DrawableWire wire : wires) {
             wire.draw(canvas);
         }
-        if (highlighted != null)
+        if (highlighted != null) {
             canvas.drawCircle(highlighted.x(), highlighted.y(), cellSize / 5, highlightPaint);
+        }
 
     }
 
+    //    TODO add arrows to show current direction
     public static void showCurrents(MyCanvas canvas) {
         for (Drawable d : drawables) {
             Element e = (Element) d;
-            canvas.drawText(e.getCurrent() + "A", d.x(), d.y() - cellSize, elementsPaint);
+            canvas.drawText(Math.abs(e.getCurrent()) + "A", d.x(), d.y() - cellSize, elementsPaint);
         }
     }
 }
