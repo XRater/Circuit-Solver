@@ -15,7 +15,7 @@ import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableCapacitor;
@@ -25,7 +25,8 @@ import static ru.spbau.mit.circuit.ui.Drawer.drawables;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetX;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetY;
 
-public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback, OnTouchListener {
+public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
+        OnTouchListener {
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
     private boolean inWireMode;
@@ -138,9 +139,10 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     }
                 }
                 if (chosen != null) {
-                    chosen.setX(Math.round(mX) - offsetX);
-                    chosen.setY(Math.round(mY) - offsetY);
-
+//                    chosen.setX(Math.round(mX) - offsetX);
+//                    chosen.setY(Math.round(mY) - offsetY);
+                    chosen.replace(new Point(
+                            Math.round(mX) - offsetX, Math.round(mY) - offsetY));
                 } else {
                     if (startX == 0 && startY == 0) {
                         startX = Math.round(mX);
@@ -158,11 +160,13 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
             case MotionEvent.ACTION_UP: {
                 if (chosen != null) { // TODO More pretty.(!)
-                    chosen.setX(Drawer.round(chosen.x()));
-                    chosen.setY(Drawer.round(chosen.y()));
+//                    chosen.setX(Drawer.round(chosen.x()));
+//                    chosen.setY(Drawer.round(chosen.y()));
+                    chosen.replace(new Point(
+                            Drawer.round(chosen.x()), Drawer.round(chosen.y())));
 //                    chosen.setY(chosen.y() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
                     redraw();
-                    chosen.updatePosition(chosen.x(), chosen.y());
+//                    chosen.updatePosition(chosen.x(), chosen.y()); ??? Isn't it useless?
                     chosen = null;
                     return true;
                 }

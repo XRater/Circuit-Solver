@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit.model.point;
+package ru.spbau.mit.circuit.model.node;
 
 
 public class InvalidPointException extends RuntimeException {

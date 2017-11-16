@@ -2,8 +2,8 @@ package ru.spbau.mit.circuit.controler;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
+import ru.spbau.mit.circuit.model.CircuitObject;
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.CircuitItem;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {
@@ -32,12 +32,12 @@ public class Controller {
         logic.calculateCurrents(model);
     }
 
-    public void addElement(CircuitItem circuitItem) {
-        model.addElement(circuitItem);
+    public void add(CircuitObject object) {
+        model.add(object);
     }
 
-    public boolean removeElement(CircuitItem circuitItem) {
-        return model.removeElement(circuitItem);
+    public boolean remove(CircuitObject object) {
+        return model.remove(object);
     }
 
     public void clearModel() {

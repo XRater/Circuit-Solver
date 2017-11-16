@@ -2,19 +2,19 @@ package ru.spbau.mit.circuit.logic.graph;
 
 
 import ru.spbau.mit.circuit.model.elements.Battery;
-import ru.spbau.mit.circuit.model.elements.CircuitItem;
+import ru.spbau.mit.circuit.model.elements.Item;
 import ru.spbau.mit.circuit.model.elements.Resistor;
 
 class Edge {
 
-    private final CircuitItem circuitItem;
-    private final Node from;
-    private final Node to;
+    private final Item item;
+    private final Vertex from;
+    private final Vertex to;
     private int index = -1;
     private boolean inTree;
 
-    Edge(CircuitItem circuitItem, Node from, Node to) {
-        this.circuitItem = circuitItem;
+    Edge(Item item, Vertex from, Vertex to) {
+        this.item = item;
         this.from = from;
         this.to = to;
     }
@@ -24,11 +24,11 @@ class Edge {
         return "Edge " + String.valueOf(index) + ": (" + from + ", " + to + ")";
     }
 
-    public Node from() {
+    public Vertex from() {
         return to;
     }
 
-    public Node to() {
+    public Vertex to() {
         return from;
     }
 
@@ -41,23 +41,23 @@ class Edge {
     }
 
     double getVoltage() {
-        if (circuitItem instanceof Battery) {
-            Battery battery = (Battery) circuitItem;
+        if (item instanceof Battery) {
+            Battery battery = (Battery) item;
             return battery.getVoltage();
         }
         return 0;
     }
 
     double getResistance() {
-        if (circuitItem instanceof Resistor) {
-            Resistor resistor = (Resistor) circuitItem;
+        if (item instanceof Resistor) {
+            Resistor resistor = (Resistor) item;
             return resistor.getResistance();
         }
         return 0;
     }
 
     void setCurrent(double current) {
-        circuitItem.setCurrent(current);
+        item.setCurrent(current);
     }
 
     void addToTree() {
@@ -72,17 +72,17 @@ class Edge {
         return inTree;
     }
 
-    double getDirection(Node node) {
-        if (node == from) {
+    double getDirection(Vertex vertex) {
+        if (vertex == from) {
             return -1;
         }
-        if (node == to) {
+        if (vertex == to) {
             return 1;
         }
         return 0;
     }
 
-    Node getAdjacent(Edge e) {
+    Vertex getAdjacent(Edge e) {
         if (to.equals(e.to) || to.equals(e.from)) {
             return to;
         }
@@ -96,10 +96,10 @@ class Edge {
         return getAdjacent(e) != null;
     }
 
-    Node getPair(Node node) {
-        if (!from.equals(node) && !to.equals(node)) {
+    Vertex getPair(Vertex vertex) {
+        if (!from.equals(vertex) && !to.equals(vertex)) {
             throw new IllegalArgumentException();
         }
-        return from.equals(node) ? to : from;
+        return from.equals(vertex) ? to : from;
     }
 }

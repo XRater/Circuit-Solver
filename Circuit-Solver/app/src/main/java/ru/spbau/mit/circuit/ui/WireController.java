@@ -5,7 +5,7 @@ import android.view.View;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
@@ -45,10 +45,13 @@ public class WireController implements View.OnTouchListener {
 
                 for (Drawable d : drawables) {
                     Element e = (Element) d;
-                    if (e.getFrom().isInSquare(mX - offsetX, mY - offsetY, CELL_SIZE / 2)) {
-                        current = e.getFrom();
-                    } else if (e.getTo().isInSquare(mX - offsetX, mY - offsetY, CELL_SIZE / 2)) {
-                        current = e.getTo();
+                    if (e.from().position().isInSquare(mX - offsetX, mY - offsetY, CELL_SIZE / 2)) {
+//                        current = e.from();
+                        current = e.from().position();
+                    } else if (e.to().position().isInSquare(mX - offsetX, mY - offsetY, CELL_SIZE
+                            / 2)) {
+//                        current = e.to();
+                        current = e.to().position();
                     } else {
                         continue;
                     }

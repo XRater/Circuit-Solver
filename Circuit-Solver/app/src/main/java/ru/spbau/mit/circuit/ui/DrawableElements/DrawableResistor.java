@@ -1,7 +1,7 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import ru.spbau.mit.circuit.model.elements.Resistor;
-import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.Drawer;
 import ru.spbau.mit.circuit.ui.MyCanvas;
 
@@ -61,11 +61,11 @@ public class DrawableResistor extends Resistor implements Drawable {
 //        this.y = y;
 //    }
 
-    @Override
-    public void updatePosition(int nx, int ny) {
-        x = nx;
-        y = ny;
-        this.setPosition(new Point(nx - 2 * Drawer.CELL_SIZE, ny), new Point(nx + 2 * Drawer
-                .CELL_SIZE, ny));
-    }
+//    @Override
+//    public void updatePosition(int nx, int ny) {
+//        x = nx;
+//        y = ny;
+//        this.setPosition(new Point(nx - 2 * Drawer.CELL_SIZE, ny), new Point(nx + 2 * Drawer
+//                .CELL_SIZE, ny));
+//    }
 }

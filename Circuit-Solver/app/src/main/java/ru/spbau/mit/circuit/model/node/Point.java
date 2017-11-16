@@ -1,6 +1,8 @@
-package ru.spbau.mit.circuit.model.point;
+package ru.spbau.mit.circuit.model.node;
 
-public class Point {
+import ru.spbau.mit.circuit.model.elements.Centered;
+
+public class Point implements Centered {
     private final int x;
     private final int y;
 
@@ -16,21 +18,14 @@ public class Point {
         return new Point((a.x + b.x) / 2, (a.y + b.y) / 2);
     }
 
+    @Override
     public int x() {
         return x;
     }
 
+    @Override
     public int y() {
         return y;
-    }
-
-    public int distance(Point other) {
-        return (int) Math.sqrt((this.x - other.x) * (this.x - other.x) + (this.y - other.y) *
-                (this.y - other.y));
-    }
-
-    public int distance(float x, float y) {
-        return (int) Math.sqrt((this.x - x) * (this.x - x) + (this.y - y) * (this.y - y));
     }
 
     public boolean isInSquare(float x, float y, float dist) {

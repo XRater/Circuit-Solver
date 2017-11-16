@@ -2,35 +2,89 @@ package ru.spbau.mit.circuit.model;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import ru.spbau.mit.circuit.model.elements.CircuitItem;
+import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.node.Node;
 
 public class Model {
-    private ArrayList<CircuitItem> circuitItems = new ArrayList<>();
+    private List<Element> elements = new ArrayList<>();
+    private List<Wire> wires = new ArrayList<>();
+    private Set<Node> nodes = new HashSet<>();
 
-    public ArrayList<CircuitItem> getCircuitItems() {
-        return circuitItems;
+    public List<Element> elements() {
+        return elements;
     }
 
-    public void addElement(CircuitItem circuitItem) {
-        circuitItems.add(circuitItem);
+    public List<Wire> wires() {
+        return wires;
     }
 
-    public boolean removeElement(CircuitItem circuitItem) {
-        return circuitItems.remove(circuitItem);
+    public Set<Node> nodes() {
+        return nodes;
+    }
+
+    public void add(CircuitObject object) {
+        if (object instanceof Node) {
+            nodes.add((Node) object);
+        } else if (object instanceof Element) {
+            Element element = (Element) object;
+            elements.add(element);
+            nodes.add(element.from());
+            nodes.add(element.to());
+        } else if (object instanceof Wire) {
+            Wire wire = (Wire) object;
+            if (!nodes.contains(wire.from()) || !nodes.contains(wire.to())) {
+                throw new NodeIsNotUnderControlException();
+            }
+            wires.add(wire);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public boolean remove(CircuitObject object) {
+        if (object instanceof Node) {
+            return nodes.remove(object);
+        } else if (object instanceof Element) {
+            return elements.remove(object);
+        } else if (object instanceof Wire) {
+            return wires.remove(object);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // Who should remove unused nodes from the set?
+    public boolean removeWire(Wire wire) {
+        return wires.remove(wire);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Model:\n");
-        for (CircuitItem e : circuitItems) {
+        sb.append("Nodes:\n");
+        for (Element e : elements) {
+            sb.append(e).append("\n");
+        }
+        sb.append("Elements:\n");
+        for (Element e : elements) {
+            sb.append(e).append("\n");
+        }
+        sb.append("Wires:\n");
+        for (Element e : elements) {
             sb.append(e).append("\n");
         }
         return sb.toString();
     }
 
     public void clear() {
-        circuitItems.clear();
+        nodes.clear();
+        elements.clear();
+        wires.clear();
     }
 }

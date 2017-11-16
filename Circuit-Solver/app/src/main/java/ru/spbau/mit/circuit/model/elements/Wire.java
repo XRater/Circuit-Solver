@@ -1,23 +1,27 @@
 package ru.spbau.mit.circuit.model.elements;
 
 
-import ru.spbau.mit.circuit.model.CircuitSolverException;
-import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.model.node.Node;
 
-public class Wire extends CircuitItem {
-    private CircuitItem neighbour1, neighbour2;
+public class Wire extends Item {
+    private Node from;
+    private Node to;
 
-    public Wire(Point from, Point to, CircuitItem e1, CircuitItem e2) {
-        super(from, to);
-        neighbour1 = e1;
-        neighbour2 = e2;
+    public Wire(Node from, Node to) {
+        this.from = from;
+        this.to = to;
+    }
+
+    public Node from() {
+        return from;
+    }
+
+    public Node to() {
+        return to;
     }
 
     @Override
-    public double getVoltage() {
-        if (super.getVoltage() != 0) {
-            throw new CircuitSolverException();
-        }
-        return 0;
+    public String toString() {
+        return "Wire: " + this.from + ":" + this.to;
     }
 }
