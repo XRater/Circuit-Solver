@@ -5,12 +5,14 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.circuit.model.Element;
-import ru.spbau.mit.circuit.model.Point;
+import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
+import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class Drawer {
-    public static final int cellSize = 100;
-    public static final int fieldSize = 30;
+    public static final int CELL_SIZE = 80;
+    public static final int FIELD_SIZE = 30;
 
     public static ArrayList<Drawable> drawables = new ArrayList<>();
     public static ArrayList<DrawableWire> wires = new ArrayList<>();
@@ -37,11 +39,11 @@ public class Drawer {
         Paint paint = new Paint();
         paint.setColor(Color.rgb(239, 236, 174));
         paint.setStrokeWidth(1);
-        for (int i = 0; i <= fieldSize * cellSize; i += cellSize) {
-            canvas.drawLine(0, i, fieldSize * cellSize, i, paint);
+        for (int i = 0; i <= FIELD_SIZE * CELL_SIZE; i += CELL_SIZE) {
+            canvas.drawLine(0, i, FIELD_SIZE * CELL_SIZE, i, paint);
         }
-        for (int i = 0; i <= fieldSize * cellSize; i += cellSize) {
-            canvas.drawLine(i, 0, i, fieldSize * cellSize, paint);
+        for (int i = 0; i <= FIELD_SIZE * CELL_SIZE; i += CELL_SIZE) {
+            canvas.drawLine(i, 0, i, FIELD_SIZE * CELL_SIZE, paint);
         }
     }
 
@@ -55,15 +57,25 @@ public class Drawer {
         for (DrawableWire wire : wires) {
             wire.draw(canvas);
         }
-        if (highlighted != null)
-            canvas.drawCircle(highlighted.x(), highlighted.y(), cellSize / 5, highlightPaint);
+        if (highlighted != null) {
+            canvas.drawCircle(highlighted.x(), highlighted.y(), CELL_SIZE / 5, highlightPaint);
+        }
 
     }
 
     public static void showCurrents(MyCanvas canvas) {
         for (Drawable d : drawables) {
             Element e = (Element) d;
-            canvas.drawText(e.getCurrent() + "A", d.x(), d.y() - cellSize, elementsPaint);
+            String current = String.format("%.2f", Math.abs(e.getCurrent()));
+            canvas.drawText(current + "A", d.x() - CELL_SIZE / 4, d.y() -
+                            CELL_SIZE / 3 * 2,
+                    elementsPaint);
         }
+    }
+
+    static int round(int x) {
+        int offset = x % Drawer.CELL_SIZE;
+        x -= offset;
+        return offset < (Drawer.CELL_SIZE / 2) ? x : x + Drawer.CELL_SIZE;
     }
 }

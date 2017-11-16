@@ -1,4 +1,7 @@
-package ru.spbau.mit.circuit.model;
+package ru.spbau.mit.circuit.model.elements;
+
+import ru.spbau.mit.circuit.model.point.InvalidPointException;
+import ru.spbau.mit.circuit.model.point.Point;
 
 abstract public class Element {
     private Point from;
@@ -22,6 +25,7 @@ abstract public class Element {
         this.to = to;
         this.from = from;
     }
+
     public Point getFrom() {
         return from;
     }
