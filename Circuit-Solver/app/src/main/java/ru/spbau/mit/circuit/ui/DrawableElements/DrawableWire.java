@@ -1,7 +1,7 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
-import ru.spbau.mit.circuit.model.elements.Item;
 import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.Drawer;
 import ru.spbau.mit.circuit.ui.MyCanvas;
@@ -10,8 +10,8 @@ import ru.spbau.mit.circuit.ui.MyCanvas;
 public class DrawableWire extends Wire implements Drawable {
 
     // Nodes are required. Cannot fix fast:(
-    public DrawableWire(Point from, Point to, Item e1, Item e2) {
-        super(from, to, e1, e2);
+    public DrawableWire(Node from, Node to) {
+        super(from, to);
     }
 
     @Override

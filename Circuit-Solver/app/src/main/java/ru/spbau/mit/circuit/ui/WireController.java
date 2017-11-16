@@ -5,6 +5,7 @@ import android.view.View;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
@@ -150,7 +151,7 @@ public class WireController implements View.OnTouchListener {
     }
 
     private void addSimpleWire(Point from, Point to, Element e) {
-        DrawableWire w = new DrawableWire(from, to, chosen, e);
+        DrawableWire w = new DrawableWire(new Node(from), new Node(to));
         Drawer.wires.add(w);
         MainActivity.ui.addToModel(w);
     }

@@ -3,7 +3,7 @@ package ru.spbau.mit.circuit.model.node;
 import ru.spbau.mit.circuit.model.CircuitObject;
 import ru.spbau.mit.circuit.model.elements.Movable;
 
-//ATTENTION you may have two different nodes in one point. Do not overwrite hash/equals.
+//ATTENTION you may have two different nodes in one point. Do not override hash/equals.
 
 // In fact, in release version all nodes might be different. But right now they are not.
 public class Node implements CircuitObject, Movable {
