@@ -12,8 +12,10 @@ public class MyCanvas {
         this.canvas = canvas;
     }
 
-    public void drawLine(float startX, float startY, float stopX, float stopY, @NonNull Paint paint) {
-        canvas.drawLine(startX + Drawer.offsetX, startY + Drawer.offsetY, stopX + Drawer.offsetX, stopY + Drawer.offsetY, paint);
+    public void drawLine(float startX, float startY, float stopX, float stopY, @NonNull Paint
+            paint) {
+        canvas.drawLine(startX + Drawer.offsetX, startY + Drawer.offsetY, stopX + Drawer.offsetX,
+                stopY + Drawer.offsetY, paint);
     }
 
     public void drawColor(int color) {
@@ -26,13 +28,5 @@ public class MyCanvas {
 
     public void drawText(String text, float x, float y, @NonNull Paint paint) {
         canvas.drawText(text, x + Drawer.offsetX, y + Drawer.offsetY, paint);
-    }
-
-    public float getHeight() {
-        return canvas.getHeight();
-    }
-
-    public float getWidth() {
-        return canvas.getWidth();
     }
 }
