@@ -8,6 +8,8 @@ import ru.spbau.mit.circuit.ui.MyCanvas;
 
 
 public class DrawableWire extends Wire implements Drawable {
+
+    // Nodes are required. Cannot fix fast:(
     public DrawableWire(Point from, Point to, Item e1, Item e2) {
         super(from, to, e1, e2);
     }
@@ -29,22 +31,32 @@ public class DrawableWire extends Wire implements Drawable {
     }
 
     @Override
-    public void setX(int x) {
+    public void move(int dx, int dy) {
 
     }
 
     @Override
-    public void setY(int y) {
+    public void replace(Point p) {
 
     }
 
-    @Override
-    public Point getPoint() {
-        return null;
-    }
+//    @Override
+//    public void setX(int x) {
+//
+//    }
 
-    @Override
-    public void updatePosition(int nx, int ny) {
+//    @Override
+//    public void setY(int y) {
+//
+//    }
 
-    }
+//    @Override
+//    public Point getPoint() {
+//        return null;
+//    }
+
+//    @Override
+//    public void updatePosition(int nx, int ny) {
+//
+//    }
 }
