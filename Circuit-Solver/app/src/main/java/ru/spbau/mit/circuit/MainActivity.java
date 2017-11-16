@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import ru.spbau.mit.circuit.controler.Controller;
+import ru.spbau.mit.circuit.ui.Drawer;
 import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
 
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onNewCircuit(View view) {
         controller.clearModel();
+        Drawer.drawables.clear();
+        Drawer.wires.clear();
         Intent intent = new Intent(MainActivity.this, NewCircuitActivity.class);
         startActivity(intent);
     }

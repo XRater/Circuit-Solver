@@ -67,7 +67,7 @@ public class Drawer {
         for (Drawable d : drawables) {
             Element e = (Element) d;
             canvas.drawText(Math.abs(e.getCurrent()) + "A", d.x() - CELL_SIZE / 4, d.y() -
-                            CELL_SIZE / 2,
+                            CELL_SIZE / 3 * 2,
                     elementsPaint);
         }
     }

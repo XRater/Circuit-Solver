@@ -182,7 +182,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
-
     private void addElement(Drawable e) {
         drawables.add(e);
         MainActivity.ui.addToModel((Element) e);
