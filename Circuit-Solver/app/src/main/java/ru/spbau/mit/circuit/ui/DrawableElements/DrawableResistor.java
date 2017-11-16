@@ -1,25 +1,18 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
+import ru.spbau.mit.circuit.model.elements.Resistor;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.Drawer;
 import ru.spbau.mit.circuit.ui.MyCanvas;
 
 
-public class DrawableResistor extends FiledElement {
+public class DrawableResistor extends Resistor implements Drawable {
     private int x;
     private int y;
 
     protected DrawableResistor(Point from, Point to) {
         super(from, to);
     }
-
-//    public DrawableResistor(Node node) {
-//        super(new Point(node.point().x() - 2 * Drawer.CELL_SIZE, node.point().y()),
-//                new Point(node.point().x() + 2 * Drawer.CELL_SIZE, node.point().y()));
-//        x = node.point().x();
-//        y = node.point().y();
-//        this.node = node;
-//    }
 
     public DrawableResistor(Point center) {
         super(new Point(center.x() - 2 * Drawer.CELL_SIZE, center.y()),
@@ -68,11 +61,11 @@ public class DrawableResistor extends FiledElement {
 //        this.y = y;
 //    }
 
-//    @Override
-//    public void updatePosition(int nx, int ny) {
-//        x = nx;
-//        y = ny;
-//        this.setPosition(new Point(nx - 2 * Drawer.CELL_SIZE, ny), new Point(nx + 2 * Drawer
-//                .CELL_SIZE, ny));
-//    }
+    @Override
+    public void updatePosition(int nx, int ny) {
+        x = nx;
+        y = ny;
+        this.setPosition(new Point(nx - 2 * Drawer.CELL_SIZE, ny), new Point(nx + 2 * Drawer
+                .CELL_SIZE, ny));
+    }
 }

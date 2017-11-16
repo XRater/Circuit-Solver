@@ -9,10 +9,12 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
-import ru.spbau.mit.circuit.model.elements.CircuitItem;
+import ru.spbau.mit.circuit.logic.CircuitShortingException;
+import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
@@ -23,8 +25,7 @@ import static ru.spbau.mit.circuit.ui.Drawer.drawables;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetX;
 import static ru.spbau.mit.circuit.ui.Drawer.offsetY;
 
-public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
-        OnTouchListener {
+public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback, OnTouchListener {
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
     private boolean inWireMode;
@@ -76,7 +77,13 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.ui.calculateCurrents();
+                try {
+                    MainActivity.ui.calculateCurrents();
+                } catch (CircuitShortingException e) {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Battery is shorted.", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
                 Canvas canvas = surfaceHolder.lockCanvas();
                 MyCanvas myCanvas = new MyCanvas(canvas);
                 Drawer.drawEverything(myCanvas);
@@ -113,54 +120,56 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 chosen = null;
                 startX = 0;
                 startY = 0;
-//                mX = motionEvent.getX();
-//                mY = motionEvent.getY();
-//                for (Drawable d : drawables) {
-//                    CircuitItem e = (CircuitItem) d;
-//                    if (abs(e.x - mX + offsetX) < 100 && abs(e.y - mY + offsetY) < 100)
-//                        chosen = e;
-//                }
+                System.out.println("Down");
                 return true;
             }
 
             case MotionEvent.ACTION_MOVE: {
-                float mX = motionEvent.getX();
-                float mY = motionEvent.getY();
-                for (Drawable d : drawables) {
+                int mX = Math.round(motionEvent.getX());
+                int mY = Math.round(motionEvent.getY());
+                if (chosen == null) {
+                    for (Drawable d : drawables) {
 //                    if (d.getPoint().distance(mX - offsetX, mY - offsetY) < 2 * Drawer
 // .CELL_SIZE) {
-                    if (d.getPoint().isInSquare(mX - offsetX, mY - offsetY, Drawer.CELL_SIZE / 2)) {
-                        chosen = d;
+                        if (d.clickedInside(mX - offsetX, mY - offsetY)) {
+                            chosen = d;
+                            System.out.println(chosen.toString());
+                        }
                     }
                 }
                 if (chosen != null) {
-                    chosen.setX((int) mX - offsetX);
-                    chosen.setY((int) mY - offsetY);
+                    chosen.setX(Math.round(mX) - offsetX);
+                    chosen.setY(Math.round(mY) - offsetY);
 
                 } else {
                     if (startX == 0 && startY == 0) {
-                        startX = (int) mX;
-                        startY = (int) mY;
+                        startX = Math.round(mX);
+                        startY = Math.round(mY);
                         oldOffsetX = Drawer.offsetX;
                         oldOffsetY = Drawer.offsetY;
                     }
-                    Drawer.offsetX = oldOffsetX + (int) mX - startX;
-                    Drawer.offsetY = oldOffsetY + (int) mY - startY;
+                    Drawer.offsetX = oldOffsetX + Math.round(mX) - startX;
+                    Drawer.offsetY = oldOffsetY + Math.round(mY) - startY;
                 }
                 redraw();
+                System.out.println("Move");
                 return true;
             }
 
             case MotionEvent.ACTION_UP: {
                 if (chosen != null) { // TODO More pretty.(!)
-                    chosen.setX(chosen.x() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
-                    chosen.setY(chosen.y() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
+                    chosen.setX(Drawer.round(chosen.x()));
+                    chosen.setY(Drawer.round(chosen.y()));
+//                    chosen.setY(chosen.y() / Drawer.CELL_SIZE * Drawer.CELL_SIZE);
                     redraw();
-                    chosen.setPosition(new Point(chosen.x(), chosen.y()));
+                    chosen.updatePosition(chosen.x(), chosen.y());
+                    chosen = null;
                     return true;
                 }
                 startX = 0;
                 startY = 0;
+                System.out.println("Up");
+                return true;
             }
         }
         return true;
@@ -173,10 +182,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
-
     private void addElement(Drawable e) {
         drawables.add(e);
-        MainActivity.ui.addToModel((CircuitItem) e);
+        MainActivity.ui.addToModel((Element) e);
         redraw();
     }
 }

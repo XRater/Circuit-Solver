@@ -5,7 +5,7 @@ import android.graphics.Paint;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.circuit.model.elements.CircuitItem;
+import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
@@ -48,7 +48,7 @@ public class Drawer {
     }
 
     public static void drawEverything(MyCanvas canvas) {
-        //ArrayList<CircuitItem> elements = controller.getCircuitItems();
+        //ArrayList<Element> elements = controller.getElements();
 
         drawBackground(canvas);
         for (Drawable element : drawables) {
@@ -65,10 +65,17 @@ public class Drawer {
 
     public static void showCurrents(MyCanvas canvas) {
         for (Drawable d : drawables) {
-            CircuitItem e = (CircuitItem) d;
-            canvas.drawText(Math.abs(e.getCurrent()) + "A", d.x() - CELL_SIZE / 4, d.y() -
-                            CELL_SIZE / 2,
+            Element e = (Element) d;
+            String current = String.format("%.2f", Math.abs(e.getCurrent()));
+            canvas.drawText(current + "A", d.x() - CELL_SIZE / 4, d.y() -
+                            CELL_SIZE / 3 * 2,
                     elementsPaint);
         }
+    }
+
+    static int round(int x) {
+        int offset = x % Drawer.CELL_SIZE;
+        x -= offset;
+        return offset < (Drawer.CELL_SIZE / 2) ? x : x + Drawer.CELL_SIZE;
     }
 }

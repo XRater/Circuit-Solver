@@ -4,7 +4,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import ru.spbau.mit.circuit.MainActivity;
-import ru.spbau.mit.circuit.model.elements.CircuitItem;
+import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.point.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
@@ -20,7 +20,7 @@ import static ru.spbau.mit.circuit.ui.Drawer.offsetY;
 public class WireController implements View.OnTouchListener {
     private elementaryWire horizontalWires[][] = new elementaryWire[FIELD_SIZE][FIELD_SIZE];
     private elementaryWire verticalWires[][] = new elementaryWire[FIELD_SIZE][FIELD_SIZE];
-    private CircuitItem chosen;
+    private Element chosen;
     private NewCircuitActivity activity;
 
     public WireController(NewCircuitActivity newCircuitActivity) {
@@ -35,19 +35,19 @@ public class WireController implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        float mX, mY;
+        int mX, mY;
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                mX = motionEvent.getX();
-                mY = motionEvent.getY();
-                Point current = new Point((int) mX - offsetX, (int) mY - offsetY);
+                mX = Math.round(motionEvent.getX());
+                mY = Math.round(motionEvent.getY());
+                Point current = new Point(mX - offsetX, mY - offsetY);
                 //Point scaled = new Point(Math.round(mX / CELL_SIZE), Math.round(mY / CELL_SIZE));
 
                 for (Drawable d : drawables) {
-                    CircuitItem e = (CircuitItem) d;
-                    if (current.distance(e.getFrom()) < CELL_SIZE) {
+                    Element e = (Element) d;
+                    if (e.getFrom().isInSquare(mX - offsetX, mY - offsetY, CELL_SIZE / 2)) {
                         current = e.getFrom();
-                    } else if (current.distance(e.getTo()) < CELL_SIZE) {
+                    } else if (e.getTo().isInSquare(mX - offsetX, mY - offsetY, CELL_SIZE / 2)) {
                         current = e.getTo();
                     } else {
                         continue;
@@ -66,8 +66,8 @@ public class WireController implements View.OnTouchListener {
 
                 }
 
-                Point scaled = new Point(Math.round(mX / CELL_SIZE), Math.round(mY / CELL_SIZE));
-                current = new Point(scaled.x() * CELL_SIZE, scaled.y() * CELL_SIZE);
+                current = new Point(Drawer.round(mX), Drawer.round(mY));
+                Point scaled = new Point(current.x() / CELL_SIZE, current.y() / CELL_SIZE);
                 if (hasWire(scaled)) {
                     if (highlighted != null) {
                         highlighted = current;
@@ -94,7 +94,7 @@ public class WireController implements View.OnTouchListener {
                 verticalWires[p.x()][max(p.y() - 1, 0)].have || verticalWires[p.x()][p.y()].have;
     }
 
-    public void addSimpleWire(Point p, CircuitItem other) {
+    public void addSimpleWire(Point p, Element other) {
         int x1 = highlighted.x() / CELL_SIZE;
         int y1 = highlighted.y() / CELL_SIZE;
         int x2 = p.x() / CELL_SIZE;
@@ -146,7 +146,7 @@ public class WireController implements View.OnTouchListener {
         }
     }
 
-    private void addSimpleWire(Point from, Point to, CircuitItem e) {
+    private void addSimpleWire(Point from, Point to, Element e) {
         DrawableWire w = new DrawableWire(from, to, chosen, e);
         Drawer.wires.add(w);
         MainActivity.ui.addToModel(w);
