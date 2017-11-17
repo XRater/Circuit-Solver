@@ -14,64 +14,65 @@ import android.widget.Toast;
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
-import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.CircuitObject;
+import ru.spbau.mit.circuit.model.elements.Movable;
 import ru.spbau.mit.circuit.model.node.Point;
-import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableCapacitor;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableResistor;
 
-import static ru.spbau.mit.circuit.ui.Drawer.drawables;
-import static ru.spbau.mit.circuit.ui.Drawer.offsetX;
-import static ru.spbau.mit.circuit.ui.Drawer.offsetY;
-
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
+    //    private WireController wireController = new WireController(this);
+    private Model model;
+    private Drawer drawer;
+
+    private CircuitObject chosen;
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
-    private boolean inWireMode;
-    private SurfaceHolder surfaceHolder;
-    private WireController wireController = new WireController(this);
-    private Drawable chosen = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_new_circuit);
 
         final SurfaceView surface = findViewById(R.id.surface);
+        SurfaceHolder surfaceHolder = surface.getHolder();
+        surfaceHolder.addCallback(this);
+        drawer = new Drawer(surfaceHolder);
+        model = new Model(drawer);
+
         Button newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
             DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.CELL_SIZE, 5 * Drawer
                     .CELL_SIZE));
-            addElement(r);
+            model.addElement(r);
         });
 
         Button newCapacitor = findViewById(R.id.newCapacitor);
         newCapacitor.setOnClickListener(view -> {
             DrawableCapacitor c = new DrawableCapacitor(new Point(5 * Drawer.CELL_SIZE, 5 * Drawer
                     .CELL_SIZE));
-            addElement(c);
+            model.addElement(c);
         });
 
         Button newBattery = findViewById(R.id.newBattery);
         newBattery.setOnClickListener(view -> {
             DrawableBattery b = new DrawableBattery(new Point(7 * Drawer.CELL_SIZE, 7 * Drawer
                     .CELL_SIZE));
-            addElement(b);
+            model.addElement(b);
         });
 
         Button drawWire = findViewById(R.id.drawWire);
         drawWire.setOnClickListener(view -> {
-            if (!inWireMode) {
-                inWireMode = true;
-                surface.setOnTouchListener(wireController);
-            } else {
-                inWireMode = false;
-                Drawer.highlighted = null;
-                surface.setOnTouchListener(NewCircuitActivity.this);
-            }
+//            if (!inWireMode) {
+//                inWireMode = true;
+//                surface.setOnTouchListener(wireController);
+//            } else {
+//                inWireMode = false;
+//                model.highlighted = null;
+//                surface.setOnTouchListener(NewCircuitActivity.this);
+//            }
         });
 
         Button play = findViewById(R.id.play);
@@ -87,25 +88,24 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 }
                 Canvas canvas = surfaceHolder.lockCanvas();
                 MyCanvas myCanvas = new MyCanvas(canvas);
-                Drawer.drawEverything(myCanvas);
-                Drawer.showCurrents(myCanvas);
-                surfaceHolder.unlockCanvasAndPost(canvas);
+                model.showCurrents();
+                model.redraw();
+                //                `.drawModel(model, myCanvas);
+//                Drawer.showCurrents(model, myCanvas);
+//                surfaceHolder.unlockCanvasAndPost(canvas);
             }
         });
-
-        surfaceHolder = surface.getHolder();
-        surfaceHolder.addCallback(this);
         surface.setOnTouchListener(NewCircuitActivity.this);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        redraw();
+        model.redraw();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        redraw();
+        model.redraw();
     }
 
     @Override
@@ -117,18 +117,47 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                chosen = null;
-                startX = 0;
-                startY = 0;
+                Point point = getPoint(motionEvent.getX(), motionEvent.getY());
+                if (chosen != null) {
+                    throw new RuntimeException();
+                }
+                chosen = model.getByPoint(point);
+                if (model.holding()) {
+                    if (chosen instanceof WireEnd) {
+                        model.connect((WireEnd) chosen);
+                    }
+                    model.unhold();
+                    chosen = null;
+                } else {
+                    if (chosen instanceof WireEnd) {
+                        model.hold((WireEnd) chosen);
+                    }
+                }
+                //store point
+                //                startX = 0;
+//                startY = 0;
                 return true;
             }
 
             case MotionEvent.ACTION_MOVE: {
-                int mX = Math.round(motionEvent.getX());
+                if (chosen == null) {
+                    //Move field
+                    return true;
+                }
+                if (chosen instanceof Movable) {
+                    //Click on Node/Element
+                    Point point = getPoint(motionEvent.getX(), motionEvent.getY());
+                    model.move((Movable) chosen, point);
+                } else {
+                    //Click on WirePoint
+                }
+//                CircuitObject clicked = model.getByPoint(new Point(
+//                        Math.round(motionEvent.getX()), Math.round(motionEvent.getY())));
+/*                int mX = Math.round(motionEvent.getX());
                 int mY = Math.round(motionEvent.getY());
                 if (chosen == null) {
-                    for (Drawable d : drawables) {
-                        if (d.clickedInside(mX - offsetX, mY - offsetY)) {
+                    for (Drawable d : model.drawables) {
+                        if (d.clickedInside(mX, mY)) {
                             chosen = d;
                             System.out.println(chosen.toString());
                         }
@@ -136,7 +165,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 }
                 if (chosen != null) {
                     chosen.replace(new Point(
-                            Math.round(mX) - offsetX, Math.round(mY) - offsetY));
+                            Math.round(mX), Math.round(mY)));
                 } else {
                     if (startX == 0 && startY == 0) {
                         startX = Math.round(mX);
@@ -148,11 +177,21 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     Drawer.offsetY = oldOffsetY + Math.round(mY) - startY;
                 }
                 redraw();
-                return true;
+                return true;*/
             }
 
             case MotionEvent.ACTION_UP: {
-                if (chosen != null) {
+                if (chosen == null) {
+                    // Move field
+                }
+                if (chosen instanceof CircuitObject) {
+                    // Seems like do nothing
+                } else {
+                    // WirePoint
+                }
+                chosen = null;
+                return true;
+                /*                if (chosen != null) {
                     chosen.replace(new Point(
                             Drawer.round(chosen.x()), Drawer.round(chosen.y())));
                     redraw();
@@ -161,22 +200,21 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 }
                 startX = 0;
                 startY = 0;
-                return true;
+                return true;*/
             }
         }
         return true;
     }
 
-    public void redraw() {
-        Canvas canvas = surfaceHolder.lockCanvas();
-        MyCanvas myCanvas = new MyCanvas(canvas);
-        Drawer.drawEverything(myCanvas);
-        surfaceHolder.unlockCanvasAndPost(canvas);
+    private Point getPoint(float x, float y) {
+        return new Point(Drawer.round(x), Drawer.round(y));
     }
+//
+//    public void redraw() {
+//        Canvas canvas = surfaceHolder.lockCanvas();
+//        MyCanvas myCanvas = new MyCanvas(canvas);
+//        Drawer.drawModel(model, myCanvas);
+//        surfaceHolder.unlockCanvasAndPost(canvas);
+//    }
 
-    private void addElement(Drawable e) {
-        drawables.add(e);
-        MainActivity.ui.addToModel((Element) e);
-        redraw();
-    }
 }

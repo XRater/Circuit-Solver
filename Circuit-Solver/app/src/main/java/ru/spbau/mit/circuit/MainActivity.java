@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onLoadCircuit(View view) {
-        Toast toast = Toast.makeText(getApplicationContext(),
+        Toast toast = Toast.makeText(MainActivity.this,
                 "Load circuit", Toast.LENGTH_SHORT);
         toast.show();
     }
