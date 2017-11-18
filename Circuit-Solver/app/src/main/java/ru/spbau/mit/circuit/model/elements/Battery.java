@@ -1,12 +1,12 @@
 package ru.spbau.mit.circuit.model.elements;
 
-import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.model.node.Node;
 
-public class Battery extends Element {
+public abstract class Battery extends Element {
 
     private double voltage = 10;
 
-    public Battery(Point from, Point to) {
+    public Battery(Node from, Node to) {
         super(from, to);
     }
 

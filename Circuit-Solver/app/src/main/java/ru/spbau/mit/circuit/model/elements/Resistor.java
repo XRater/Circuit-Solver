@@ -1,11 +1,11 @@
 package ru.spbau.mit.circuit.model.elements;
 
-import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.model.node.Node;
 
-public class Resistor extends Element {
+public abstract class Resistor extends Element {
     private double resistance = 1;
 
-    public Resistor(Point from, Point to) {
+    public Resistor(Node from, Node to) {
         super(from, to);
     }
 
@@ -16,9 +16,4 @@ public class Resistor extends Element {
     public void setResistance(double resistance) {
         this.resistance = resistance;
     }
-
-    //TODO
-//    boolean isValid() {
-//        return super.getCurrent() * resistance == super.getVoltage();
-//    }
 }

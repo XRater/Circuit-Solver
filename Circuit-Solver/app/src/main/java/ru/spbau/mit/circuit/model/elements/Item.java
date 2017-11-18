@@ -1,6 +1,6 @@
 package ru.spbau.mit.circuit.model.elements;
 
-import ru.spbau.mit.circuit.model.CircuitObject;
+import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 
 abstract public class Item implements CircuitObject {
     private double current; // TODO It should be a function.

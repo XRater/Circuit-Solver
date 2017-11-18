@@ -1,23 +1,6 @@
 package ru.spbau.mit.circuit.ui;
 
-import android.view.MotionEvent;
-import android.view.View;
-
-import ru.spbau.mit.circuit.MainActivity;
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.node.Node;
-import ru.spbau.mit.circuit.model.node.Point;
-import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
-import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
-
-import static java.lang.Math.max;
-import static ru.spbau.mit.circuit.ui.Drawer.CELL_SIZE;
-import static ru.spbau.mit.circuit.ui.Drawer.FIELD_SIZE;
-import static ru.spbau.mit.circuit.ui.Drawer.drawables;
-import static ru.spbau.mit.circuit.ui.Drawer.highlighted;
-import static ru.spbau.mit.circuit.ui.Drawer.offsetX;
-import static ru.spbau.mit.circuit.ui.Drawer.offsetY;
-
+/*
 public class WireController implements View.OnTouchListener {
     private elementaryWire horizontalWires[][] = new elementaryWire[FIELD_SIZE][FIELD_SIZE];
     private elementaryWire verticalWires[][] = new elementaryWire[FIELD_SIZE][FIELD_SIZE];
@@ -148,6 +131,7 @@ public class WireController implements View.OnTouchListener {
         if (start != null) {
             addSimpleWire(start, new Point(x2 * CELL_SIZE, y2 * CELL_SIZE), other);
         }
+
     }
 
     private void addSimpleWire(Point from, Point to, Element e) {
@@ -155,4 +139,6 @@ public class WireController implements View.OnTouchListener {
         Drawer.wires.add(w);
         MainActivity.ui.addToModel(w);
     }
+
 }
+*/

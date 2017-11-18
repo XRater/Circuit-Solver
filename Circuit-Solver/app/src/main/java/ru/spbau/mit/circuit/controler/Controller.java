@@ -2,8 +2,8 @@ package ru.spbau.mit.circuit.controler;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
-import ru.spbau.mit.circuit.model.CircuitObject;
 import ru.spbau.mit.circuit.model.Model;
+import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {

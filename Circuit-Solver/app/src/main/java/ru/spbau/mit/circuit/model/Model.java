@@ -8,6 +8,7 @@ import java.util.Set;
 
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
 
 public class Model {
@@ -66,7 +67,7 @@ public class Model {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Model:\n");
+        sb.append("DrawableModel:\n");
         sb.append("Nodes:\n");
         for (Element e : elements) {
             sb.append(e).append("\n");

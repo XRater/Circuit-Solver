@@ -1,43 +1,32 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
+import android.graphics.Canvas;
+
+import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.elements.Wire;
-import ru.spbau.mit.circuit.model.node.Node;
-import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.ui.DrawableNode;
 import ru.spbau.mit.circuit.ui.Drawer;
-import ru.spbau.mit.circuit.ui.MyCanvas;
 
 
 public class DrawableWire extends Wire implements Drawable {
 
-    // Nodes are required. Cannot fix fast:(
-    public DrawableWire(Node from, Node to) {
+    public DrawableWire(DrawableNode from, DrawableNode to) {
         super(from, to);
     }
 
     @Override
-    public void draw(MyCanvas canvas) {
+    public void draw(Canvas canvas) {
         canvas.drawLine(from().x(), from().y(), to().x(), to().y(), Drawer
-                .highlightPaint);
+                .HIGHLIGHT_PAINT);
     }
 
-    @Override
-    public int x() {
-        return 0;
-    }
-
-    @Override
-    public int y() {
-        return 0;
-    }
-
-    @Override
-    public void move(int dx, int dy) {
+    public void build() {
 
     }
 
-    @Override
-    public void replace(Point p) {
-
+    public boolean adjacent(Element element) {
+        return to() == element.to() || to() == element.from() ||
+                from() == element.to() || from() == element.from();
     }
 
 //    @Override

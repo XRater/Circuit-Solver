@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit.model.elements;
+package ru.spbau.mit.circuit.model.interfaces;
 
 
 public interface Centered {

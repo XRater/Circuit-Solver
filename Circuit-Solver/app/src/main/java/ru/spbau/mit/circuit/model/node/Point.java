@@ -1,6 +1,6 @@
 package ru.spbau.mit.circuit.model.node;
 
-import ru.spbau.mit.circuit.model.elements.Centered;
+import ru.spbau.mit.circuit.model.interfaces.Centered;
 
 public class Point implements Centered {
     private final int x;

@@ -3,6 +3,7 @@ package ru.spbau.mit.circuit.ui;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 
 import ru.spbau.mit.circuit.model.elements.Element;
@@ -15,23 +16,23 @@ public class Drawer {
     public static final int CELL_SIZE = 80;
     public static final int FIELD_SIZE = 30;
 
-    public static final Paint elementsPaint = new Paint();
-    public static final Paint highlightPaint = new Paint();
+    public static final Paint ELEMENTS_PAINT = new Paint();
+    public static final Paint HIGHLIGHT_PAINT = new Paint();
 
-    public static int offsetX = 0;
-    public static int offsetY = 0;
+    private static int offsetX = 0;
+    private static int offsetY = 0;
+
+    static {
+        ELEMENTS_PAINT.setColor(Color.rgb(0, 119, 179));
+        ELEMENTS_PAINT.setStrokeWidth(7.5f);
+        ELEMENTS_PAINT.setTextSize(50);
+
+        HIGHLIGHT_PAINT.setColor(Color.rgb(0, 102, 153));
+        HIGHLIGHT_PAINT.setStrokeWidth(6);
+    }
 
     private SurfaceHolder surfaceHolder;
     private MyCanvas canvas;
-
-    {
-        elementsPaint.setColor(Color.rgb(0, 119, 179));
-        elementsPaint.setStrokeWidth(7.5f);
-        elementsPaint.setTextSize(50);
-
-        highlightPaint.setColor(Color.rgb(0, 102, 153));
-        highlightPaint.setStrokeWidth(6);
-    }
 
     public Drawer(SurfaceHolder surfaceHolder) {
         this.surfaceHolder = surfaceHolder;
@@ -48,7 +49,7 @@ public class Drawer {
         return new Point(round(p.x()), round(p.y()));
     }
 
-    public void drawBackground() {
+    private void drawBackground() {
         canvas.drawColor(Color.rgb(218, 195, 148));
         Paint paint = new Paint();
         paint.setColor(Color.rgb(239, 236, 174));
@@ -61,34 +62,59 @@ public class Drawer {
         }
     }
 
-    public void drawModel(Model model) {
-        //ArrayList<Element> elements = controller.elements();
+    public void drawModel(DrawableModel drawableModel) {
+//        ArrayList<Element> elements = controller.elements();
         Canvas simpleCanvas = surfaceHolder.lockCanvas();
         canvas = new MyCanvas(simpleCanvas);
         drawBackground();
-        for (Drawable element : model.drawables) {
+        for (Drawable element : drawableModel.drawables()) {
             element.draw(canvas);
         }
-        for (DrawableWire wire : model.wires) {
+        for (DrawableWire wire : drawableModel.wires()) {
             wire.draw(canvas);
         }
-        if (model.highlighted != null) {
-            canvas.drawCircle(model.highlighted.x(), model.highlighted.y(), CELL_SIZE / 5, highlightPaint);
+        if (drawableModel.isShowingCurrents()) {
+            showCurrents(drawableModel);
         }
+//        if (drawableModel.highlighted != null) {
+//            canvas.drawCircle(drawableModel.highlighted.x(), drawableModel.highlighted.y(), CELL_SIZE / 5, HIGHLIGHT_PAINT);
+//        }
         surfaceHolder.unlockCanvasAndPost(simpleCanvas);
     }
 
-    public void showCurrents(Model model) {
-        Canvas canvas = surfaceHolder.lockCanvas();
-        this.canvas = new MyCanvas(canvas);
-        for (Drawable d : model.drawables) {
+    private void showCurrents(DrawableModel drawableModel) {
+        for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
             String current = String.format("%.2f", Math.abs(e.getCurrent()));
-            canvas.drawText(current + "A", d.x() - CELL_SIZE / 4, d.y() -
+            canvas.drawText(current + "A", e.x() - CELL_SIZE / 4, e.y() -
                             CELL_SIZE / 3 * 2,
-                    elementsPaint);
+                    ELEMENTS_PAINT);
         }
-        surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
+    private class MyCanvas extends Canvas {
+        private Canvas canvas;
+
+        MyCanvas(Canvas canvas) {
+            this.canvas = canvas;
+        }
+
+        public void drawLine(float startX, float startY, float stopX, float stopY, @NonNull Paint
+                paint) {
+            canvas.drawLine(startX + Drawer.offsetX, startY + Drawer.offsetY, stopX + Drawer.offsetX,
+                    stopY + Drawer.offsetY, paint);
+        }
+
+        public void drawColor(int color) {
+            canvas.drawColor(color);
+        }
+
+        public void drawCircle(float cx, float cy, float radius, @NonNull Paint paint) {
+            canvas.drawCircle(cx + Drawer.offsetX, cy + Drawer.offsetY, radius, paint);
+        }
+
+        public void drawText(String text, float x, float y, @NonNull Paint paint) {
+            canvas.drawText(text, x + Drawer.offsetX, y + Drawer.offsetY, paint);
+        }
+    }
 }

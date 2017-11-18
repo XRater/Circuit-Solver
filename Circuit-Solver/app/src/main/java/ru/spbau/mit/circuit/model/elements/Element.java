@@ -1,24 +1,25 @@
 package ru.spbau.mit.circuit.model.elements;
 
 
+import ru.spbau.mit.circuit.model.interfaces.Movable;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 
 abstract public class Element extends Item implements Movable {
 
-    private final Node from;
-    private final Node to;
+    protected final Node from;
+    protected final Node to;
     private Point center;
 
-    public Element(Point from, Point to) {
-        if (from.equals(to)) {
+    public Element(Node from, Node to) {
+        if (from.position().equals(to.position())) {
             throw new InvalidElementException("End points are equal");
         }
         if (from.x() != to.x() && from.y() != to.y()) {
             throw new InvalidElementException("Points are not on the one line");
         }
-        this.from = new Node(from);
-        this.to = new Node(to);
+        this.from = from;
+        this.to = to;
         center = getCenter();
     }
 
