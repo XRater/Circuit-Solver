@@ -45,7 +45,7 @@ public class DrawableModel {
     }
 
     public Drawable getByPoint(Point p) {
-        return field.get(Drawer.round(p));
+        return field.get(p);
     }
 
     public void addElement(Drawable e) {

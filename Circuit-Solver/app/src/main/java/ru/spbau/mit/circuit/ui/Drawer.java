@@ -19,6 +19,7 @@ public class Drawer {
     public static final Paint ELEMENTS_PAINT = new Paint();
     public static final Paint HIGHLIGHT_PAINT = new Paint();
 
+
     private static int offsetX = 0;
     private static int offsetY = 0;
 
@@ -38,7 +39,23 @@ public class Drawer {
         this.surfaceHolder = surfaceHolder;
     }
 
-    public static int round(float fx) {
+    public static int getOffsetX() {
+        return offsetX;
+    }
+
+    public static void setOffsetX(int offsetX) {
+        Drawer.offsetX = offsetX;
+    }
+
+    public static int getOffsetY() {
+        return offsetY;
+    }
+
+    public static void setOffsetY(int offsetY) {
+        Drawer.offsetY = offsetY;
+    }
+
+    private static int round(float fx) {
         int x = Math.round(fx);
         int offset = x % Drawer.CELL_SIZE;
         x -= offset;
@@ -46,7 +63,7 @@ public class Drawer {
     }
 
     public static Point round(Point p) {
-        return new Point(round(p.x()), round(p.y()));
+        return new Point(round(p.x() - offsetX), round(p.y() - offsetY));
     }
 
     private void drawBackground() {
