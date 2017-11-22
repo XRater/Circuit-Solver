@@ -11,14 +11,12 @@ import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
-
 public class Drawer {
     public static final int CELL_SIZE = 80;
     public static final int FIELD_SIZE = 30;
 
     public static final Paint ELEMENTS_PAINT = new Paint();
     public static final Paint HIGHLIGHT_PAINT = new Paint();
-
 
     private static int offsetX = 0;
     private static int offsetY = 0;

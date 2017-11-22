@@ -1,8 +1,9 @@
 package ru.spbau.mit.circuit.model.node;
 
 import ru.spbau.mit.circuit.model.interfaces.Centered;
+import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 
-public class Point implements Centered {
+public class Point implements Centered, WireEnd {
     private final int x;
     private final int y;
 

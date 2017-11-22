@@ -28,15 +28,6 @@
         android:text="Capacitor" />
 
     <Button
-        android:id="@+id/drawWire"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/newCapacitor"
-        android:layout_below="@+id/newCapacitor"
-        android:layout_marginTop="74dp"
-        android:text="draw wire" />
-
-    <Button
         android:id="@+id/play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

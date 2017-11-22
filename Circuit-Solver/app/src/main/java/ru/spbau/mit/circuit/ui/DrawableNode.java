@@ -11,7 +11,7 @@ import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class DrawableNode extends Node implements Drawable {
-
+    private boolean ElementNode;
     private List<DrawableWire> wires = new ArrayList<>();
 
     public DrawableNode(Point point) {

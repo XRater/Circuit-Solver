@@ -44,30 +44,4 @@ public class DrawableResistor extends Resistor implements Drawable {
         canvas.drawText((int) getResistance() + "\u03A9", x() - Drawer.CELL_SIZE / 4, y() + Drawer
                 .CELL_SIZE / 4, Drawer.ELEMENTS_PAINT);
     }
-//
-//    @Override
-//    public int x() {
-//        return x;
-//    }
-//
-//    @Override
-//    public int y() {
-//        return y;
-//    }
-
-//    public void setX(int x) {
-//        this.x = x;
-//    }
-//
-//    public void setY(int y) {
-//        this.y = y;
-//    }
-
-//    @Override
-//    public void updatePosition(int nx, int ny) {
-//        x = nx;
-//        y = ny;
-//        this.setPosition(new Point(nx - 2 * Drawer.CELL_SIZE, ny), new Point(nx + 2 * Drawer
-//                .CELL_SIZE, ny));
-//    }
 }
