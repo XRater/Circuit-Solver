@@ -8,7 +8,6 @@ import java.util.Map;
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
-import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
@@ -113,17 +112,23 @@ public class DrawableModel {
     private void addNewWirePosition(DrawableWire wire) {
         ArrayList<Point> path = wire.getPath();
         for (Point p : path) {
-            Node node = (Node) field.get(p);
+            DrawableNode node = (DrawableNode) field.get(p);
+            if (node == null) {
+                node = new DrawableNode(p, false);
+                field.put(p, node);
+            }
             node.addWire(wire);
         }
+        // TODO make node beautiful
     }
 
     private void deleteOldWirePosition(DrawableWire wire) {
         ArrayList<Point> path = wire.getPath();
         for (Point p : path) {
-            Node node = (Node) field.get(p);
+            DrawableNode node = (DrawableNode) field.get(p);
             node.deleteWire(wire);
-            // TODO make node beautiful
+            if (!node.isRealNode() && node.hasZeroWires())
+                field.put(node.position(), null);
         }
         wire.clearPath();
     }
@@ -133,6 +138,7 @@ public class DrawableModel {
         DrawableWire dw = new DrawableWire((DrawableNode) holded, (DrawableNode) chosen);
         MainActivity.ui.addToModel(dw);
         wires.add(dw);
+        addNewWirePosition(dw);
         redraw();
     }
 

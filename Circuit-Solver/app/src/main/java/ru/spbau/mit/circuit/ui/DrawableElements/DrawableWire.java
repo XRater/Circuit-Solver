@@ -52,28 +52,28 @@ public class DrawableWire extends Wire implements Drawable {
             Point p = queue.poll();
             x = p.x();
             y = p.y();
-            if (x + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point(x + 1, y)) instanceof Element)) {
+            if (x + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point((x + 1) * CELL_SIZE, y * CELL_SIZE)) instanceof Element)) {
                 if (dist[x + 1][y] > dist[x][y] + 1) {
                     dist[x + 1][y] = dist[x][y] + 1;
                     prev[x + 1][y] = p;
                     queue.add(new Point(x + 1, y));
                 }
             }
-            if (x - 1 >= 0 && !(DrawableModel.getByPoint(new Point(x - 1, y)) instanceof Element)) {
+            if (x - 1 >= 0 && !(DrawableModel.getByPoint(new Point((x - 1) * CELL_SIZE, y * CELL_SIZE)) instanceof Element)) {
                 if (dist[x - 1][y] > dist[x][y] + 1) {
                     dist[x - 1][y] = dist[x][y] + 1;
                     prev[x - 1][y] = p;
                     queue.add(new Point(x - 1, y));
                 }
             }
-            if (y + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point(x, y + 1)) instanceof Element)) {
+            if (y + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point(x * CELL_SIZE, (y + 1) * CELL_SIZE)) instanceof Element)) {
                 if (dist[x][y + 1] > dist[x][y] + 1) {
                     dist[x][y + 1] = dist[x][y] + 1;
                     prev[x][y + 1] = p;
                     queue.add(new Point(x, y + 1));
                 }
             }
-            if (y - 1 >= 0 && !(DrawableModel.getByPoint(new Point(x, y - 1)) instanceof Element)) {
+            if (y - 1 >= 0 && !(DrawableModel.getByPoint(new Point(x * CELL_SIZE, (y - 1) * CELL_SIZE)) instanceof Element)) {
                 if (dist[x][y - 1] > dist[x][y] + 1) {
                     dist[x][y - 1] = dist[x][y] + 1;
                     prev[x][y - 1] = p;
