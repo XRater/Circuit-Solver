@@ -3,6 +3,9 @@ package ru.spbau.mit.circuit.model.node;
 import java.util.Collection;
 import java.util.HashSet;
 
+import java.util.ArrayList;
+
+
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.interfaces.Movable;
@@ -15,7 +18,8 @@ import ru.spbau.mit.circuit.model.interfaces.Wireable;
 public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable {
 
     private Point point;
-    private Collection<Wire> wires = new HashSet<>();
+
+    private ArrayList<Wire> wires = new ArrayList<>();
 
     public Node(Point point) {
         this.point = point;
@@ -54,11 +58,11 @@ public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable 
         return "<" + x() + ", " + y() + ">";
     }
 
-    public void addWire(Wire wire) {
-        wires.add(wire);
+    public void deleteWire(Wire wire) {
+        wires.remove(wire);
     }
 
-    public void removeWire(Wire wire) {
-        wires.remove(wire);
+    public void addWire(Wire wire) {
+        wires.add(wire);
     }
 }

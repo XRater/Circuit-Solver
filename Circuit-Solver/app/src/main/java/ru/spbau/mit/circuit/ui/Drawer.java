@@ -11,7 +11,6 @@ import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
-
 public class Drawer {
     public static final int CELL_SIZE = 80;
     public static final int FIELD_SIZE = 30;
@@ -38,7 +37,23 @@ public class Drawer {
         this.surfaceHolder = surfaceHolder;
     }
 
-    public static int round(float fx) {
+    public static int getOffsetX() {
+        return offsetX;
+    }
+
+    public static void setOffsetX(int offsetX) {
+        Drawer.offsetX = offsetX;
+    }
+
+    public static int getOffsetY() {
+        return offsetY;
+    }
+
+    public static void setOffsetY(int offsetY) {
+        Drawer.offsetY = offsetY;
+    }
+
+    private static int round(float fx) {
         int x = Math.round(fx);
         int offset = x % Drawer.CELL_SIZE;
         x -= offset;
@@ -46,7 +61,7 @@ public class Drawer {
     }
 
     public static Point round(Point p) {
-        return new Point(round(p.x()), round(p.y()));
+        return new Point(round(p.x() - offsetX), round(p.y() - offsetY));
     }
 
     private void drawBackground() {

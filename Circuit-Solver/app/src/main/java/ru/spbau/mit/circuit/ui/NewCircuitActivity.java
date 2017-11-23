@@ -117,24 +117,26 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 Point point = getPoint(motionEvent.getX(), motionEvent.getY());
-//                if (chosen != null) {
-//                    throw new RuntimeException();
-//                }
                 chosen = drawableModel.getByPoint(point);
-                if (drawableModel.holding()) {
-                    if (chosen instanceof WireEnd) {
+
+                if (chosen instanceof WireEnd) {
+                    if (drawableModel.holding()) {
                         drawableModel.connect((WireEnd) chosen);
-                    }
-                    drawableModel.unhold();
-                    chosen = null;
-                } else {
-                    if (chosen instanceof WireEnd) {
+                        drawableModel.unhold();
+                    } else {
                         drawableModel.hold((WireEnd) chosen);
                     }
+                    //chosen = null;
+                    return true;
                 }
+
                 //store point
-                //                startX = 0;
-//                startY = 0;
+                if (chosen == null) {
+                    startX = Math.round(motionEvent.getX());
+                    startY = Math.round(motionEvent.getY());
+                    oldOffsetX = Drawer.getOffsetX();
+                    oldOffsetY = Drawer.getOffsetY();
+                }
                 return true;
             }
 
@@ -142,6 +144,10 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 System.out.println(motionEvent.getX() + " " + motionEvent.getY());
                 if (chosen == null) {
                     //Move field
+                    Drawer.setOffsetX(oldOffsetX + Math.round(motionEvent.getX()) - startX);
+                    Drawer.setOffsetY(oldOffsetY + Math.round(motionEvent.getY()) - startY);
+                    drawableModel.redraw();
+                    System.out.println(oldOffsetX);
                     return true;
                 }
                 // ??? Node moving
@@ -149,9 +155,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     //Click on Element
                     Point point = getPoint(motionEvent.getX(), motionEvent.getY());
                     System.out.println(point);
-                    if (!point.equals(new Point(400, 400))) {
-                        System.out.println(point);
-                    }
+
+
                     drawableModel.move(chosen, point);
                 } else if (chosen instanceof Node) {
                 } else {
@@ -182,8 +187,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     }
                     Drawer.offsetX = oldOffsetX + Math.round(mX) - startX;
                     Drawer.offsetY = oldOffsetY + Math.round(mY) - startY;
-                }
-                redraw();*/
+                }*/
                 return true;
             }
 
@@ -214,7 +218,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     }
 
     private Point getPoint(float x, float y) {
-        return new Point(Drawer.round(x), Drawer.round(y));
+        return Drawer.round(new Point(Math.round(x), Math.round(y)));
     }
 
 }
