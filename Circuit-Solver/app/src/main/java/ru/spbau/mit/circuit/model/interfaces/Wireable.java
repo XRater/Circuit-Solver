@@ -1,10 +1,10 @@
 package ru.spbau.mit.circuit.model.interfaces;
 
 
-import java.util.List;
+import java.util.Collection;
 
 import ru.spbau.mit.circuit.model.elements.Wire;
 
 public interface Wireable {
-    List<Wire> wires();
+    Collection<Wire> wires();
 }

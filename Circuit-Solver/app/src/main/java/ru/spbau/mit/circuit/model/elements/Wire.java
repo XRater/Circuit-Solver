@@ -4,8 +4,8 @@ package ru.spbau.mit.circuit.model.elements;
 import ru.spbau.mit.circuit.model.node.Node;
 
 public class Wire extends Item {
-    private Node from;
-    private Node to;
+    private final Node from;
+    private final Node to;
 
     public Wire(Node from, Node to) {
         if (from == to) {
@@ -13,6 +13,8 @@ public class Wire extends Item {
         }
         this.from = from;
         this.to = to;
+        from.addWire(this);
+        to.addWire(this);
     }
 
     public Node from() {
