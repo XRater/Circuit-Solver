@@ -19,6 +19,7 @@ public class DrawableModel {
     private final Drawer drawer;
     private List<Drawable> drawables = new ArrayList<>();
     private List<DrawableWire> drawableWires = new ArrayList<>();
+
     private WireEnd holded;
     private boolean showingCurrents;
 
@@ -56,6 +57,10 @@ public class DrawableModel {
         }
         addNewElementPosition(e);
         drawer.drawModel(this);
+    }
+
+    public WireEnd getHolded() {
+        return holded;
     }
 
     public void redraw() {
@@ -140,7 +145,6 @@ public class DrawableModel {
         wire.clearPath();
     }
 
-    // No need to unhold
     public void connect(WireEnd chosen) {
         DrawableWire dw = null;
         try {
@@ -155,11 +159,13 @@ public class DrawableModel {
         }
         drawableWires.add(dw);
         addNewWirePosition(dw);
+        unhold();
         redraw();
     }
 
     public void hold(WireEnd chosen) {
         holded = chosen;
+        redraw();
     }
 
     public boolean holding() {

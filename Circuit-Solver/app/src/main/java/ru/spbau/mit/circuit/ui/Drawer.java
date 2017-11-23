@@ -16,7 +16,7 @@ public class Drawer {
     public static final int FIELD_SIZE = 30;
 
     public static final Paint ELEMENTS_PAINT = new Paint();
-    public static final Paint HIGHLIGHT_PAINT = new Paint();
+    public static final Paint WIRE_PAINT = new Paint();
 
     private static int offsetX = 0;
     private static int offsetY = 0;
@@ -26,8 +26,8 @@ public class Drawer {
         ELEMENTS_PAINT.setStrokeWidth(7.5f);
         ELEMENTS_PAINT.setTextSize(50);
 
-        HIGHLIGHT_PAINT.setColor(Color.rgb(0, 102, 153));
-        HIGHLIGHT_PAINT.setStrokeWidth(6);
+        WIRE_PAINT.setColor(Color.rgb(0, 102, 153));
+        WIRE_PAINT.setStrokeWidth(6);
     }
 
     private SurfaceHolder surfaceHolder;
@@ -91,9 +91,12 @@ public class Drawer {
         if (drawableModel.isShowingCurrents()) {
             showCurrents(drawableModel);
         }
-//        if (drawableModel.highlighted != null) {
-//            canvas.drawCircle(drawableModel.highlighted.x(), drawableModel.highlighted.y(), CELL_SIZE / 5, HIGHLIGHT_PAINT);
-//        }
+        if (drawableModel.holding()) {
+            Paint highLightPaint = new Paint();
+            highLightPaint.setColor(Color.YELLOW);
+            DrawableNode highlighted = (DrawableNode) drawableModel.getHolded();
+            canvas.drawCircle(highlighted.x(), highlighted.y(), CELL_SIZE / 5, highLightPaint);
+        }
         surfaceHolder.unlockCanvasAndPost(simpleCanvas);
     }
 

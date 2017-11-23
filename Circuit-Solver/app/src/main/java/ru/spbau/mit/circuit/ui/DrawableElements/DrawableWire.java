@@ -15,7 +15,7 @@ import ru.spbau.mit.circuit.ui.DrawableNode;
 
 import static ru.spbau.mit.circuit.ui.Drawer.CELL_SIZE;
 import static ru.spbau.mit.circuit.ui.Drawer.FIELD_SIZE;
-import static ru.spbau.mit.circuit.ui.Drawer.HIGHLIGHT_PAINT;
+import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
 
 public class DrawableWire extends Wire implements Drawable {
     private static int dist[][] = new int[FIELD_SIZE][FIELD_SIZE];
@@ -31,7 +31,7 @@ public class DrawableWire extends Wire implements Drawable {
     public void draw(Canvas canvas) {
         for (int i = 0; i < path.size() - 1; i++) {
             canvas.drawLine(path.get(i).x(), path.get(i).y(),
-                    path.get(i + 1).x(), path.get(i + 1).y(), HIGHLIGHT_PAINT);
+                    path.get(i + 1).x(), path.get(i + 1).y(), WIRE_PAINT);
         }
     }
 

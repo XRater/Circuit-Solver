@@ -122,7 +122,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 if (chosen instanceof WireEnd) {
                     if (drawableModel.holding()) {
                         drawableModel.connect((WireEnd) chosen);
-                        drawableModel.unhold();
                     } else {
                         drawableModel.hold((WireEnd) chosen);
                     }
