@@ -1,5 +1,8 @@
 package ru.spbau.mit.circuit.ui;
 
+import android.app.Activity;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,11 +22,12 @@ public class DrawableModel {
     private final Drawer drawer;
     private List<Drawable> drawables = new ArrayList<>();
     private List<DrawableWire> drawableWires = new ArrayList<>();
-
+    private Activity activity;
     private WireEnd holded;
     private boolean showingCurrents;
 
-    DrawableModel(Drawer drawer) {
+    DrawableModel(Activity activity, Drawer drawer) {
+        this.activity = activity;
         this.drawer = drawer;
     }
 
@@ -52,7 +56,9 @@ public class DrawableModel {
         try {
             MainActivity.ui.addToModel((Element) e);
         } catch (InvalidCircuitObjectAddition ex) {
-            System.out.println("Already connected.");
+            Toast toast = Toast.makeText(activity.getApplicationContext(),
+                    "Nodes were already connected.", Toast.LENGTH_SHORT);
+            toast.show();
             return;
         }
         addNewElementPosition(e);
@@ -86,7 +92,6 @@ public class DrawableModel {
         addNewElementPosition(drawable);
 
         for (DrawableWire wire : wiresToUpdate) {
-
             wire.build();
             addNewWirePosition(wire);
         }
@@ -151,7 +156,9 @@ public class DrawableModel {
             dw = new DrawableWire((DrawableNode) holded, (DrawableNode) chosen);
             MainActivity.ui.addToModel(dw);
         } catch (InvalidCircuitObjectAddition ex) {
-            System.out.println("Already connected.");
+            Toast toast = Toast.makeText(activity.getApplicationContext(),
+                    "Nodes were already connected.", Toast.LENGTH_SHORT);
+            toast.show();
             return;
         } catch (IllegalWireException e) {
             // No info for user.

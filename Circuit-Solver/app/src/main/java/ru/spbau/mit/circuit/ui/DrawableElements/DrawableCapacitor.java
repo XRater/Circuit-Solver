@@ -7,7 +7,6 @@ import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableNode;
 import ru.spbau.mit.circuit.ui.Drawer;
 
-
 public class DrawableCapacitor extends Capacitor implements Drawable {
 
     protected DrawableCapacitor(DrawableNode from, DrawableNode to) {
@@ -30,12 +29,4 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
         canvas.drawLine(x() + Drawer.CELL_SIZE / 2, y() - Drawer.CELL_SIZE * 3 / 4, x() + Drawer.CELL_SIZE
                 / 2, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
     }
-
-//    @Override
-//    public void updatePosition(int nx, int ny) {
-//        x = nx;
-//        y = ny;
-//        this.setPosition(new Point(nx - 2 * Drawer.CELL_SIZE, ny), new Point(nx + 2 * Drawer
-//                .CELL_SIZE, ny));
-//    }
 }

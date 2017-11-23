@@ -42,7 +42,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         SurfaceHolder surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
         drawer = new Drawer(surfaceHolder);
-        drawableModel = new DrawableModel(drawer);
+        drawableModel = new DrawableModel(this, drawer);
         MainActivity.ui.setDrawableModel(drawableModel);
 
         Button newResistor = findViewById(R.id.newResistor);
@@ -135,6 +135,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     startY = Math.round(motionEvent.getY());
                     oldOffsetX = Drawer.getOffsetX();
                     oldOffsetY = Drawer.getOffsetY();
+                    drawableModel.unhold();
                 }
                 return true;
             }
@@ -160,32 +161,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 } else {
                     //Click on WirePoint
                 }
-
-//                CircuitObject clicked = drawableModel.getByPoint(new Point(
-//                        Math.round(motionEvent.getX()), Math.round(motionEvent.getY())));
-/*                int mX = Math.round(motionEvent.getX());
-                int mY = Math.round(motionEvent.getY());
-                if (chosen == null) {
-                    for (Drawable d : drawableModel.drawables) {
-                        if (d.clickedInside(mX, mY)) {
-                            chosen = d;
-                            System.out.println(chosen.toString());
-                        }
-                    }
-                }
-                if (chosen != null) {
-                    chosen.replace(new Point(
-                            Math.round(mX), Math.round(mY)));
-                } else {
-                    if (startX == 0 && startY == 0) {
-                        startX = Math.round(mX);
-                        startY = Math.round(mY);
-                        oldOffsetX = Drawer.offsetX;
-                        oldOffsetY = Drawer.offsetY;
-                    }
-                    Drawer.offsetX = oldOffsetX + Math.round(mX) - startX;
-                    Drawer.offsetY = oldOffsetY + Math.round(mY) - startY;
-                }*/
                 return true;
             }
 
@@ -218,5 +193,4 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     private Point getPoint(float x, float y) {
         return Drawer.round(new Point(Math.round(x), Math.round(y)));
     }
-
 }
