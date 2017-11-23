@@ -46,6 +46,8 @@ public class Model {
                 throw new InvalidCircuitObjectAddition("One of ends is not under model control");
             }
             wires.add(wire);
+            wire.from().addWire(wire);
+            wire.to().addWire(wire);
         } else {
             throw new IllegalArgumentException();
         }

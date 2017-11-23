@@ -13,8 +13,6 @@ public class Wire extends Item {
         }
         this.from = from;
         this.to = to;
-        from.addWire(this);
-        to.addWire(this);
     }
 
     public Node from() {

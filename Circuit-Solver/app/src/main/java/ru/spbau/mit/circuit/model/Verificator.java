@@ -19,11 +19,13 @@ public class Verificator {
         queue.add(from);
         while (!queue.isEmpty()) {
             Node node = queue.poll();
+            System.err.println(node);
             if (node == to) {
                 return true;
             }
             for (Wire wire : node.wires()) {
                 queue.add(wire.opposite(node));
+                System.err.println("Added: " + node);
             }
         }
         return false;
