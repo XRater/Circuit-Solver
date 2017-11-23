@@ -8,6 +8,9 @@ public class Wire extends Item {
     private Node to;
 
     public Wire(Node from, Node to) {
+        if (from == to) {
+            throw new IllegalWireException("From and to nodes were equal");
+        }
         this.from = from;
         this.to = to;
     }
@@ -18,6 +21,10 @@ public class Wire extends Item {
 
     public Node to() {
         return to;
+    }
+
+    public Node opposite(Node node) {
+        return node == from ? to : from;
     }
 
     @Override
