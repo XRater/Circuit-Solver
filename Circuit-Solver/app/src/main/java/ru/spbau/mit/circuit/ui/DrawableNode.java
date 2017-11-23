@@ -9,7 +9,7 @@ import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 public class DrawableNode extends Node implements Drawable {
     private boolean realNode = true;
 
-//    private List<DrawableWire> wires = new ArrayList<>();
+    //private List<DrawableWire> wires = new ArrayList<>();
 
     public DrawableNode(Point point) {
         super(point);

@@ -29,7 +29,7 @@ public class Model {
         return nodes;
     }
 
-    public void add(CircuitObject object) {
+    public void add(CircuitObject object) throws InvalidCircuitObjectAddition {
         if (object instanceof Node) {
             nodes.add((Node) object);
         } else if (object instanceof Element) {

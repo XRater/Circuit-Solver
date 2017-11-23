@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import ru.spbau.mit.circuit.MainActivity;
+import ru.spbau.mit.circuit.model.InvalidCircuitObjectAddition;
 import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.IllegalWireException;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
@@ -16,7 +18,7 @@ public class DrawableModel {
     private static Map<Point, Drawable> field = new HashMap<>();
     private final Drawer drawer;
     private List<Drawable> drawables = new ArrayList<>();
-    private List<DrawableWire> wires = new ArrayList<>();
+    private List<DrawableWire> drawableWires = new ArrayList<>();
     private WireEnd holded;
     private boolean showingCurrents;
 
@@ -29,7 +31,7 @@ public class DrawableModel {
     }
 
     public List<DrawableWire> wires() {
-        return wires;
+        return drawableWires;
     }
 
     public List<Drawable> drawables() {
@@ -46,7 +48,12 @@ public class DrawableModel {
 
     public void addElement(Drawable e) {
         drawables.add(e);
-        MainActivity.ui.addToModel((Element) e);
+        try {
+            MainActivity.ui.addToModel((Element) e);
+        } catch (InvalidCircuitObjectAddition ex) {
+            System.out.println("Already connected.");
+            return;
+        }
         addNewElementPosition(e);
         drawer.drawModel(this);
     }
@@ -62,7 +69,7 @@ public class DrawableModel {
             return;
 
         List<DrawableWire> wiresToUpdate = new ArrayList<>();
-        for (DrawableWire wire : wires) {
+        for (DrawableWire wire : drawableWires) {
             if (wire.adjacent(element)) {
                 wiresToUpdate.add(wire);
                 deleteOldWirePosition(wire);
@@ -117,7 +124,7 @@ public class DrawableModel {
                 node = new DrawableNode(p, false);
                 field.put(p, node);
             }
-            node.addWire(wire);
+            //node.addWire(wire); I forgot what it does.
         }
         // TODO make node beautiful
     }
@@ -135,9 +142,18 @@ public class DrawableModel {
 
     // No need to unhold
     public void connect(WireEnd chosen) {
-        DrawableWire dw = new DrawableWire((DrawableNode) holded, (DrawableNode) chosen);
-        MainActivity.ui.addToModel(dw);
-        wires.add(dw);
+        DrawableWire dw = null;
+        try {
+            dw = new DrawableWire((DrawableNode) holded, (DrawableNode) chosen);
+            MainActivity.ui.addToModel(dw);
+        } catch (InvalidCircuitObjectAddition ex) {
+            System.out.println("Already connected.");
+            return;
+        } catch (IllegalWireException e) {
+            // No info for user.
+            return;
+        }
+        drawableWires.add(dw);
         addNewWirePosition(dw);
         redraw();
     }
@@ -156,7 +172,7 @@ public class DrawableModel {
 
     public void clear() {
         drawables.clear();
-        wires.clear();
+        drawableWires.clear();
         field.clear();
         showingCurrents = false;
         holded = null;

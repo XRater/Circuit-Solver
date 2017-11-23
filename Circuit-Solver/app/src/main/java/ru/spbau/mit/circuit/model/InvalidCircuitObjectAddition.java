@@ -1,7 +1,7 @@
 package ru.spbau.mit.circuit.model;
 
 
-public class InvalidCircuitObjectAddition extends RuntimeException {
+public class InvalidCircuitObjectAddition extends Exception {
     public InvalidCircuitObjectAddition() {
         super();
     }

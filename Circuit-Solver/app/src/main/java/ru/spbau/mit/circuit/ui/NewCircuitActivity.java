@@ -147,7 +147,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     Drawer.setOffsetX(oldOffsetX + Math.round(motionEvent.getX()) - startX);
                     Drawer.setOffsetY(oldOffsetY + Math.round(motionEvent.getY()) - startY);
                     drawableModel.redraw();
-                    System.out.println(oldOffsetX);
                     return true;
                 }
                 // ??? Node moving

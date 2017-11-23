@@ -7,7 +7,7 @@ public class Wire extends Item {
     private final Node from;
     private final Node to;
 
-    public Wire(Node from, Node to) {
+    public Wire(Node from, Node to) throws IllegalWireException {
         if (from == to) {
             throw new IllegalWireException("From and to nodes were equal");
         }

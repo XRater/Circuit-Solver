@@ -2,6 +2,7 @@ package ru.spbau.mit.circuit.controler;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
+import ru.spbau.mit.circuit.model.InvalidCircuitObjectAddition;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.ui.UI;
@@ -38,7 +39,7 @@ public class Controller {
         logic.calculateCurrents(model);
     }
 
-    public void add(CircuitObject object) {
+    public void add(CircuitObject object) throws InvalidCircuitObjectAddition {
         model.add(object);
     }
 

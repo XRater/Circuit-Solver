@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Queue;
 
 import ru.spbau.mit.circuit.model.elements.Element;
+import ru.spbau.mit.circuit.model.elements.IllegalWireException;
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableModel;
@@ -21,7 +22,7 @@ public class DrawableWire extends Wire implements Drawable {
     private static Point prev[][] = new Point[FIELD_SIZE][FIELD_SIZE];
     private ArrayList<Point> path = new ArrayList<>();
 
-    public DrawableWire(DrawableNode from, DrawableNode to) {
+    public DrawableWire(DrawableNode from, DrawableNode to) throws IllegalWireException {
         super(from, to);
         build();
     }
