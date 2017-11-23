@@ -4,10 +4,13 @@ package ru.spbau.mit.circuit.model.elements;
 import ru.spbau.mit.circuit.model.node.Node;
 
 public class Wire extends Item {
-    private Node from;
-    private Node to;
+    private final Node from;
+    private final Node to;
 
     public Wire(Node from, Node to) {
+        if (from == to) {
+            throw new IllegalWireException("From and to nodes were equal");
+        }
         this.from = from;
         this.to = to;
     }
@@ -18,6 +21,10 @@ public class Wire extends Item {
 
     public Node to() {
         return to;
+    }
+
+    public Node opposite(Node node) {
+        return node == from ? to : from;
     }
 
     @Override

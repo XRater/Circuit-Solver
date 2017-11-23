@@ -1,20 +1,25 @@
 package ru.spbau.mit.circuit.model.node;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import java.util.ArrayList;
+
 
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.interfaces.Movable;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
+import ru.spbau.mit.circuit.model.interfaces.Wireable;
 
 //ATTENTION you may have two different nodes in one point. Do not override hash/equals.
 
 // In fact, in release version all nodes might be different. But right now they are not.
-public abstract class Node implements CircuitObject, Movable, WireEnd {
+public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable {
 
     private Point point;
-    private ArrayList<Wire> wires = new ArrayList<>();
 
+    private ArrayList<Wire> wires = new ArrayList<>();
 
     public Node(Point point) {
         this.point = point;
@@ -22,6 +27,11 @@ public abstract class Node implements CircuitObject, Movable, WireEnd {
 
     public Node(int x, int y) {
         point = new Point(x, y);
+    }
+
+    @Override
+    public Collection<Wire> wires() {
+        return wires;
     }
 
     @Override

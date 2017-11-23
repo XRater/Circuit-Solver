@@ -15,6 +15,7 @@ public class Model {
     private List<Element> elements = new ArrayList<>();
     private List<Wire> wires = new ArrayList<>();
     private Set<Node> nodes = new HashSet<>();
+    private Verificator verificator = new Verificator(this);
 
     public List<Element> elements() {
         return elements;
@@ -38,10 +39,15 @@ public class Model {
             nodes.add(element.to());
         } else if (object instanceof Wire) {
             Wire wire = (Wire) object;
+            if (verificator.wireExists(wire)) {
+                throw new InvalidCircuitObjectAddition("Wire ends already connected.");
+            }
             if (!nodes.contains(wire.from()) || !nodes.contains(wire.to())) {
-                throw new NodeIsNotUnderControlException();
+                throw new InvalidCircuitObjectAddition("One of ends is not under model control");
             }
             wires.add(wire);
+            wire.from().addWire(wire);
+            wire.to().addWire(wire);
         } else {
             throw new IllegalArgumentException();
         }
