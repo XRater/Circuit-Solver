@@ -74,17 +74,23 @@ public class DrawableModel {
     }
 
     public void move(Drawable drawable, Point point) {
-        Element element = (Element) drawable;
-        // TODO honestly
-        if (element.center().equals(point) || !isValid(point, point))
-            return;
+        //horizontal case
+        int realx = Math.max(2 * Drawer.CELL_SIZE, point.x());
+        realx = Math.min((Drawer.FIELD_SIZE - 2) * Drawer.CELL_SIZE, realx);
+        int realy = Math.max(0, point.y());
+        realy = Math.min(Drawer.FIELD_SIZE * Drawer.CELL_SIZE, realy);
+        point = new Point(realx, realy);
 
+        Element element = (Element) drawable;
+
+        if (element.center().equals(point) || !isValid(point, element))
+            return;
         List<DrawableWire> wiresToUpdate = new ArrayList<>();
         for (DrawableWire wire : drawableWires) {
-            if (wire.adjacent(element)) {
+            //if (wire.adjacent(element)) {
                 wiresToUpdate.add(wire);
                 deleteOldWirePosition(wire);
-            }
+            //}
         }
 
         deleteOldElementPosition(drawable);
@@ -96,12 +102,27 @@ public class DrawableModel {
             addNewWirePosition(wire);
         }
         redraw();
+        System.out.println(field.size());
     }
 
-    private boolean isValid(Point point1, Point point2) {
+    private boolean isValid(Point point, Element element) {
         //TODO FINISH
-        return !(field.get(point1) instanceof Element) && !(field.get(point2) instanceof Element) &&
-                !(field.get(Point.getCenter(point1, point2)) instanceof Element);
+        return isValidPoint(point, element) &&
+                isValidPoint(new Point(point.x() - 2 * Drawer.CELL_SIZE, point.y()), element) &&
+                isValidPoint(new Point(point.x() + 2 * Drawer.CELL_SIZE, point.y()), element) &&
+                isValidPoint(new Point(point.x() + Drawer.CELL_SIZE, point.y()), element) &&
+                isValidPoint(new Point(point.x() - Drawer.CELL_SIZE, point.y()), element);
+    }
+
+    private boolean isValidPoint(Point point, Element element) {
+        Drawable cur = field.get(point);
+        if (cur == null)
+            return true;
+        if (cur instanceof DrawableNode && !((DrawableNode) cur).isRealNode())
+            return true;
+        else if (!(cur == element || cur == element.to() || cur == element.from()))
+            return false;
+        return true;
     }
 
     private void addNewElementPosition(Drawable drawable) {
@@ -143,9 +164,12 @@ public class DrawableModel {
         ArrayList<Point> path = wire.getPath();
         for (Point p : path) {
             DrawableNode node = (DrawableNode) field.get(p);
-            node.deleteWire(wire);
-            if (!node.isRealNode() && node.hasZeroWires())
-                field.put(node.position(), null);
+            // FIXME
+            if (node != null) {
+                node.deleteWire(wire);
+                if (!node.isRealNode())// && node.hasZeroWires())
+                    field.put(node.position(), null);
+            }
         }
         wire.clearPath();
     }

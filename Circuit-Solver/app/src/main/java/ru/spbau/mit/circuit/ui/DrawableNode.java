@@ -15,7 +15,7 @@ public class DrawableNode extends Node implements Drawable {
         super(point);
     }
 
-    public DrawableNode(Point point, boolean RealNode) {
+    public DrawableNode(Point point, boolean realNode) {
         super(point);
         this.realNode = realNode;
     }

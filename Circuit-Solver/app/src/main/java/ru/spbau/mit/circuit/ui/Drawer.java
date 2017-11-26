@@ -78,7 +78,6 @@ public class Drawer {
     }
 
     public void drawModel(DrawableModel drawableModel) {
-//        ArrayList<Element> elements = controller.elements();
         Canvas simpleCanvas = surfaceHolder.lockCanvas();
         canvas = new MyCanvas(simpleCanvas);
         drawBackground();

@@ -153,7 +153,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 if (chosen instanceof Element) {
                     //Click on Element
                     Point point = getPoint(motionEvent.getX(), motionEvent.getY());
-                    System.out.println(point);
 
 
                     drawableModel.move(chosen, point);
@@ -175,16 +174,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 }
                 chosen = null;
                 return true;
-                /*                if (chosen != null) {
-                    chosen.replace(new Point(
-                            Drawer.round(chosen.x()), Drawer.round(chosen.y())));
-                    redraw();
-                    chosen = null;
-                    return true;
-                }
-                startX = 0;
-                startY = 0;
-                return true;*/
             }
         }
         return true;
