@@ -32,6 +32,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     private Drawable chosen;
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
+    private Button delete;
+    private Button changeValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,34 +67,32 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     .CELL_SIZE));
             drawableModel.addElement(b);
         });
-//
-//        Button drawWire = findViewById(R.id.drawWire);
-//        drawWire.setOnClickListener(view -> {
-//            if (!inWireMode) {
-//                inWireMode = true;
-//                surface.setOnTouchListener(wireController);
-//            } else {
-//                inWireMode = false;
-//                drawableModel.highlighted = null;
-//                surface.setOnTouchListener(NewCircuitActivity.this);
-//            }
-//        });
 
         Button play = findViewById(R.id.play);
-        play.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    MainActivity.ui.calculateCurrents();
-                    drawableModel.changeShowingCurrents();
-                } catch (CircuitShortingException e) {
-                    Toast toast = Toast.makeText(getApplicationContext(),
-                            "Battery is shorted.", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-                drawableModel.redraw();
+        play.setOnClickListener(view -> {
+            try {
+                MainActivity.ui.calculateCurrents();
                 drawableModel.changeShowingCurrents();
+            } catch (CircuitShortingException e) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Battery is shorted.", Toast.LENGTH_SHORT);
+                toast.show();
             }
+            drawableModel.redraw();
+            drawableModel.changeShowingCurrents();
+        });
+
+        delete = findViewById(R.id.delete);
+        delete.setOnClickListener(v -> {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Delete.", Toast.LENGTH_SHORT);
+            toast.show();
+        });
+        changeValue = findViewById(R.id.changeValue);
+        changeValue.setOnClickListener(v -> {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Change.", Toast.LENGTH_SHORT);
+            toast.show();
         });
         surface.setOnTouchListener(NewCircuitActivity.this);
     }
@@ -118,6 +118,13 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             case MotionEvent.ACTION_DOWN: {
                 Point point = getPoint(motionEvent.getX(), motionEvent.getY());
                 chosen = drawableModel.getByPoint(point);
+                if (chosen instanceof Element) {
+                    delete.setVisibility(View.VISIBLE);
+                    changeValue.setVisibility(View.VISIBLE);
+                } else {
+                    delete.setVisibility(View.INVISIBLE);
+                    changeValue.setVisibility(View.INVISIBLE);
+                }
 
                 if (chosen instanceof WireEnd) {
                     if (drawableModel.holding()) {

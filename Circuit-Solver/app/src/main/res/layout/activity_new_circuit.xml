@@ -40,9 +40,27 @@
         android:id="@+id/newBattery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/drawWire"
         android:layout_below="@+id/newCapacitor"
         android:layout_marginTop="16dp"
         android:text="Battery" />
+
+    <Button
+        android:id="@+id/changeValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="value"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="23dp"
+        android:layout_toEndOf="@+id/newCapacitor"
+        android:text="delete"
+        android:visibility="invisible" />
 
 </RelativeLayout>
