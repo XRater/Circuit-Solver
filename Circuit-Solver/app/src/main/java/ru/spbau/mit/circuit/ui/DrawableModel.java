@@ -89,8 +89,8 @@ public class DrawableModel {
         List<DrawableWire> wiresToUpdate = new ArrayList<>();
         for (DrawableWire wire : drawableWires) {
             //if (wire.adjacent(element)) {
-                wiresToUpdate.add(wire);
-                deleteOldWirePosition(wire);
+            wiresToUpdate.add(wire);
+            deleteOldWirePosition(wire);
             //}
         }
 
@@ -107,12 +107,19 @@ public class DrawableModel {
     }
 
     private boolean isValid(Point point, Element element) {
-        //TODO FINISH
-        return isValidPoint(point, element) &&
-                isValidPoint(new Point(point.x() - 2 * Drawer.CELL_SIZE, point.y()), element) &&
-                isValidPoint(new Point(point.x() + 2 * Drawer.CELL_SIZE, point.y()), element) &&
-                isValidPoint(new Point(point.x() + Drawer.CELL_SIZE, point.y()), element) &&
-                isValidPoint(new Point(point.x() - Drawer.CELL_SIZE, point.y()), element);
+        if (element.isHorizontal()) {
+            return isValidPoint(point, element) &&
+                    isValidPoint(new Point(point.x() - 2 * Drawer.CELL_SIZE, point.y()), element) &&
+                    isValidPoint(new Point(point.x() + 2 * Drawer.CELL_SIZE, point.y()), element) &&
+                    isValidPoint(new Point(point.x() + Drawer.CELL_SIZE, point.y()), element) &&
+                    isValidPoint(new Point(point.x() - Drawer.CELL_SIZE, point.y()), element);
+        } else {
+            return isValidPoint(point, element) &&
+                    isValidPoint(new Point(point.x(), point.y() - 2 * Drawer.CELL_SIZE), element) &&
+                    isValidPoint(new Point(point.x(), point.y() + 2 * Drawer.CELL_SIZE), element) &&
+                    isValidPoint(new Point(point.x(), point.y() + Drawer.CELL_SIZE), element) &&
+                    isValidPoint(new Point(point.x(), point.y() - Drawer.CELL_SIZE), element);
+        }
     }
 
     private boolean isValidPoint(Point point, Element element) {
@@ -232,5 +239,22 @@ public class DrawableModel {
         MainActivity.ui.removeFromModel((CircuitObject) chosen);
         drawables.remove(chosen);
         redraw();
+    }
+
+    public void rotateElement(Element element) {
+        List<DrawableWire> adjacent = new ArrayList<>();
+        for (DrawableWire wire : drawableWires) {
+            if (wire.adjacent(element)) {
+                adjacent.add(wire);
+                deleteOldWirePosition(wire);
+            }
+        }
+        deleteOldElementPosition((Drawable) element);
+        element.rotate();
+        addNewElementPosition((Drawable) element);
+        for (DrawableWire wire : adjacent) {
+            wire.build();
+            addNewWirePosition(wire);
+        }
     }
 }

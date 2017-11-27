@@ -35,6 +35,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     private int oldOffsetX = 0, oldOffsetY = 0;
     private Button delete;
     private Button changeValue;
+    private Button rotate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +111,13 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     .create();
             dialog.show();
         });
+
+        rotate = findViewById(R.id.rotate);
+        rotate.setOnClickListener(v -> {
+            Element element = (Element) chosen;
+            drawableModel.rotateElement(element);
+            drawableModel.redraw();
+        });
         surface.setOnTouchListener(NewCircuitActivity.this);
     }
 
@@ -137,9 +145,11 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 if (chosen instanceof Element) {
                     delete.setVisibility(View.VISIBLE);
                     changeValue.setVisibility(View.VISIBLE);
+                    rotate.setVisibility(View.VISIBLE);
                 } else {
                     delete.setVisibility(View.INVISIBLE);
                     changeValue.setVisibility(View.INVISIBLE);
+                    rotate.setVisibility(View.INVISIBLE);
                 }
 
                 if (chosen instanceof WireEnd) {

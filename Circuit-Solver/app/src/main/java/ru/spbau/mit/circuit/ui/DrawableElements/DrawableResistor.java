@@ -21,23 +21,41 @@ public class DrawableResistor extends Resistor implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        //up and down
-        canvas.drawLine(x() - Drawer.CELL_SIZE, y() + Drawer.CELL_SIZE / 2, x() + Drawer.CELL_SIZE, y() +
-                Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() - Drawer.CELL_SIZE, y() - Drawer.CELL_SIZE / 2, x() + Drawer.CELL_SIZE, y() -
-                Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
-        //left and right
-        canvas.drawLine(x() - Drawer.CELL_SIZE, y() - Drawer.CELL_SIZE / 2, x() - Drawer.CELL_SIZE, y() +
-                Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() + Drawer.CELL_SIZE, y() - Drawer.CELL_SIZE / 2, x() + Drawer.CELL_SIZE, y() +
-                Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
-        //wires
-        canvas.drawLine(x() - Drawer.CELL_SIZE * 2, y(), x() - Drawer.CELL_SIZE, y(), Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE, y(), Drawer.ELEMENTS_PAINT);
+        if (this.isHorizontal()) {
+            //up and down
+            canvas.drawLine(x() - Drawer.CELL_SIZE, y() + Drawer.CELL_SIZE / 2, x() + Drawer.CELL_SIZE, y() +
+                    Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x() - Drawer.CELL_SIZE, y() - Drawer.CELL_SIZE / 2, x() + Drawer.CELL_SIZE, y() -
+                    Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
+            //left and right
+            canvas.drawLine(x() - Drawer.CELL_SIZE, y() - Drawer.CELL_SIZE / 2, x() - Drawer.CELL_SIZE, y() +
+                    Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x() + Drawer.CELL_SIZE, y() - Drawer.CELL_SIZE / 2, x() + Drawer.CELL_SIZE, y() +
+                    Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
+            //wires
+            canvas.drawLine(x() - Drawer.CELL_SIZE * 2, y(), x() - Drawer.CELL_SIZE, y(), Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE, y(), Drawer.ELEMENTS_PAINT);
 
-        canvas.drawText((int) getResistance() + "\u03A9", x() - Drawer.CELL_SIZE / 4, y() + Drawer
-                .CELL_SIZE / 4, Drawer.ELEMENTS_PAINT);
+            canvas.drawText((int) getResistance() + "\u03A9", x() - Drawer.CELL_SIZE / 4, y() + Drawer
+                    .CELL_SIZE / 4, Drawer.ELEMENTS_PAINT);
 
-        // TODO vertical
+        } else {
+            //left and right
+            canvas.drawLine(x() - Drawer.CELL_SIZE / 2, y() + Drawer.CELL_SIZE, x() - Drawer.CELL_SIZE / 2, y() -
+                    Drawer.CELL_SIZE, Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x() + Drawer.CELL_SIZE / 2, y() + Drawer.CELL_SIZE, x() + Drawer.CELL_SIZE / 2, y() -
+                    Drawer.CELL_SIZE, Drawer.ELEMENTS_PAINT);
+            //up and down
+            canvas.drawLine(x() - Drawer.CELL_SIZE / 2, y() + Drawer.CELL_SIZE, x() + Drawer.CELL_SIZE / 2, y() +
+                    Drawer.CELL_SIZE, Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x() - Drawer.CELL_SIZE / 2, y() - Drawer.CELL_SIZE, x() + Drawer.CELL_SIZE / 2, y() -
+                    Drawer.CELL_SIZE, Drawer.ELEMENTS_PAINT);
+            //wires
+            canvas.drawLine(x(), y() - Drawer.CELL_SIZE * 2, x(), y() - Drawer.CELL_SIZE, Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x(), y() + Drawer.CELL_SIZE * 2, x(), y() + Drawer.CELL_SIZE, Drawer.ELEMENTS_PAINT);
+
+            canvas.drawText((int) getResistance() + "\u03A9", x() - Drawer.CELL_SIZE / 4, y() + Drawer
+                    .CELL_SIZE / 4, Drawer.ELEMENTS_PAINT);
+        }
     }
 }

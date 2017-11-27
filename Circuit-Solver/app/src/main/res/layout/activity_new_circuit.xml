@@ -63,4 +63,14 @@
         android:text="delete"
         android:visibility="invisible" />
 
+    <Button
+        android:id="@+id/rotate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/changeValue"
+        android:layout_marginEnd="135dp"
+        android:layout_toStartOf="@+id/changeValue"
+        android:text="rotate"
+        android:visibility="invisible" />
+
 </RelativeLayout>
