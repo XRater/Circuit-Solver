@@ -2,8 +2,8 @@ package ru.spbau.mit.circuit.controler;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
-import ru.spbau.mit.circuit.model.InvalidCircuitObjectAddition;
 import ru.spbau.mit.circuit.model.Model;
+import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.ui.UI;
 
@@ -39,12 +39,12 @@ public class Controller {
         logic.calculateCurrents(model);
     }
 
-    public void add(CircuitObject object) throws InvalidCircuitObjectAddition {
+    public void add(CircuitObject object) throws NodesAreAlreadyConnected {
         model.add(object);
     }
 
-    public boolean remove(CircuitObject object) {
-        return model.remove(object);
+    public void remove(CircuitObject object) {
+        model.remove(object);
     }
 
     public void clearModel() {

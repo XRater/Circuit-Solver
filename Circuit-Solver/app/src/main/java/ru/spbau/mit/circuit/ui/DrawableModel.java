@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 import ru.spbau.mit.circuit.MainActivity;
-import ru.spbau.mit.circuit.model.InvalidCircuitObjectAddition;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.elements.IllegalWireException;
+import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 import ru.spbau.mit.circuit.model.node.Point;
@@ -56,7 +56,7 @@ public class DrawableModel {
         drawables.add(e);
         try {
             MainActivity.ui.addToModel((Element) e);
-        } catch (InvalidCircuitObjectAddition ex) {
+        } catch (NodesAreAlreadyConnected ex) {
             Toast toast = Toast.makeText(activity.getApplicationContext(),
                     "Nodes were already connected.", Toast.LENGTH_SHORT);
             toast.show();
@@ -84,8 +84,9 @@ public class DrawableModel {
 
         Element element = (Element) drawable;
 
-        if (element.center().equals(point) || !isValid(point, element))
+        if (element.center().equals(point) || !isValid(point, element)) {
             return;
+        }
         List<DrawableWire> wiresToUpdate = new ArrayList<>();
         for (DrawableWire wire : drawableWires) {
             //if (wire.adjacent(element)) {
@@ -124,12 +125,14 @@ public class DrawableModel {
 
     private boolean isValidPoint(Point point, Element element) {
         Drawable cur = field.get(point);
-        if (cur == null)
+        if (cur == null) {
             return true;
-        if (cur instanceof DrawableNode && !((DrawableNode) cur).isRealNode())
+        }
+        if (cur instanceof DrawableNode && !((DrawableNode) cur).isRealNode()) {
             return true;
-        else if (!(cur == element || cur == element.to() || cur == element.from()))
+        } else if (!(cur == element || cur == element.to() || cur == element.from())) {
             return false;
+        }
         return true;
     }
 
@@ -174,9 +177,11 @@ public class DrawableModel {
             DrawableNode node = (DrawableNode) field.get(p);
             // FIXME
             if (node != null) {
-                node.deleteWire(wire);
+//                node.deleteWire(wire);
                 if (!node.isRealNode())// && node.hasZeroWires())
+                {
                     field.put(node.position(), null);
+                }
             }
         }
         wire.clearPath();
@@ -187,7 +192,7 @@ public class DrawableModel {
         try {
             dw = new DrawableWire((DrawableNode) holded, (DrawableNode) chosen);
             MainActivity.ui.addToModel(dw);
-        } catch (InvalidCircuitObjectAddition ex) {
+        } catch (NodesAreAlreadyConnected ex) {
             Toast toast = Toast.makeText(activity.getApplicationContext(),
                     "Nodes were already connected.", Toast.LENGTH_SHORT);
             toast.show();
