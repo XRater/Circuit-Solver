@@ -76,4 +76,10 @@ abstract public class Element extends Item implements Movable {
     private Point getCenter() {
         return Point.getCenter(from.position(), to.position());
     }
+
+    abstract public String getCharacteristicName();
+
+    abstract public double getCharacteristicValue();
+
+    abstract public void setCharacteristicValue(double value);
 }

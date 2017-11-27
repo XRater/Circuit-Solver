@@ -14,4 +14,19 @@ public abstract class Battery extends Element {
     public double getVoltage() {
         return voltage;
     }
+
+    @Override
+    public double getCharacteristicValue() {
+        return voltage;
+    }
+
+    @Override
+    public void setCharacteristicValue(double voltage) {
+        this.voltage = voltage;
+    }
+
+    @Override
+    public String getCharacteristicName() {
+        return "voltage";
+    }
 }

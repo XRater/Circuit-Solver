@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -8,6 +9,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import ru.spbau.mit.circuit.MainActivity;
@@ -25,7 +27,6 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableResistor;
 
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
-    //    private WireController wireController = new WireController(this);
     private DrawableModel drawableModel;
     private Drawer drawer;
 
@@ -87,11 +88,27 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             drawableModel.removeElement(chosen);
             chosen = null;
         });
+
         changeValue = findViewById(R.id.changeValue);
         changeValue.setOnClickListener(v -> {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "Change.", Toast.LENGTH_SHORT);
-            toast.show();
+            Element element = (Element) chosen;
+            final EditText taskEditText = new EditText(this);
+            taskEditText.setText(String.valueOf(element.getCharacteristicValue()));
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Change " + element.getCharacteristicName())
+                    .setView(taskEditText)
+                    .setPositiveButton("Set new value", (dialog1, which) -> {
+                        String value = String.valueOf(taskEditText.getText());
+                        try {
+                            element.setCharacteristicValue(Double.parseDouble(value));
+                        } catch (NumberFormatException | NullPointerException e2) {
+                            // No info
+                        }
+                        drawableModel.redraw();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create();
+            dialog.show();
         });
         surface.setOnTouchListener(NewCircuitActivity.this);
     }

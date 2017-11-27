@@ -13,7 +13,18 @@ public abstract class Resistor extends Element {
         return resistance;
     }
 
-    public void setResistance(double resistance) {
+    @Override
+    public double getCharacteristicValue() {
+        return resistance;
+    }
+
+    @Override
+    public void setCharacteristicValue(double resistance) {
         this.resistance = resistance;
+    }
+
+    @Override
+    public String getCharacteristicName() {
+        return "resistance";
     }
 }
