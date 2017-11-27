@@ -136,6 +136,24 @@ public class DrawableModel {
         return true;
     }
 
+    public Point getPossiblePosition() {
+        int x = 5 * Drawer.CELL_SIZE;
+        int y = 5 * Drawer.CELL_SIZE;
+        while (!canPut(new Point(x, y))) {
+            x += 2 * Drawer.CELL_SIZE;
+            y += 2 * Drawer.CELL_SIZE;
+        }
+        return new Point(x, y);
+    }
+
+    private boolean canPut(Point point) {
+        return field.get(point) == null &&
+                field.get(new Point(point.x() - 2 * Drawer.CELL_SIZE, point.y())) == null &&
+                field.get(new Point(point.x() + 2 * Drawer.CELL_SIZE, point.y())) == null &&
+                field.get(new Point(point.x() + Drawer.CELL_SIZE, point.y())) == null &&
+                field.get(new Point(point.x() - Drawer.CELL_SIZE, point.y())) == null;
+    }
+
     private void addNewElementPosition(Drawable drawable) {
         Element element = (Element) drawable;
         Point center = element.center();

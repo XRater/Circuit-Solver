@@ -25,6 +25,8 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableCapacitor;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableResistor;
 
+import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
+
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
     private DrawableModel drawableModel;
@@ -51,22 +53,19 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
         Button newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
-            DrawableResistor r = new DrawableResistor(new Point(5 * Drawer.CELL_SIZE, 5 * Drawer
-                    .CELL_SIZE));
+            DrawableResistor r = new DrawableResistor(drawableModel.getPossiblePosition());
             drawableModel.addElement(r);
         });
 
         Button newCapacitor = findViewById(R.id.newCapacitor);
         newCapacitor.setOnClickListener(view -> {
-            DrawableCapacitor c = new DrawableCapacitor(new Point(5 * Drawer.CELL_SIZE, 5 * Drawer
-                    .CELL_SIZE));
+            DrawableCapacitor c = new DrawableCapacitor(drawableModel.getPossiblePosition());
             drawableModel.addElement(c);
         });
 
         Button newBattery = findViewById(R.id.newBattery);
         newBattery.setOnClickListener(view -> {
-            DrawableBattery b = new DrawableBattery(new Point(7 * Drawer.CELL_SIZE, 7 * Drawer
-                    .CELL_SIZE));
+            DrawableBattery b = new DrawableBattery(drawableModel.getPossiblePosition());
             drawableModel.addElement(b);
         });
 
@@ -141,7 +140,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 Point point = getPoint(motionEvent.getX(), motionEvent.getY());
-                chosen = drawableModel.getByPoint(point);
+                chosen = getByPoint(point);
                 if (chosen instanceof Element) {
                     delete.setVisibility(View.VISIBLE);
                     changeValue.setVisibility(View.VISIBLE);
@@ -215,4 +214,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     private Point getPoint(float x, float y) {
         return Drawer.round(new Point(Math.round(x), Math.round(y)));
     }
+
+
 }
