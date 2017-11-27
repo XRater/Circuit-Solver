@@ -35,4 +35,8 @@ public class UI {
             drawableModel.clear();
         }
     }
+
+    public void removeFromModel(CircuitObject chosen) {
+        controller.remove(chosen);
+    }
 }

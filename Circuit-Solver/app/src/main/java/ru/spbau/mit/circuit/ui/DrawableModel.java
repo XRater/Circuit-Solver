@@ -12,6 +12,7 @@ import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.model.InvalidCircuitObjectAddition;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.elements.IllegalWireException;
+import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
@@ -213,5 +214,23 @@ public class DrawableModel {
         field.clear();
         showingCurrents = false;
         holded = null;
+    }
+
+    public void removeElement(Drawable chosen) {
+        if (chosen instanceof Element) {
+            List<DrawableWire> adjacent = new ArrayList<>();
+            for (DrawableWire wire : drawableWires) {
+                if (wire.adjacent((Element) chosen)) {
+                    adjacent.add(wire);
+                    deleteOldWirePosition(wire);
+                    MainActivity.ui.removeFromModel(wire);
+                }
+            }
+            drawableWires.removeAll(adjacent);
+            deleteOldElementPosition(chosen);
+        }
+        MainActivity.ui.removeFromModel((CircuitObject) chosen);
+        drawables.remove(chosen);
+        redraw();
     }
 }

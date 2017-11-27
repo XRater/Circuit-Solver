@@ -84,9 +84,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
         delete = findViewById(R.id.delete);
         delete.setOnClickListener(v -> {
-            Toast toast = Toast.makeText(getApplicationContext(),
-                    "Delete.", Toast.LENGTH_SHORT);
-            toast.show();
+            drawableModel.removeElement(chosen);
+            chosen = null;
         });
         changeValue = findViewById(R.id.changeValue);
         changeValue.setOnClickListener(v -> {
@@ -179,7 +178,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 } else {
                     // WirePoint
                 }
-                chosen = null;
+                //chosen = null;
                 return true;
             }
         }

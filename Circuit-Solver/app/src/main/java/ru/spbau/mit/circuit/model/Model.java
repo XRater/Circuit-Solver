@@ -57,6 +57,9 @@ public class Model {
         if (object instanceof Node) {
             return nodes.remove(object);
         } else if (object instanceof Element) {
+            Element element = (Element) object;
+            nodes.remove(element.from());
+            nodes.remove(element.to());
             return elements.remove(object);
         } else if (object instanceof Wire) {
             return wires.remove(object);
