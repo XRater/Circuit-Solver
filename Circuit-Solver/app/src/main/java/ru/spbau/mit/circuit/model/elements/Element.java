@@ -68,6 +68,10 @@ abstract public class Element extends Item implements Movable {
         return from.y() == to.y();
     }
 
+    public boolean adjacent(Node node) {
+        return node == from || node == to;
+    }
+
     @Override
     public String toString() {
         return "Element:" + from.toString() + ":" + to.toString();
