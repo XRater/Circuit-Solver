@@ -170,7 +170,7 @@ public class DrawableModel {
             DrawableNode node = (DrawableNode) field.get(p);
             // FIXME
             if (node != null) {
-                node.deleteWire(wire);
+//                node.deleteWire(wire);
                 if (!node.isRealNode())// && node.hasZeroWires())
                 {
                     field.put(node.position(), null);

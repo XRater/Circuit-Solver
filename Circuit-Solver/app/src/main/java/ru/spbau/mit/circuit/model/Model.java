@@ -34,7 +34,6 @@ public class Model {
     }
 
     public void add(CircuitObject object) throws NodesAreAlreadyConnected {
-        System.out.println("ADDDD");
         if (object instanceof Node) {
             nodes.add((Node) object);
         } else if (object instanceof Element) {
@@ -60,7 +59,6 @@ public class Model {
     }
 
     public void remove(CircuitObject object) {
-        System.out.println("REMOVEEEEE");
         if (object instanceof Node) {
             Node node = (Node) object;
             if (!nodes().contains(node)) {

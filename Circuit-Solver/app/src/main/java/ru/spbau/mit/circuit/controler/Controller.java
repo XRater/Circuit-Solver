@@ -41,12 +41,10 @@ public class Controller {
 
     public void add(CircuitObject object) throws NodesAreAlreadyConnected {
         model.add(object);
-//        System.out.println(model);
     }
 
     public void remove(CircuitObject object) {
         model.remove(object);
-//        System.out.println(model);
     }
 
     public void clearModel() {

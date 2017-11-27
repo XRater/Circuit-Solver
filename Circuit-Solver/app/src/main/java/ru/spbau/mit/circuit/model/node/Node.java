@@ -25,6 +25,11 @@ public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable 
         point = new Point(x, y);
     }
 
+    /**
+     * You may use this in UI/Logic
+     *
+     * @return Collection of adjacent to the node wires.
+     */
     @Override
     public Collection<Wire> wires() {
         return wires;
@@ -54,10 +59,12 @@ public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable 
         return "<" + x() + ", " + y() + ">";
     }
 
+    // Do not use outside of the package
     public void deleteWire(Wire wire) {
         wires.remove(wire);
     }
 
+    // Do not use outside of the package
     public void addWire(Wire wire) {
         wires.add(wire);
     }
