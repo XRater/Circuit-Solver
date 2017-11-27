@@ -31,4 +31,8 @@ public class Wire extends Item {
     public String toString() {
         return "Wire: " + this.from + ":" + this.to;
     }
+
+    public boolean adjacent(Node node) {
+        return node == from || node == to;
+    }
 }

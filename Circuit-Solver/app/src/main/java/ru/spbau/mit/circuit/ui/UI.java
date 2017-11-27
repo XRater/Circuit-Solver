@@ -2,8 +2,8 @@ package ru.spbau.mit.circuit.ui;
 
 import ru.spbau.mit.circuit.controler.Controller;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
-import ru.spbau.mit.circuit.model.InvalidCircuitObjectAddition;
 import ru.spbau.mit.circuit.model.Model;
+import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 
 public class UI {
@@ -22,7 +22,7 @@ public class UI {
         controller.calculateCurrents();
     }
 
-    public void addToModel(CircuitObject e) throws InvalidCircuitObjectAddition {
+    public void addToModel(CircuitObject e) throws NodesAreAlreadyConnected {
         controller.add(e);
     }
 

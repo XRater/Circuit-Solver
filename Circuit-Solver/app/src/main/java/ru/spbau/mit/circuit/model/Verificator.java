@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
+import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.node.Node;
 
@@ -22,6 +23,7 @@ public class Verificator {
         Set<Node> visited = new HashSet<>();
         while (!queue.isEmpty()) {
             Node node = queue.poll();
+            System.out.println(node);
             if (visited.contains(node)) {
                 continue;
             }
@@ -30,6 +32,7 @@ public class Verificator {
                 return true;
             }
             for (Wire wire : node.wires()) {
+                System.out.println(wire);
                 queue.add(wire.opposite(node));
             }
         }
@@ -38,5 +41,19 @@ public class Verificator {
 
     public boolean wireExists(Wire wire) {
         return oneWire(wire.from(), wire.to());
+    }
+
+    public boolean unique(Node node) {
+        for (Element element : model.elements()) {
+            if (element.adjacent(node)) {
+                return false;
+            }
+        }
+        for (Wire wire : model.wires()) {
+            if (wire.adjacent(node)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
