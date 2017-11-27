@@ -22,17 +22,39 @@ public class DrawableBattery extends Battery implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawLine(x() - Drawer.CELL_SIZE * 2, y(), x() - Drawer.CELL_SIZE / 3, y(), Drawer
-                .ELEMENTS_PAINT);
-        canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 3, y(),
-                Drawer
-                        .ELEMENTS_PAINT);
-        canvas.drawLine(x() - Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 7, x() - Drawer
-                .CELL_SIZE
-                / 3, y() + Drawer.CELL_SIZE * 3 / 7, Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() + Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 4, x() +
-                Drawer.CELL_SIZE
-                        / 3, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+        if (isHorizontal()) {
+            canvas.drawLine(x() - Drawer.CELL_SIZE * 2, y(), x() - Drawer.CELL_SIZE / 3, y(), Drawer
+                    .ELEMENTS_PAINT);
+            canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 3, y(),
+                    Drawer.ELEMENTS_PAINT);
+            if (from().x() < to.x()) {
+                canvas.drawLine(x() - Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 7, x() - Drawer
+                        .CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 7, Drawer.ELEMENTS_PAINT);
+                canvas.drawLine(x() + Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 4, x() +
+                        Drawer.CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+            } else {
+                canvas.drawLine(x() + Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 7, x() + Drawer
+                        .CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 7, Drawer.ELEMENTS_PAINT);
+                canvas.drawLine(x() - Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 4, x() -
+                        Drawer.CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+            }
+        } else {
+            canvas.drawLine(x(), y() - 2 * Drawer.CELL_SIZE, x(), y() - Drawer.CELL_SIZE / 3, Drawer
+                    .ELEMENTS_PAINT);
+            canvas.drawLine(x(), y() + 2 * Drawer.CELL_SIZE, x(), y() + Drawer.CELL_SIZE / 3, Drawer
+                    .ELEMENTS_PAINT);
+            if (from().y() < to.y()) {
+                canvas.drawLine(x() - Drawer.CELL_SIZE * 3 / 7, y() - Drawer.CELL_SIZE / 3, x() + Drawer
+                        .CELL_SIZE * 3 / 7, y() - Drawer.CELL_SIZE / 3, Drawer.ELEMENTS_PAINT);
+                canvas.drawLine(x() - Drawer.CELL_SIZE * 3 / 4, y() + Drawer.CELL_SIZE / 3, x() + Drawer
+                        .CELL_SIZE * 3 / 4, y() + Drawer.CELL_SIZE / 3, Drawer.ELEMENTS_PAINT);
+            } else {
+                canvas.drawLine(x() - Drawer.CELL_SIZE * 3 / 7, y() + Drawer.CELL_SIZE / 3, x() + Drawer
+                        .CELL_SIZE * 3 / 7, y() + Drawer.CELL_SIZE / 3, Drawer.ELEMENTS_PAINT);
+                canvas.drawLine(x() - Drawer.CELL_SIZE * 3 / 4, y() - Drawer.CELL_SIZE / 3, x() + Drawer
+                        .CELL_SIZE * 3 / 4, y() - Drawer.CELL_SIZE / 3, Drawer.ELEMENTS_PAINT);
+            }
+        }
     }
 }
 
