@@ -1,4 +1,6 @@
-package ru.spbau.mit.circuit.model;
+package ru.spbau.mit.circuit.model.elements;
+
+import ru.spbau.mit.circuit.model.point.Point;
 
 public class Battery extends Element {
 

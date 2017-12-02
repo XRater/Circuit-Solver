@@ -1,4 +1,7 @@
-package ru.spbau.mit.circuit.model;
+package ru.spbau.mit.circuit.model.elements;
+
+import ru.spbau.mit.circuit.model.point.InvalidPointException;
+import ru.spbau.mit.circuit.model.point.Point;
 
 abstract public class Element {
     private Point from;
@@ -16,6 +19,11 @@ abstract public class Element {
         }
         this.from = from;
         this.to = to;
+    }
+
+    public void setPosition(Point to, Point from) {
+        this.to = to;
+        this.from = from;
     }
 
     public Point getFrom() {
