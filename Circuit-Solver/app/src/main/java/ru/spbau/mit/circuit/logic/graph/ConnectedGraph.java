@@ -1,19 +1,18 @@
 package ru.spbau.mit.circuit.logic.graph;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.DecompositionSolver;
-import org.apache.commons.math3.linear.LUDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
-import org.apache.commons.math3.linear.SingularMatrixException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
+import ru.spbau.mit.circuit.logic.system_solving.LinearSystem;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
 
 public class ConnectedGraph {
 
@@ -23,11 +22,13 @@ public class ConnectedGraph {
     private int m = 0;
 
     private Set<Node> nodes = new HashSet<>();
-    private ArrayList<Edge> edges = new ArrayList<>();
+    private List<Edge> edges = new ArrayList<>();
 
-    private ArrayList<Cycle> cycles = new ArrayList<>();
+    private List<Cycle> cycles = new ArrayList<>();
 
     private RealVector solution;
+    private final List<Monom> variables = new ArrayList<>();
+    private final List<Monom> constants = new ArrayList<>();
 
     ConnectedGraph(Node root) {
         this.root = root;
@@ -36,25 +37,22 @@ public class ConnectedGraph {
 
     public void solve() throws CircuitShortingException {
         findCycles();
-        RealMatrix system = constructSystem();
-        RealVector voltages = constructAnswer();
-        System.out.println(voltages);
+        LinearSystem<Polynom, Polynom> system = constructSystem();
+//        RealVector voltages = constructAnswer();
 
-        DecompositionSolver solver = null;
-        try {
-            solver = new LUDecomposition(system).getSolver();
-            solution = solver.solve(voltages);
-        } catch (SingularMatrixException e) {
-            throw new CircuitShortingException();
-        }
-        //solution = solver.solve(voltages);
-
-        System.out.println(solution);
+//        DecompositionSolver solver;
+//        try {
+//            solver = new LUDecomposition(system).getSolver();
+//            solution = solver.solve(voltages);
+//        } catch (SingularMatrixException e) {
+//            throw new CircuitShortingException();
+//        }
     }
 
     public void setCurrents() {
-        for (int i = 0; i < edges.size(); i++) {
-            edges.get(i).setCurrent(solution.getEntry(i));
+        Iterator<Edge> iterator = edges.iterator();
+        for (int i = 0; iterator.hasNext(); i++) {
+            iterator.next().setCurrent(solution.getEntry(i));
         }
     }
 
@@ -79,31 +77,33 @@ public class ConnectedGraph {
         for (Edge edge : edges) {
             if (!edge.isInTree()) {
                 Cycle cycle = getCycle(edge);
-                System.out.println(cycle);
                 cycles.add(cycle);
             }
         }
     }
 
-    private RealMatrix constructSystem() {
-        RealMatrix system = new Array2DRowRealMatrix(m, m);
-        int index = 0;
+    private LinearSystem<Polynom, Polynom> constructSystem() {
+        LinearSystem<Polynom, Polynom> system = new LinearSystem<>(m);
+//        for ()
+//        int index = 0;
         for (Node node : nodes) {
-            system.setRowVector(index++, node.getEquation(m));
+            system.addEquation(node.getEquation(variables, constants));
         }
         for (Cycle cycle : cycles) {
-            system.setRowVector(index++, cycle.getEquation(m));
+//            system.addEquation(cycle.getEquation());
+//            system.setRowVector(index++, cycle.getEquation(m));
         }
-        for (int i = 0; i < m; i++) {
-            System.out.println(Arrays.toString(system.getRow(i)));
-        }
+//        for (int i = 0; i < m; i++) {
+//            System.out.println(Arrays.toString(system.getRow(i)));
+//        }
         return system;
     }
 
     private RealVector constructAnswer() {
         RealVector answer = new ArrayRealVector(m);
-        for (int i = 0; i <= m - n; i++) {
-            answer.setEntry(i + n - 1, cycles.get(i).getVoltage());
+        Iterator<Cycle> iterator = cycles.iterator();
+        for (int i = 0; iterator.hasNext(); i++) {
+            answer.setEntry(i + n - 1, iterator.next().getVoltage());
         }
         return answer;
     }
@@ -131,6 +131,8 @@ public class ConnectedGraph {
     }
 
     private void addEdge(Edge edge) {
+        variables.add(new Monom(edge.current()));
+        constants.add(new Monom(edge.charge()));
         edge.setIndex(edges.size());
         edges.add(edge);
         m++;

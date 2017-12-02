@@ -1,12 +1,13 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealVector;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import ru.spbau.mit.circuit.logic.system_solving.Equation;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
 
 class Node {
     private final List<Edge> edges = new LinkedList<>();
@@ -37,12 +38,14 @@ class Node {
         return new treeIterator();
     }
 
-    RealVector getEquation(int size) {
-        RealVector equation = new ArrayRealVector(size);
+    Equation<Polynom, Polynom> getEquation(List<Monom> variables, List<Monom> constants) {
+        Polynom vars = new Polynom(variables);
+        Polynom consts = new Polynom(constants);
         for (Edge edge : edges) {
-            equation.setEntry(edge.index(), edge.getDirection(this));
+
+            //            equation.setEntry(edge.index(), edge.getDirection(this));
         }
-        return equation;
+        return new Equation<>(vars, consts);
     }
 
     private class treeIterator implements Iterator<Edge> {
