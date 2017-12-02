@@ -1,72 +1,62 @@
 package ru.spbau.mit.circuit.model.elements;
 
-import ru.spbau.mit.circuit.model.point.InvalidPointException;
-import ru.spbau.mit.circuit.model.point.Point;
 
-abstract public class Element {
-    private Point from;
-    private Point to;
+import ru.spbau.mit.circuit.model.interfaces.Movable;
+import ru.spbau.mit.circuit.model.node.Node;
+import ru.spbau.mit.circuit.model.node.Point;
 
-    private double current; // TODO It should be a value.
-    private double voltage;
+abstract public class Element extends Item implements Movable {
 
-    protected Element(Point from, Point to) {
-        if (from.equals(to)) {
-            throw new InvalidPointException();
+    protected final Node from;
+    protected final Node to;
+    private Point center;
+
+    public Element(Node from, Node to) {
+        if (from.position().equals(to.position())) {
+            throw new InvalidElementException("End points are equal");
         }
         if (from.x() != to.x() && from.y() != to.y()) {
-            throw new InvalidPointException();
+            throw new InvalidElementException("Points are not on the one line");
         }
         this.from = from;
         this.to = to;
+        center = getCenter();
     }
 
-    public void setPosition(Point to, Point from) {
-        this.to = to;
-        this.from = from;
+    public Point center() {
+        return center;
     }
 
-    public Point getFrom() {
+    @Override
+    public int x() {
+        return center.x();
+    }
+
+    @Override
+    public int y() {
+        return center.y();
+    }
+
+    @Override
+    public void move(int dx, int dy) {
+        to.move(dx, dy);
+        from.move(dx, dy);
+        center = getCenter();
+    }
+
+    public Node from() {
         return from;
     }
 
-    public void setFrom(Point from) {
-        this.from = from;
-    }
-
-    public Point getTo() {
+    public Node to() {
         return to;
     }
 
-    public void setTo(Point to) {
-        this.to = to;
-    }
-
-    public double getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(double current) {
-        this.current = current;
-    }
-
-    public double getVoltage() {
-        return voltage;
-    }
-
-    public void setVoltage(double voltage) {
-        this.voltage = voltage;
-    }
-
-    public boolean isVertical() {
-        return from.x() == to.x();
-    }
-
-    public boolean isHorizontal() {
-        return from.y() == to.y();
-    }
-
     public void rotate() {
+        from.replace(new Point(center.x() + (center.y() - from.y()),
+                center.y() + (from.x() - center.x())));
+        to.replace(new Point(center.x() + (center.y() - to.y()),
+                center.y() + (to.x() - center.x())));
         //TODO
     }
 
@@ -74,8 +64,30 @@ abstract public class Element {
         //TODO
     }
 
+    public final boolean isVertical() {
+        return from.x() == to.x();
+    }
+
+    public final boolean isHorizontal() {
+        return from.y() == to.y();
+    }
+
+    public boolean adjacent(Node node) {
+        return node == from || node == to;
+    }
+
     @Override
     public String toString() {
-        return from.toString() + ":" + to.toString();
+        return "Element:" + from.toString() + ":" + to.toString();
     }
+
+    private Point getCenter() {
+        return Point.getCenter(from.position(), to.position());
+    }
+
+    abstract public String getCharacteristicName();
+
+    abstract public double getCharacteristicValue();
+
+    abstract public void setCharacteristicValue(double value);
 }

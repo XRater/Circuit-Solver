@@ -6,14 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
 
-class Node {
+class Vertex {
     private final List<Edge> edges = new LinkedList<>();
     private int ID; //FOR DEBUG
 
-    Node(int ID) {
+    Vertex(int ID) {
         this.ID = ID;
     }
 

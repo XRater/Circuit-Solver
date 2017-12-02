@@ -24,7 +24,7 @@ class Cycle {
 
     double getVoltage() {
         double voltage = 0;
-        Node curr = edges.get(0).getAdjacent(edges.get(1));
+        Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
         for (Edge edge : edges) {
             voltage += edge.getVoltage() * edge.getDirection(curr);
@@ -35,7 +35,7 @@ class Cycle {
 
     RealVector getEquation(int m) {
         RealVector equation = new ArrayRealVector(m);
-        Node curr = edges.get(0).getAdjacent(edges.get(1));
+        Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
         for (Edge edge : edges) {
             equation.setEntry(edge.index(), edge.getResistance() * edge.getDirection(curr));
