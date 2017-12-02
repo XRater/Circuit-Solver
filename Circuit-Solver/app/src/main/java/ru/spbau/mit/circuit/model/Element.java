@@ -4,7 +4,7 @@ abstract public class Element {
     private Point from;
     private Point to;
 
-    private double current; // TODO It should be a function.
+    private double current; // TODO It should be a value.
     private double voltage;
 
     protected Element(Point from, Point to) {
