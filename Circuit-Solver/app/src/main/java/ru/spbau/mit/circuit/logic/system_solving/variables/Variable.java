@@ -7,7 +7,7 @@ import ru.spbau.mit.circuit.logic.system_solving.FunctionExpression;
 
 public interface Variable extends Comparable<Variable> {
 
-    FunctionExpression value();
+    FunctionExpression function();
 
     int id();
 
@@ -15,4 +15,6 @@ public interface Variable extends Comparable<Variable> {
     default int compareTo(@NonNull Variable o) {
         return id() - o.id();
     }
+
+    void setFunction(FunctionExpression f);
 }

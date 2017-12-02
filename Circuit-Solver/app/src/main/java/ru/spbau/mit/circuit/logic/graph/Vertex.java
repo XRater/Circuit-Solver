@@ -1,11 +1,15 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
+import android.support.annotation.NonNull;
+
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
 
 class Vertex {
@@ -29,20 +33,29 @@ class Vertex {
         edges.add(e);
     }
 
+    @NonNull
     Iterable<Edge> getTreeEdges() {
         return this::treeEdgesIterator;
     }
 
+    @SuppressWarnings("WeakerAccess")
     Iterator<Edge> treeEdgesIterator() {
         return new treeIterator();
     }
 
     Equation<Polynom, Polynom> getEquation(List<Monom> variables, List<Monom> constants) {
-        Polynom vars = new Polynom(variables);
-        Polynom consts = new Polynom(constants);
+        List<Monom> variablesCpy = new ArrayList<>();
+        List<Monom> constantsCpy = new ArrayList<>();
+        for (Monom m : variables) {
+            variablesCpy.add(new Monom(m.variable()));
+        }
+        for (Monom m : constants) {
+            constantsCpy.add(new Monom(m.variable()));
+        }
+        Polynom vars = new Polynom(variablesCpy);
+        Polynom consts = new Polynom(constantsCpy);
         for (Edge edge : edges) {
-
-            //            equation.setEntry(edge.index(), edge.getDirection(this));
+            vars.addMonom(new Monom(edge.current(), edge.getDirection(this)));
         }
         return new Equation<>(vars, consts);
     }

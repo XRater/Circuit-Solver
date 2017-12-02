@@ -20,7 +20,12 @@ public class Derivative implements Variable {
     }
 
     @Override
-    public FunctionExpression value() {
+    public void setFunction(FunctionExpression f) {
+        functionExpression = f;
+    }
+
+    @Override
+    public FunctionExpression function() {
         return functionExpression;
     }
 

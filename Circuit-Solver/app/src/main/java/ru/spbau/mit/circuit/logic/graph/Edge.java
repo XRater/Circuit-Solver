@@ -14,9 +14,6 @@ class Edge {
     private final Variable current = new Derivative(charge);
     private final Variable inductive = new Derivative(current);
 
-    private final Element element;
-    private final Node from;
-    private final Node to;
     private final Item item;
     private final Vertex from;
     private final Vertex to;
@@ -27,12 +24,6 @@ class Edge {
         this.item = item;
         this.from = from;
         this.to = to;
-    }
-
-    @Override
-    public String toString() {
-        return "Edge " + String.valueOf(index) + ": (" + from + ", " + to + "): "
-                + charge + " : " + current;
     }
 
     public Vertex from() {
@@ -79,8 +70,8 @@ class Edge {
         return 0;
     }
 
-    void setCurrent(double current) {
-        item.setCurrent(current);
+    public void updateCurrent() {
+        item.setCurrent(current.function().getValue());
     }
 
     void addToTree() {
@@ -124,5 +115,11 @@ class Edge {
             throw new IllegalArgumentException();
         }
         return from.equals(vertex) ? to : from;
+    }
+
+    @Override
+    public String toString() {
+        return "Edge " + String.valueOf(index) + ": (" + from + ", " + to + "): "
+                + charge + " : " + current;
     }
 }

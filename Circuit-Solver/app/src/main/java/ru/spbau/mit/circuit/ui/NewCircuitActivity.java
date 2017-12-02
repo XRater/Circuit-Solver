@@ -97,7 +97,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Change " + element.getCharacteristicName())
                     .setView(taskEditText)
-                    .setPositiveButton("Set new value", (dialog1, which) -> {
+                    .setPositiveButton("Set new function", (dialog1, which) -> {
                         String value = String.valueOf(taskEditText.getText());
                         try {
                             element.setCharacteristicValue(Double.parseDouble(value));

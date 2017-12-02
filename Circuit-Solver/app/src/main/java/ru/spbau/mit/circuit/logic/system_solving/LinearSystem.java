@@ -17,6 +17,10 @@ public class LinearSystem<T extends Vector<T>, U extends Linear<U>> {
         this.eqSize = eqSize;
     }
 
+    public int size() {
+        return equations.size();
+    }
+
     public void addEquation(Equation<T, U> eq) {
         if (eqSize != eq.size()) {
             throw new IllegalEquationSizeException();
@@ -30,10 +34,6 @@ public class LinearSystem<T extends Vector<T>, U extends Linear<U>> {
 
     public double coefficient(int row, int col) {
         return equations.get(row).at(col);
-    }
-
-    public int size() {
-        return equations.size();
     }
 
     public void swap(int i, int j) {
@@ -50,7 +50,7 @@ public class LinearSystem<T extends Vector<T>, U extends Linear<U>> {
     private void zeroBottomPart() {
         for (int i = 0; i < size() - 1; i++) {
             for (int j = i + 1; j < size(); j++) {
-                if (coefficient(i, j) == 0) {
+                if (coefficient(j, i) == 0) {
                     continue;
                 }
                 if (coefficient(i, i) == 0) {
@@ -70,6 +70,9 @@ public class LinearSystem<T extends Vector<T>, U extends Linear<U>> {
                 throw new ZeroDeterminantException();
             }
             for (int j = i - 1; j >= 0; j--) {
+                if (coefficient(j, i) == 0) {
+                    continue;
+                }
                 double k = getMulCoefficient(coefficient(i, i), coefficient(j, i));
                 get(i).mul(k);
                 get(j).add(get(i));

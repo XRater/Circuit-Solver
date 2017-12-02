@@ -2,6 +2,7 @@ package ru.spbau.mit.circuit.logic.system_solving;
 
 
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Linear;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 
 public class Equation<T extends Vector<T>, U extends Linear<U>> implements Vector<Equation<T, U>> {
@@ -36,12 +37,22 @@ public class Equation<T extends Vector<T>, U extends Linear<U>> implements Vecto
         return coefficients.size();
     }
 
+    public T coefficients() {
+        return coefficients;
+    }
+
     public U constant() {
         return constant;
     }
 
+//    @Override
+//    public String toString() {
+//        return coefficients.toString() + " = " + constant.toString();
+//    }
+
+
     @Override
     public String toString() {
-        return coefficients.toString() + " = " + constant.toString();
+        return coefficients.toString() + " = " + ((Polynom) constant).constant();
     }
 }

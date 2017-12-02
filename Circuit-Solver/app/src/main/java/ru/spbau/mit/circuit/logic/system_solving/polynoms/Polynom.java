@@ -15,10 +15,12 @@ public class Polynom implements Vector<Polynom> {
     private final ArrayList<Monom> monoms;
     private final int size;
 
+    private double constant;
+
     public Polynom(Collection<Monom> monoms) {
         this.monoms = new ArrayList<>(monoms);
         Collections.sort(this.monoms);
-        size = monoms.size();
+        size = this.monoms.size();
         check();
     }
 
@@ -28,6 +30,17 @@ public class Polynom implements Vector<Polynom> {
         size = this.monoms.size();
         check();
     }
+
+    public Polynom(Collection<Monom> monoms, int constant) {
+        this(monoms);
+        this.constant = constant;
+    }
+
+    public Polynom(Monom[] monoms, int constant) {
+        this(monoms);
+        this.constant = constant;
+    }
+
 
     private void check() {
         Iterator<Monom> iterator = monoms.iterator();
@@ -42,6 +55,10 @@ public class Polynom implements Vector<Polynom> {
             }
             last = next;
         }
+    }
+
+    public double constant() {
+        return constant;
     }
 
     @Override
@@ -59,6 +76,21 @@ public class Polynom implements Vector<Polynom> {
         if (our.hasNext() || their.hasNext()) {
             throw new InvalidPolynomAdditionException();
         }
+        constant += p.constant;
+    }
+
+    public void addMonom(Monom monom) {
+        for (Monom m : monoms) {
+            if (m.compareTo(monom) == 0) {
+                m.add(monom);
+                return;
+            }
+        }
+        throw new InvalidPolynomAdditionException();
+    }
+
+    public void addConst(double v) {
+        constant += v;
     }
 
     @Override
@@ -66,6 +98,7 @@ public class Polynom implements Vector<Polynom> {
         for (Monom m : monoms) {
             m.mul(d);
         }
+        constant *= d;
     }
 
     @Override
@@ -78,7 +111,7 @@ public class Polynom implements Vector<Polynom> {
         return size;
     }
 
-    @Override
+/*    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         Iterator<Monom> iterator = monoms.iterator();
@@ -95,6 +128,33 @@ public class Polynom implements Vector<Polynom> {
             }
             sb.append(next.getStringValue());
         }
+        if (constant > 0) {
+            sb.append(" + ").append(constant);
+        } else if (constant < 0) {
+            sb.append(" - ").append(-constant);
+        }
         return sb.toString();
+    }
+*/
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Monom m : monoms) {
+            if (m.coefficient() > 0) {
+                sb.append(" +").append(Math.round(Math.abs(m.coefficient())));
+            }
+            if (m.coefficient() == 0) {
+                sb.append(" +").append(Math.round(Math.abs(m.coefficient())));
+            }
+            if (m.coefficient() < 0) {
+                sb.append(" -").append(Math.round(Math.abs(m.coefficient())));
+            }
+        }
+        return sb.toString();
+    }
+
+    public Monom monomAt(int i) {
+        return monoms.get(i);
     }
 }

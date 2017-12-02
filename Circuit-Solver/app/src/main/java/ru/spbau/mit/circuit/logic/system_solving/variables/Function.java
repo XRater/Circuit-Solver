@@ -22,8 +22,13 @@ public class Function implements Variable {
     }
 
     @Override
-    public FunctionExpression value() {
+    public FunctionExpression function() {
         return functionExpression;
+    }
+
+    @Override
+    public void setFunction(FunctionExpression f) {
+
     }
 
     @Override
@@ -43,5 +48,4 @@ public class Function implements Variable {
         }
         return name;
     }
-
 }

@@ -1,11 +1,13 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealVector;
-
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
+
+import ru.spbau.mit.circuit.logic.system_solving.Equation;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
 
 class Cycle {
 
@@ -22,26 +24,27 @@ class Cycle {
         edges.add(e);
     }
 
-    double getVoltage() {
-        double voltage = 0;
-        Vertex curr = edges.get(0).getAdjacent(edges.get(1));
-        curr = edges.get(0).getPair(curr);
-        for (Edge edge : edges) {
-            voltage += edge.getVoltage() * edge.getDirection(curr);
-            curr = edge.getPair(curr);
+    Equation<Polynom, Polynom> getEquation(List<Monom> variables, List<Monom> constants) {
+        List<Monom> variablesCpy = new ArrayList<>();
+        List<Monom> contantsCpy = new ArrayList<>();
+        for (Monom m : variables) {
+            variablesCpy.add(new Monom(m.variable()));
         }
-        return voltage;
-    }
+        for (Monom m : constants) {
+            contantsCpy.add(new Monom(m.variable()));
+        }
+        Polynom vars = new Polynom(variablesCpy);
+        Polynom consts = new Polynom(contantsCpy);
 
-    RealVector getEquation(int m) {
-        RealVector equation = new ArrayRealVector(m);
         Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
         for (Edge edge : edges) {
-            equation.setEntry(edge.index(), edge.getResistance() * edge.getDirection(curr));
+            vars.addMonom(new Monom(edge.current(), edge.getResistance() * edge.getDirection
+                    (curr)));
+            consts.addConst(edge.getVoltage() * edge.getDirection(curr));
             curr = edge.getPair(curr);
         }
-        return equation;
+        return new Equation<>(vars, consts);
     }
 
     @Override

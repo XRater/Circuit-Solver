@@ -21,6 +21,10 @@ public class Monom implements Comparable<Monom>, Linear<Monom> {
         cf = coefficient;
     }
 
+    public Variable variable() {
+        return var;
+    }
+
     public double coefficient() {
         return cf;
     }

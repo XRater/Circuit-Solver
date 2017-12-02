@@ -1,18 +1,21 @@
 package ru.spbau.mit.circuit.logic.graph;
 
-import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealVector;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
+import ru.spbau.mit.circuit.logic.system_solving.Equation;
+import ru.spbau.mit.circuit.logic.system_solving.FunctionExpression;
 import ru.spbau.mit.circuit.logic.system_solving.LinearSystem;
+import ru.spbau.mit.circuit.logic.system_solving.exceptions.ZeroDeterminantException;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
+import ru.spbau.mit.circuit.logic.system_solving.variables.Numerator;
+import ru.spbau.mit.circuit.logic.system_solving.variables.Variable;
 
 public class ConnectedGraph {
 
@@ -31,6 +34,7 @@ public class ConnectedGraph {
     private final List<Monom> constants = new ArrayList<>();
 
     ConnectedGraph(Vertex root) {
+        Numerator.refresh();
         this.root = root;
         n++;
     }
@@ -38,21 +42,21 @@ public class ConnectedGraph {
     public void solve() throws CircuitShortingException {
         findCycles();
         LinearSystem<Polynom, Polynom> system = constructSystem();
-//        RealVector voltages = constructAnswer();
-
-//        DecompositionSolver solver;
-//        try {
-//            solver = new LUDecomposition(system).getSolver();
-//            solution = solver.solve(voltages);
-//        } catch (SingularMatrixException e) {
-//            throw new CircuitShortingException();
-//        }
+        try {
+            system.solve();
+        } catch (ZeroDeterminantException e) {
+            throw new CircuitShortingException();
+        }
+        for (int i = 0; i < system.size(); i++) {
+            Equation<Polynom, Polynom> eq = system.get(i);
+            Variable v = eq.coefficients().monomAt(i).variable();
+            v.setFunction(new FunctionExpression(eq.constant().constant()));
+        }
     }
 
     public void setCurrents() {
-        Iterator<Edge> iterator = edges.iterator();
-        for (int i = 0; iterator.hasNext(); i++) {
-            iterator.next().setCurrent(solution.getEntry(i));
+        for (Edge edge : edges) {
+            edge.updateCurrent();
         }
     }
 
@@ -84,28 +88,15 @@ public class ConnectedGraph {
 
     private LinearSystem<Polynom, Polynom> constructSystem() {
         LinearSystem<Polynom, Polynom> system = new LinearSystem<>(m);
-//        for ()
-//        int index = 0;
-        for (Node node : nodes) {
+        for (Vertex node : vertices) {
+            System.out.println(node);
             system.addEquation(node.getEquation(variables, constants));
         }
         for (Cycle cycle : cycles) {
-//            system.addEquation(cycle.getEquation());
-//            system.setRowVector(index++, cycle.getEquation(m));
+            System.out.println(cycle);
+            system.addEquation(cycle.getEquation(variables, constants));
         }
-//        for (int i = 0; i < m; i++) {
-//            System.out.println(Arrays.toString(system.getRow(i)));
-//        }
         return system;
-    }
-
-    private RealVector constructAnswer() {
-        RealVector answer = new ArrayRealVector(m);
-        Iterator<Cycle> iterator = cycles.iterator();
-        for (int i = 0; iterator.hasNext(); i++) {
-            answer.setEntry(i + n - 1, iterator.next().getVoltage());
-        }
-        return answer;
     }
 
     private Cycle getCycle(Edge edge) {
@@ -144,6 +135,8 @@ public class ConnectedGraph {
         for (Edge edge : edges) {
             sb.append(edge.toString()).append("\n");
         }
+        sb.append("Variables ").append(variables.toString()).append("\n");
+        sb.append("Constants ").append(constants.toString()).append("\n");
         return sb.toString();
     }
 }

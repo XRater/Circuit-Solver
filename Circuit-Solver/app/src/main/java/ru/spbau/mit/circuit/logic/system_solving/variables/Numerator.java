@@ -1,7 +1,7 @@
 package ru.spbau.mit.circuit.logic.system_solving.variables;
 
 
-class Numerator {
+public class Numerator {
     private static int id = 0;
 
     public static void refresh() {
