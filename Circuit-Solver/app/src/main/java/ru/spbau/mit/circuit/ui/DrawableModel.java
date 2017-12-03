@@ -5,12 +5,14 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.elements.IllegalWireException;
+import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
@@ -20,11 +22,13 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class DrawableModel {
     private static Map<Point, Drawable> field = new HashMap<>();
+    private static List<DrawableWire> drawableWires = new ArrayList<>();
     private final Drawer drawer;
     private List<Drawable> drawables = new ArrayList<>();
-    private List<DrawableWire> drawableWires = new ArrayList<>();
+    private List<DrawableNode> realNodes = new ArrayList<>();
     private Activity activity;
-    private WireEnd holded;
+
+    private DrawableNode holded;
     private boolean showingCurrents;
 
     DrawableModel(Activity activity, Drawer drawer) {
@@ -36,12 +40,16 @@ public class DrawableModel {
         return field.get(p);
     }
 
-    public List<DrawableWire> wires() {
+    public static List<DrawableWire> wires() {
         return drawableWires;
     }
 
     public List<Drawable> drawables() {
         return drawables;
+    }
+
+    public List<DrawableNode> realNodes() {
+        return realNodes;
     }
 
     public boolean isShowingCurrents() {
@@ -177,11 +185,11 @@ public class DrawableModel {
     }
 
     private void addNewWirePosition(DrawableWire wire) {
-        ArrayList<Point> path = wire.getPath();
+        LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
             DrawableNode node = (DrawableNode) field.get(p);
             if (node == null) {
-                node = new DrawableNode(p, false);
+                node = new DrawableNode(p, false, wire);
                 field.put(p, node);
             }
             //node.addWire(wire); I forgot what it does.
@@ -190,7 +198,7 @@ public class DrawableModel {
     }
 
     private void deleteOldWirePosition(DrawableWire wire) {
-        ArrayList<Point> path = wire.getPath();
+        LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
             DrawableNode node = (DrawableNode) field.get(p);
             // FIXME
@@ -205,10 +213,12 @@ public class DrawableModel {
         wire.clearPath();
     }
 
-    public void connect(WireEnd chosen) {
+    public void connect(DrawableNode chosen) {
         DrawableWire dw = null;
+        makeRealIfNeсessary(holded);
+        makeRealIfNeсessary(chosen);
         try {
-            dw = new DrawableWire((DrawableNode) holded, (DrawableNode) chosen);
+            dw = new DrawableWire((DrawableNode) holded, chosen);
             MainActivity.ui.addToModel(dw);
         } catch (NodesAreAlreadyConnected ex) {
             Toast toast = Toast.makeText(activity.getApplicationContext(),
@@ -225,7 +235,49 @@ public class DrawableModel {
         redraw();
     }
 
-    public void hold(WireEnd chosen) {
+    private void makeRealIfNeсessary(DrawableNode node) {
+        if (!node.isRealNode()) {
+            node.makeReal();
+            realNodes.add(node);
+            try {
+                MainActivity.ui.addToModel(node);
+            } catch (NodesAreAlreadyConnected nodesAreAlreadyConnected) {
+                nodesAreAlreadyConnected.printStackTrace();
+            }
+            ArrayList<Wire> toBeDeleted = new ArrayList<>();
+            ArrayList<Wire> toBeAdded = new ArrayList<>();
+            for (Wire wire : node.wires()) {
+                deleteOldWirePosition((DrawableWire) wire);
+                drawableWires.remove(wire);
+                toBeDeleted.add(wire);
+                try {
+                    DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node);
+                    DrawableWire newWire2 = new DrawableWire((DrawableNode) wire.to(), node);
+                    drawableWires.add(newWire1);
+                    toBeAdded.add(newWire1);
+                    addNewWirePosition(newWire1);
+                    drawableWires.add(newWire2);
+                    toBeAdded.add(newWire2);
+                    addNewWirePosition(newWire2);
+                } catch (IllegalWireException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (Wire wire : toBeDeleted) {
+                MainActivity.ui.removeFromModel(wire);
+            }
+
+            for (Wire wire : toBeAdded) {
+                try {
+                    MainActivity.ui.addToModel(wire);
+                } catch (NodesAreAlreadyConnected nodesAreAlreadyConnected) {
+                    nodesAreAlreadyConnected.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void hold(DrawableNode chosen) {
         holded = chosen;
         redraw();
     }
@@ -262,6 +314,26 @@ public class DrawableModel {
         MainActivity.ui.removeFromModel((CircuitObject) chosen);
         drawables.remove(chosen);
         redraw();
+    }
+
+    public void removeWire(DrawableNode node) {
+//        ArrayList<Wire> toBeDeleted = new ArrayList<>();
+        if (node.wires().size() > 1)
+            throw new RuntimeException();
+        Wire wire = (Wire) node.wires().toArray()[0];
+        //for (Wire wire : node.wires()) {
+        deleteOldWirePosition((DrawableWire) wire);
+        drawableWires.remove(wire);
+        MainActivity.ui.removeFromModel(wire);
+//            toBeDeleted.add(wire);
+        // }
+//        for (Wire wire : toBeDeleted) {
+//            MainActivity.ui.removeFromModel(wire);
+//        }
+        //check holded
+        if (holded != null && field.get(holded.position()) == null) {
+            holded = null;
+        }
     }
 
     public void rotateElement(Element element) {

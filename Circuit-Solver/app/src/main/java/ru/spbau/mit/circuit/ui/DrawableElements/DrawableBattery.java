@@ -7,9 +7,11 @@ import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableNode;
 import ru.spbau.mit.circuit.ui.Drawer;
 
+import static ru.spbau.mit.circuit.ui.Drawer.NODE_RADIUS;
+import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
+
 
 public class DrawableBattery extends Battery implements Drawable {
-
 
     protected DrawableBattery(DrawableNode from, DrawableNode to) {
         super(from, to);
@@ -55,6 +57,8 @@ public class DrawableBattery extends Battery implements Drawable {
                         .CELL_SIZE * 3 / 4, y() - Drawer.CELL_SIZE / 3, Drawer.ELEMENTS_PAINT);
             }
         }
+        canvas.drawCircle(from.x(), from.y(), NODE_RADIUS, WIRE_PAINT);
+        canvas.drawCircle(to.x(), to.y(), NODE_RADIUS, WIRE_PAINT);
     }
 }
 

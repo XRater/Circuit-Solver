@@ -17,7 +17,6 @@ import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
-import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
@@ -74,18 +73,25 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             try {
                 MainActivity.ui.calculateCurrents();
                 drawableModel.changeShowingCurrents();
+                drawableModel.redraw();
+                drawableModel.changeShowingCurrents();
             } catch (CircuitShortingException e) {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Battery is shorted.", Toast.LENGTH_SHORT);
                 toast.show();
             }
-            drawableModel.redraw();
-            drawableModel.changeShowingCurrents();
         });
 
         delete = findViewById(R.id.delete);
         delete.setOnClickListener(v -> {
-            drawableModel.removeElement(chosen);
+            if (chosen instanceof Element) {
+                drawableModel.removeElement(chosen);
+            }
+            if (chosen instanceof DrawableNode) {
+                drawableModel.removeWire((DrawableNode) chosen);
+            }
+            makeButtonsInvisible();
+            drawableModel.redraw();
             chosen = null;
         });
 
@@ -132,7 +138,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-
     }
 
     @Override
@@ -145,17 +150,20 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     delete.setVisibility(View.VISIBLE);
                     changeValue.setVisibility(View.VISIBLE);
                     rotate.setVisibility(View.VISIBLE);
+                } else if (chosen instanceof DrawableNode) {
+                    DrawableNode node = (DrawableNode) chosen;
+                    if (!node.isRealNode() && node.wires().size() == 1) {
+                        delete.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    delete.setVisibility(View.INVISIBLE);
-                    changeValue.setVisibility(View.INVISIBLE);
-                    rotate.setVisibility(View.INVISIBLE);
+                    makeButtonsInvisible();
                 }
 
-                if (chosen instanceof WireEnd) {
+                if (chosen instanceof DrawableNode) {
                     if (drawableModel.holding()) {
-                        drawableModel.connect((WireEnd) chosen);
+                        drawableModel.connect((DrawableNode) chosen);
                     } else {
-                        drawableModel.hold((WireEnd) chosen);
+                        drawableModel.hold((DrawableNode) chosen);
                     }
                     //chosen = null;
                     return true;
@@ -215,5 +223,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         return Drawer.round(new Point(Math.round(x), Math.round(y)));
     }
 
-
+    private void makeButtonsInvisible() {
+        delete.setVisibility(View.INVISIBLE);
+        changeValue.setVisibility(View.INVISIBLE);
+        rotate.setVisibility(View.INVISIBLE);
+    }
 }

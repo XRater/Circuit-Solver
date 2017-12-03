@@ -14,6 +14,7 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 public class Drawer {
     public static final int CELL_SIZE = 80;
     public static final int FIELD_SIZE = 30;
+    public static final int NODE_RADIUS = CELL_SIZE / 7;
 
     public static final Paint ELEMENTS_PAINT = new Paint();
     public static final Paint WIRE_PAINT = new Paint();
@@ -86,6 +87,9 @@ public class Drawer {
         }
         for (DrawableWire wire : drawableModel.wires()) {
             wire.draw(canvas);
+        }
+        for (DrawableNode node : drawableModel.realNodes()) {
+            node.draw(canvas);
         }
         if (drawableModel.isShowingCurrents()) {
             showCurrents(drawableModel);
