@@ -11,6 +11,8 @@ import java.util.List;
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.VarMonom;
+import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();
@@ -43,19 +45,21 @@ class Vertex {
         return new treeIterator();
     }
 
-    Equation<Polynom, Polynom> getEquation(List<Monom> variables, List<Monom> constants) {
-        List<Monom> variablesCpy = new ArrayList<>();
-        List<Monom> constantsCpy = new ArrayList<>();
-        for (Monom m : variables) {
-            variablesCpy.add(new Monom(m.variable()));
+    Equation<Polynom<FunctionVariable>, Polynom<FunctionVariable>> getEquation(
+            List<Monom<FunctionVariable>> variables, List<Monom<FunctionVariable>> constants) {
+
+        List<Monom<FunctionVariable>> variablesCpy = new ArrayList<>();
+        List<Monom<FunctionVariable>> constantsCpy = new ArrayList<>();
+        for (Monom<FunctionVariable> m : variables) {
+            variablesCpy.add(new VarMonom(m.value()));
         }
-        for (Monom m : constants) {
-            constantsCpy.add(new Monom(m.variable()));
+        for (Monom<FunctionVariable> m : constants) {
+            constantsCpy.add(new VarMonom(m.value()));
         }
-        Polynom vars = new Polynom(variablesCpy);
-        Polynom consts = new Polynom(constantsCpy);
+        Polynom<FunctionVariable> vars = new Polynom<>(variablesCpy);
+        Polynom<FunctionVariable> consts = new Polynom<>(constantsCpy);
         for (Edge edge : edges) {
-            vars.addMonom(new Monom(edge.current(), edge.getDirection(this)));
+            vars.addMonom(new VarMonom(edge.current(), edge.getDirection(this)));
         }
         return new Equation<>(vars, consts);
     }

@@ -3,18 +3,16 @@ package ru.spbau.mit.circuit.logic.system_solving.variables;
 
 import android.support.annotation.NonNull;
 
-import ru.spbau.mit.circuit.logic.system_solving.FunctionExpression;
+public interface Variable<T> extends Comparable<Variable<T>> {
 
-public interface Variable extends Comparable<Variable> {
-
-    FunctionExpression function();
+    T function();
 
     int id();
 
     @Override
-    default int compareTo(@NonNull Variable o) {
+    default int compareTo(@NonNull Variable<T> o) {
         return id() - o.id();
     }
 
-    void setFunction(FunctionExpression f);
+    void setFunction(T f);
 }

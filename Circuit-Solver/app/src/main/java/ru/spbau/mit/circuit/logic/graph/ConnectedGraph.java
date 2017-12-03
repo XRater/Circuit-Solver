@@ -1,7 +1,5 @@
 package ru.spbau.mit.circuit.logic.graph;
 
-import org.apache.commons.math3.linear.RealVector;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,11 +7,13 @@ import java.util.Set;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
-import ru.spbau.mit.circuit.logic.system_solving.FunctionExpression;
 import ru.spbau.mit.circuit.logic.system_solving.LinearSystem;
 import ru.spbau.mit.circuit.logic.system_solving.exceptions.ZeroDeterminantException;
+import ru.spbau.mit.circuit.logic.system_solving.functions.Constant;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.VarMonom;
+import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Numerator;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Variable;
 
@@ -29,9 +29,8 @@ public class ConnectedGraph {
 
     private List<Cycle> cycles = new ArrayList<>();
 
-    private RealVector solution;
-    private final List<Monom> variables = new ArrayList<>();
-    private final List<Monom> constants = new ArrayList<>();
+    private final List<Monom<FunctionVariable>> variables = new ArrayList<>();
+    private final List<Monom<FunctionVariable>> constants = new ArrayList<>();
 
     ConnectedGraph(Vertex root) {
         Numerator.refresh();
@@ -41,16 +40,17 @@ public class ConnectedGraph {
 
     public void solve() throws CircuitShortingException {
         findCycles();
-        LinearSystem<Polynom, Polynom> system = constructSystem();
+        LinearSystem<Polynom<FunctionVariable>, Polynom<FunctionVariable>> system =
+                constructSystem();
         try {
             system.solve();
         } catch (ZeroDeterminantException e) {
             throw new CircuitShortingException();
         }
         for (int i = 0; i < system.size(); i++) {
-            Equation<Polynom, Polynom> eq = system.get(i);
-            Variable v = eq.coefficients().monomAt(i).variable();
-            v.setFunction(new FunctionExpression(eq.constant().constant()));
+            Equation<Polynom<FunctionVariable>, Polynom<FunctionVariable>> eq = system.get(i);
+            Variable v = eq.coefficients().monomAt(i).value();
+            v.setFunction(new Constant(eq.constant().constant()));
         }
     }
 
@@ -86,8 +86,9 @@ public class ConnectedGraph {
         }
     }
 
-    private LinearSystem<Polynom, Polynom> constructSystem() {
-        LinearSystem<Polynom, Polynom> system = new LinearSystem<>(m);
+    private LinearSystem<Polynom<FunctionVariable>, Polynom<FunctionVariable>> constructSystem() {
+        LinearSystem<Polynom<FunctionVariable>, Polynom<FunctionVariable>> system = new
+                LinearSystem<>(m);
         for (Vertex node : vertices) {
             System.out.println(node);
             system.addEquation(node.getEquation(variables, constants));
@@ -122,8 +123,8 @@ public class ConnectedGraph {
     }
 
     private void addEdge(Edge edge) {
-        variables.add(new Monom(edge.current()));
-        constants.add(new Monom(edge.charge()));
+        variables.add(new VarMonom(edge.current()));
+        constants.add(new VarMonom(edge.charge()));
         edge.setIndex(edges.size());
         edges.add(edge);
         m++;

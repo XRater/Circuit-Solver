@@ -3,16 +3,16 @@ package ru.spbau.mit.circuit.logic.graph;
 
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Function;
-import ru.spbau.mit.circuit.logic.system_solving.variables.Variable;
+import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 import ru.spbau.mit.circuit.model.elements.Battery;
 import ru.spbau.mit.circuit.model.elements.Item;
 import ru.spbau.mit.circuit.model.elements.Resistor;
 
 class Edge {
 
-    private final Variable charge = new Function();
-    private final Variable current = new Derivative(charge);
-    private final Variable inductive = new Derivative(current);
+    private final FunctionVariable charge = new Function();
+    private final FunctionVariable current = new Derivative(charge);
+    private final FunctionVariable inductive = new Derivative(current);
 
     private final Item item;
     private final Vertex from;
@@ -42,15 +42,15 @@ class Edge {
         this.index = index;
     }
 
-    public Variable charge() {
+    public FunctionVariable charge() {
         return charge;
     }
 
-    public Variable current() {
+    public FunctionVariable current() {
         return current;
     }
 
-    public Variable inductive() {
+    public FunctionVariable inductive() {
         return inductive;
     }
 

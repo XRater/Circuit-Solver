@@ -10,47 +10,53 @@ import java.util.Iterator;
 import ru.spbau.mit.circuit.logic.system_solving.exceptions.InvalidPolynomAdditionException;
 import ru.spbau.mit.circuit.logic.system_solving.exceptions.InvalidPolynomException;
 
-public class Polynom implements Vector<Polynom> {
+/**
+ * Sorted container of Monoms<T>.
+ * <p>
+ * M1 + M2 + ... + Mk + constant
+ *
+ * @param <T> type of Monom
+ */
+public class Polynom<T extends Comparable<? super T>> implements Vector<Polynom<T>> {
 
-    private final ArrayList<Monom> monoms;
+    private final ArrayList<Monom<T>> monoms;
     private final int size;
 
     private double constant;
 
-    public Polynom(Collection<Monom> monoms) {
+    public Polynom(Collection<Monom<T>> monoms) {
         this.monoms = new ArrayList<>(monoms);
-        Collections.sort(this.monoms);
+        Collections.sort(this.monoms, this::compare);
         size = this.monoms.size();
         check();
     }
 
-    public Polynom(Monom[] monoms) {
+    public Polynom(Monom<T>[] monoms) {
         this.monoms = new ArrayList<>(Arrays.asList(monoms));
-        Collections.sort(this.monoms);
+        Collections.sort(this.monoms, this::compare);
         size = this.monoms.size();
         check();
     }
 
-    public Polynom(Collection<Monom> monoms, int constant) {
+    public Polynom(Collection<Monom<T>> monoms, int constant) {
         this(monoms);
         this.constant = constant;
     }
 
-    public Polynom(Monom[] monoms, int constant) {
+    public Polynom(Monom<T>[] monoms, int constant) {
         this(monoms);
         this.constant = constant;
     }
-
 
     private void check() {
-        Iterator<Monom> iterator = monoms.iterator();
+        Iterator<Monom<T>> iterator = monoms.iterator();
         if (!iterator.hasNext()) {
             return;
         }
-        Monom last = iterator.next();
+        Monom<T> last = iterator.next();
         while (iterator.hasNext()) {
-            Monom next = iterator.next();
-            if (last.compareTo(next) >= 0) {
+            Monom<T> next = iterator.next();
+            if (compare(last, next) >= 0) {
                 throw new InvalidPolynomException();
             }
             last = next;
@@ -62,13 +68,13 @@ public class Polynom implements Vector<Polynom> {
     }
 
     @Override
-    public void add(Polynom p) {
-        Iterator<Monom> our = monoms.iterator();
-        Iterator<Monom> their = p.monoms.iterator();
+    public void add(Polynom<T> p) {
+        Iterator<Monom<T>> our = monoms.iterator();
+        Iterator<Monom<T>> their = p.monoms.iterator();
         while (our.hasNext() && their.hasNext()) {
-            Monom mo = our.next();
-            Monom mt = their.next();
-            if (mo.compareTo(mt) != 0) {
+            Monom<T> mo = our.next();
+            Monom<T> mt = their.next();
+            if (compare(mo, mt) != 0) {
                 throw new InvalidPolynomAdditionException();
             }
             mo.add(mt);
@@ -79,9 +85,9 @@ public class Polynom implements Vector<Polynom> {
         constant += p.constant;
     }
 
-    public void addMonom(Monom monom) {
-        for (Monom m : monoms) {
-            if (m.compareTo(monom) == 0) {
+    public void addMonom(Monom<T> monom) {
+        for (Monom<T> m : monoms) {
+            if (compare(m, monom) == 0) {
                 m.add(monom);
                 return;
             }
@@ -95,7 +101,7 @@ public class Polynom implements Vector<Polynom> {
 
     @Override
     public void mul(double d) {
-        for (Monom m : monoms) {
+        for (Monom<T> m : monoms) {
             m.mul(d);
         }
         constant *= d;
@@ -114,13 +120,13 @@ public class Polynom implements Vector<Polynom> {
 /*    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        Iterator<Monom> iterator = monoms.iterator();
+        Iterator<Monom<T>> iterator = monoms.iterator();
         if (!iterator.hasNext()) {
             return "0";
         }
         sb.append(iterator.next());
         while (iterator.hasNext()) {
-            Monom next = iterator.next();
+            Monom<T> next = iterator.next();
             if (next.coefficient() >= 0) {
                 sb.append(" + ");
             } else {
@@ -140,7 +146,7 @@ public class Polynom implements Vector<Polynom> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Monom m : monoms) {
+        for (Monom<T> m : monoms) {
             if (m.coefficient() > 0) {
                 sb.append(" +").append(Math.round(Math.abs(m.coefficient())));
             }
@@ -154,7 +160,11 @@ public class Polynom implements Vector<Polynom> {
         return sb.toString();
     }
 
-    public Monom monomAt(int i) {
+    public Monom<T> monomAt(int i) {
         return monoms.get(i);
+    }
+
+    private int compare(Monom<T> m1, Monom<T> m2) {
+        return m1.value().compareTo(m2.value());
     }
 }
