@@ -1,76 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <SurfaceView
         android:id="@+id/surface"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.56"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.43" />
 
-    <Button
-        android:id="@+id/newResistor"
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="Resistor" />
-
-    <Button
-        android:id="@+id/newCapacitor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/newResistor"
-        android:layout_marginTop="18dp"
-        android:text="Capacitor" />
-
-    <Button
-        android:id="@+id/play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="28dp"
-        android:text="play " />
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".15" />
+    />
 
     <Button
         android:id="@+id/newBattery"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/newCapacitor"
-        android:layout_marginTop="16dp"
-        android:text="Battery" />
+        android:layout_marginTop="0dp"
+        android:layout_toStartOf="@id/surface"
+        android:text="Battery"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/changeValue"
-        android:layout_width="wrap_content"
+        android:id="@+id/newResistor"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:text="value"
-        android:visibility="invisible" />
+        android:layout_below="@id/newBattery"
+        android:layout_toStartOf="@id/surface"
+        android:text="Resistor"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/newBattery" />
+
+    <Button
+        android:id="@+id/newCapacitor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/newResistor"
+        android:layout_toStartOf="@id/surface"
+        android:text="Capacitor"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/newResistor" />
+
+    <Button
+        android:id="@+id/play"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/newCapacitor"
+        android:layout_toStartOf="@id/surface"
+        android:text="play "
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/newCapacitor" />
 
     <Button
         android:id="@+id/delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="23dp"
-        android:layout_toEndOf="@+id/newCapacitor"
+        android:layout_alignBottom="@id/surface"
+        android:layout_alignLeft="@id/surface"
         android:text="delete"
-        android:visibility="invisible" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
+
+    <Button
+        android:id="@+id/changeValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/surface"
+        android:layout_toRightOf="@id/delete"
+        android:text="value"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rotate" />
+
 
     <Button
         android:id="@+id/rotate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/changeValue"
-        android:layout_marginEnd="135dp"
-        android:layout_toStartOf="@+id/changeValue"
+        android:layout_alignBottom="@id/surface"
+        android:layout_toRightOf="@id/changeValue"
         android:text="rotate"
-        android:visibility="invisible" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/delete" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
