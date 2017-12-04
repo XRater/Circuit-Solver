@@ -1,11 +1,10 @@
 package ru.spbau.mit.circuit.logic.system_solving;
 
 
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Gauss;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Linear;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 
-public class Equation<T extends Vector<T>, U extends Linear<U>> implements Vector<Equation<T, U>> {
+public class Equation<T extends Gauss<T>, U extends Linear<U>> implements Gauss<Equation<T, U>> {
 
     private final T coefficients;
     private final U constant;
@@ -28,8 +27,8 @@ public class Equation<T extends Vector<T>, U extends Linear<U>> implements Vecto
     }
 
     @Override
-    public double at(int index) {
-        return coefficients.at(index);
+    public double coefficientAt(int index) {
+        return coefficients.coefficientAt(index);
     }
 
     @Override
@@ -53,6 +52,6 @@ public class Equation<T extends Vector<T>, U extends Linear<U>> implements Vecto
 
     @Override
     public String toString() {
-        return coefficients.toString() + " = " + ((Polynom) constant).constant();
+        return coefficients.toString() + " = " + constant.toString();
     }
 }

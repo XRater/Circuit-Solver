@@ -9,6 +9,9 @@ public class Numerator {
     }
 
     public static int nextId() {
+        if (id == Integer.MAX_VALUE) {
+            refresh();
+        }
         return id++;
     }
 }

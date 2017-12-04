@@ -14,7 +14,7 @@ public class Point implements Centered, WireEnd {
 
     public static Point getCenter(Point a, Point b) {
         if ((a.x + b.x) % 2 != 0 || (a.y + b.y) % 2 != 0) {
-            throw new InvalidPointException("Float coordinate function");
+            throw new InvalidPointException("Float coordinate value");
         }
         return new Point((a.x + b.x) / 2, (a.y + b.y) / 2);
     }

@@ -1,13 +1,27 @@
 package ru.spbau.mit.circuit.logic.system_solving.functions;
 
 
-public class Exponent implements FunctionExpression {
+import android.support.annotation.NonNull;
 
-    private double power;
-    private double constant;
+public class Exponent implements FunctionExpression, Comparable<Exponent> {
+
+    private final double power;
+
+    Exponent(double power) {
+        this.power = power;
+    }
+
+    double power() {
+        return power;
+    }
 
     @Override
-    public double getValue() {
-        return 0;
+    public int compareTo(@NonNull Exponent o) {
+        return Double.compare(power, o.power);
+    }
+
+    @Override
+    public String toString() {
+        return "e^" + power;
     }
 }

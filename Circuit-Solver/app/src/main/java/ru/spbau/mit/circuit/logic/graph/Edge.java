@@ -2,17 +2,17 @@ package ru.spbau.mit.circuit.logic.graph;
 
 
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
-import ru.spbau.mit.circuit.logic.system_solving.variables.Function;
 import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 import ru.spbau.mit.circuit.model.elements.Battery;
+import ru.spbau.mit.circuit.model.elements.Capacitor;
 import ru.spbau.mit.circuit.model.elements.Item;
 import ru.spbau.mit.circuit.model.elements.Resistor;
 
 class Edge {
 
-    private final FunctionVariable charge = new Function();
-    private final FunctionVariable current = new Derivative(charge);
-    private final FunctionVariable inductive = new Derivative(current);
+    private final FunctionVariable charge = new FunctionVariable();
+    private final Derivative current = new Derivative(charge);
+    private final Derivative inductive = new Derivative(current);
 
     private final Item item;
     private final Vertex from;
@@ -46,11 +46,11 @@ class Edge {
         return charge;
     }
 
-    public FunctionVariable current() {
+    public Derivative current() {
         return current;
     }
 
-    public FunctionVariable inductive() {
+    public Derivative inductive() {
         return inductive;
     }
 
@@ -65,13 +65,21 @@ class Edge {
     double getResistance() {
         if (item instanceof Resistor) {
             Resistor resistor = (Resistor) item;
-            return resistor.getResistance();
+            return resistor.getCharacteristicValue();
+        }
+        return 0;
+    }
+
+    double getCapacity() {
+        if (item instanceof Capacitor) {
+            Capacitor resistor = (Capacitor) item;
+            return resistor.getCharacteristicValue();
         }
         return 0;
     }
 
     public void updateCurrent() {
-        item.setCurrent(current.function().getValue());
+        item.setCurrent(current.value());
     }
 
     void addToTree() {

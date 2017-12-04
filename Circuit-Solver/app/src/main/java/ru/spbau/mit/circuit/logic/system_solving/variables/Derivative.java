@@ -8,6 +8,10 @@ public class Derivative extends FunctionVariable {
         this.parent = parent;
     }
 
+    public FunctionVariable parent() {
+        return parent;
+    }
+
     @Override
     public String toString() {
         return parent.toString() + "'";

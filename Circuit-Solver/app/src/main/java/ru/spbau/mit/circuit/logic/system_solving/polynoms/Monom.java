@@ -1,14 +1,45 @@
 package ru.spbau.mit.circuit.logic.system_solving.polynoms;
 
 
-public interface Monom<T> extends Linear<Monom<T>> {
+import ru.spbau.mit.circuit.logic.system_solving.functions.exceptions.IllegalAdditionException;
 
-    double coefficient();
+public class Monom<T extends Comparable<? super T>> implements Linear<Monom<T>> {
 
-    T value();
+    protected final T value;
+    protected double coefficient;
 
-//    @Override
-//    default int compareTo(@NonNull Monom<T> o) {
-//        return value().compareTo(o.value());
-//    }
+    public Monom(T value) {
+        this.value = value;
+    }
+
+    public Monom(T value, double coefficient) {
+        this.value = value;
+        this.coefficient = coefficient;
+    }
+
+    public double coefficient() {
+        return coefficient;
+    }
+
+    public T value() {
+        return value;
+    }
+
+    @Override
+    public void add(Monom<T> item) {
+        if (item.value.compareTo(value) != 0) {
+            throw new IllegalAdditionException();
+        }
+        coefficient += item.coefficient;
+    }
+
+    @Override
+    public void mul(double d) {
+        coefficient *= d;
+    }
+
+    @Override
+    public String toString() {
+        return coefficient + ":" + value.toString();
+    }
 }

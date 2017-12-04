@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 import ru.spbau.mit.circuit.logic.system_solving.exceptions.IllegalEquationSizeException;
 import ru.spbau.mit.circuit.logic.system_solving.exceptions.ZeroDeterminantException;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Gauss;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Linear;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 
-public class LinearSystem<T extends Vector<T>, U extends Linear<U>> {
+public class LinearSystem<T extends Gauss<T>, U extends Linear<U>> {
 
     private final ArrayList<Equation<T, U>> equations = new ArrayList<>();
     private final int eqSize;
@@ -33,7 +33,7 @@ public class LinearSystem<T extends Vector<T>, U extends Linear<U>> {
     }
 
     public double coefficient(int row, int col) {
-        return equations.get(row).at(col);
+        return equations.get(row).coefficientAt(col);
     }
 
     public void swap(int i, int j) {

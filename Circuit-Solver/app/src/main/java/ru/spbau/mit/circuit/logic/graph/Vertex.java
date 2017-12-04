@@ -3,15 +3,15 @@ package ru.spbau.mit.circuit.logic.graph;
 
 import android.support.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.BoundedPolynom;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.VarMonom;
+import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
 import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 
 class Vertex {
@@ -45,21 +45,13 @@ class Vertex {
         return new treeIterator();
     }
 
-    Equation<Polynom<FunctionVariable>, Polynom<FunctionVariable>> getEquation(
-            List<Monom<FunctionVariable>> variables, List<Monom<FunctionVariable>> constants) {
+    Equation<BoundedPolynom<Derivative>, Polynom<FunctionVariable>> getEquation(
+            Polynom<Derivative> variables) {
 
-        List<Monom<FunctionVariable>> variablesCpy = new ArrayList<>();
-        List<Monom<FunctionVariable>> constantsCpy = new ArrayList<>();
-        for (Monom<FunctionVariable> m : variables) {
-            variablesCpy.add(new VarMonom(m.value()));
-        }
-        for (Monom<FunctionVariable> m : constants) {
-            constantsCpy.add(new VarMonom(m.value()));
-        }
-        Polynom<FunctionVariable> vars = new Polynom<>(variablesCpy);
-        Polynom<FunctionVariable> consts = new Polynom<>(constantsCpy);
+        BoundedPolynom<Derivative> vars = new BoundedPolynom<>(variables);
+        Polynom<FunctionVariable> consts = new Polynom<>();
         for (Edge edge : edges) {
-            vars.addMonom(new VarMonom(edge.current(), edge.getDirection(this)));
+            vars.addMonom(new Monom<Derivative>(edge.current(), edge.getDirection(this)));
         }
         return new Equation<>(vars, consts);
     }

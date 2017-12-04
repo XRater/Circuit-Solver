@@ -3,16 +3,43 @@ package ru.spbau.mit.circuit.logic.system_solving.variables;
 
 import android.support.annotation.NonNull;
 
-public interface Variable<T> extends Comparable<Variable<T>> {
+abstract public class Variable<T> implements Comparable<Variable<T>> {
 
-    T function();
+    protected final int id;
+    protected final String name;
+    protected T value;
 
-    int id();
-
-    @Override
-    default int compareTo(@NonNull Variable<T> o) {
-        return id() - o.id();
+    {
+        this.id = Numerator.nextId();
     }
 
-    void setFunction(T f);
+    public Variable() {
+        name = "";
+    }
+
+    public Variable(String name) {
+        this.name = name;
+    }
+
+    public T value() {
+        return value;
+    }
+
+    public void setValue(T f) {
+        value = f;
+    }
+
+    public int id() {
+        return id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public int compareTo(@NonNull Variable o) {
+        return id - o.id;
+    }
 }

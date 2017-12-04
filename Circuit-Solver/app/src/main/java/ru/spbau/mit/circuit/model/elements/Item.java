@@ -1,16 +1,17 @@
 package ru.spbau.mit.circuit.model.elements;
 
+import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 
 abstract public class Item implements CircuitObject {
-    private double current; // TODO It should be a function.
+    private FunctionExpression current; // TODO It should be a value.
     private double voltage;
 
-    public double getCurrent() {
+    public FunctionExpression getCurrent() {
         return current;
     }
 
-    public void setCurrent(double current) {
+    public void setCurrent(FunctionExpression current) {
         this.current = current;
     }
 
