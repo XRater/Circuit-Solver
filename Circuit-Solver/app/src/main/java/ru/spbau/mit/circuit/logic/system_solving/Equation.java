@@ -4,7 +4,8 @@ package ru.spbau.mit.circuit.logic.system_solving;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Gauss;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Linear;
 
-public class Equation<T extends Gauss<T>, U extends Linear<U>> implements Gauss<Equation<T, U>> {
+public class Equation<T extends Gauss<T>, U extends Linear<U>> implements
+        Gauss<Equation<T, U>> {
 
     private final T coefficients;
     private final U constant;

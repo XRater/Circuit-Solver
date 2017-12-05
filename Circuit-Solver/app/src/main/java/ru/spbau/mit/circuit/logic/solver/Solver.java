@@ -1,36 +1,26 @@
 package ru.spbau.mit.circuit.logic.solver;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.EigenDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
 import ru.spbau.mit.circuit.logic.system_solving.LinearSystem;
 import ru.spbau.mit.circuit.logic.system_solving.exceptions.ZeroDeterminantException;
-import ru.spbau.mit.circuit.logic.system_solving.functions.MonomExponent;
-import ru.spbau.mit.circuit.logic.system_solving.functions.MonomPolyExponent;
+import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
 import ru.spbau.mit.circuit.logic.system_solving.functions.PolyExponent;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.BoundedPolynom;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
+import ru.spbau.mit.circuit.logic.system_solving.functions.Zero;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
 import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 
 public class Solver {
 
     private static int n;
-    private static LinearSystem<BoundedPolynom<Derivative>, Polynom<FunctionVariable>>
+    private static LinearSystem<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>>
             system;
 
-    public static void solve(LinearSystem<BoundedPolynom<Derivative>,
-            Polynom<FunctionVariable>> systemToSolve) throws CircuitShortingException {
+    public static void solve(LinearSystem<Row<Derivative>,
+            Vector<FunctionVariable, FunctionExpression>> systemToSolve) throws
+            CircuitShortingException {
         system = systemToSolve;
         n = system.size();
 
@@ -51,21 +41,21 @@ public class Solver {
 //        }
 
         // Make new system
-        LinearSystem<BoundedPolynom<PolyExponent>, BoundedPolynom<PolyExponent>> partialSystem = new
-                LinearSystem<>(n);
+        LinearSystem<Row<PolyExponent>, Vector<PolyExponent, FunctionExpression>>
+                partialSystem = new LinearSystem<>(n);
 //        partialSystem.addEquation(new Equation<>(null, system.get(0).constant().constant()));
 
         // Solve it
 
 
         for (int i = 0; i < system.size(); i++) {
-            Equation<BoundedPolynom<Derivative>,
-                    Polynom<FunctionVariable>> eq = system.get(i);
-            FunctionVariable v = eq.coefficients().at(i).value();
-            v.setValue(new MonomExponent(0, 0));
+            Equation<Row<Derivative>,
+                    Vector<FunctionVariable, FunctionExpression>> eq = system.get(i);
+            FunctionVariable v = eq.coefficients().valueAt(i);
+            v.setValue(new Zero(0));
         }
     }
-
+/*
     private static List<PartialSolution> findGlobalSolution() {
         List<PartialSolution> solution = new ArrayList<>();
         RealMatrix matrix = getMatrix(system);
@@ -112,7 +102,7 @@ public class Solver {
             Polynom<FunctionVariable>> system) {
         RealMatrix matrix = new Array2DRowRealMatrix(system.size(), system.size());
         for (int i = 0; i < n; i++) {
-            Derivative derivative = system.get(i).coefficients().at(i).value();
+            Derivative derivative = system.get(i).coefficients().valueAt(i).value();
             Polynom<FunctionVariable> polynom = system.get(i).constant();
 //            Iterator<Monom<FunctionVariable>> iterator = polynom.monoms().iterator();
             for (int j = 0; j < n; j++) {
@@ -137,4 +127,5 @@ public class Solver {
         }
         return realRoots;
     }
+*/
 }

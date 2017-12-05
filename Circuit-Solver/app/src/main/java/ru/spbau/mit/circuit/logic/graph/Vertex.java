@@ -3,14 +3,16 @@ package ru.spbau.mit.circuit.logic.graph;
 
 import android.support.annotation.NonNull;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.BoundedPolynom;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
+import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
+import ru.spbau.mit.circuit.logic.system_solving.functions.Zero;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
 import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 
@@ -35,6 +37,7 @@ class Vertex {
         edges.add(e);
     }
 
+    @SuppressWarnings("NullableProblems")
     @NonNull
     Iterable<Edge> getTreeEdges() {
         return this::treeEdgesIterator;
@@ -45,13 +48,13 @@ class Vertex {
         return new treeIterator();
     }
 
-    Equation<BoundedPolynom<Derivative>, Polynom<FunctionVariable>> getEquation(
-            Polynom<Derivative> variables) {
+    Equation<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>> getEquation(
+            Collection<Derivative> variables) {
 
-        BoundedPolynom<Derivative> vars = new BoundedPolynom<>(variables);
-        Polynom<FunctionVariable> consts = new Polynom<>();
+        Row<Derivative> vars = new Row<>(variables);
+        Vector<FunctionVariable, FunctionExpression> consts = new Vector<>(new Zero());
         for (Edge edge : edges) {
-            vars.addMonom(new Monom<Derivative>(edge.current(), edge.getDirection(this)));
+            vars.add(edge.current(), edge.getDirection(this));
         }
         return new Equation<>(vars, consts);
     }

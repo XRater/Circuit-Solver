@@ -2,12 +2,14 @@ package ru.spbau.mit.circuit.logic.graph;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.BoundedPolynom;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
+import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
+import ru.spbau.mit.circuit.logic.system_solving.functions.Zero;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
 import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 
@@ -26,22 +28,20 @@ class Cycle {
         edges.add(e);
     }
 
-    Equation<BoundedPolynom<Derivative>, Polynom<FunctionVariable>> getEquation(
-            Polynom<Derivative> variables) {
+    Equation<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>> getEquation(
+            Collection<Derivative> variables) {
 
-        BoundedPolynom<Derivative> vars = new BoundedPolynom<>(variables);
-        Polynom<FunctionVariable> consts = new Polynom<>();
+        Row<Derivative> vars = new Row<>(variables);
+        Vector<FunctionVariable, FunctionExpression> consts = new Vector<>(new Zero());
 
         Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
         for (Edge edge : edges) {
-            vars.addMonom(new Monom<>(edge.current(), edge.getResistance() * edge.getDirection
-                    (curr)));
+            vars.add(edge.current(), edge.getResistance() * edge.getDirection(curr));
             if (edge.getCapacity() != 0) {
-                consts.add(new Monom<>(edge.charge(), edge.getDirection(curr) / edge
-                        .getCapacity()));
+                consts.add(edge.charge(), edge.getDirection(curr) / edge.getCapacity());
             }
-//            consts.addConst(edge.getVoltage() * edge.getDirection(curr));
+            consts.addConst(new Zero(edge.getVoltage() * edge.getDirection(curr)));
             curr = edge.getPair(curr);
         }
         return new Equation<>(vars, consts);

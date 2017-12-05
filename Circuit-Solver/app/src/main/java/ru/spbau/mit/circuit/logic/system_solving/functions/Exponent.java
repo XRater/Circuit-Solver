@@ -3,7 +3,7 @@ package ru.spbau.mit.circuit.logic.system_solving.functions;
 
 import android.support.annotation.NonNull;
 
-public class Exponent implements FunctionExpression, Comparable<Exponent> {
+public class Exponent implements Comparable<Exponent> {
 
     private final double power;
 

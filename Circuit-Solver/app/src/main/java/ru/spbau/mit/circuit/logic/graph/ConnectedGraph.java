@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,9 +9,9 @@ import java.util.Set;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.solver.Solver;
 import ru.spbau.mit.circuit.logic.system_solving.LinearSystem;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.BoundedPolynom;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Monom;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Polynom;
+import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
 import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Numerator;
@@ -27,7 +28,7 @@ public class ConnectedGraph {
 
     private List<Cycle> cycles = new ArrayList<>();
 
-    private final Polynom<Derivative> variables = new Polynom<>();
+    private final Collection<Derivative> variables = new ArrayList<>();
 
     ConnectedGraph(Vertex root) {
         Numerator.refresh();
@@ -37,7 +38,7 @@ public class ConnectedGraph {
 
     public void solve() throws CircuitShortingException {
         findCycles();
-        LinearSystem<BoundedPolynom<Derivative>, Polynom<FunctionVariable>> system =
+        LinearSystem<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>> system =
                 constructSystem();
         Solver.solve(system);
     }
@@ -74,9 +75,9 @@ public class ConnectedGraph {
         }
     }
 
-    private LinearSystem<BoundedPolynom<Derivative>, Polynom<FunctionVariable>>
+    private LinearSystem<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>>
     constructSystem() {
-        LinearSystem<BoundedPolynom<Derivative>, Polynom<FunctionVariable>> system = new
+        LinearSystem<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>> system = new
                 LinearSystem<>(m);
         for (Vertex node : vertices) {
             System.out.println(node);
@@ -112,7 +113,7 @@ public class ConnectedGraph {
     }
 
     private void addEdge(Edge edge) {
-        variables.add(new Monom<>(edge.current()));
+        variables.add(edge.current());
         edge.setIndex(edges.size());
         edges.add(edge);
         m++;
