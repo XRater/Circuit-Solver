@@ -3,7 +3,7 @@ package ru.spbau.mit.circuit.logic.system_solving.functions;
 
 import android.support.annotation.NonNull;
 
-public class PolyExponent implements Comparable<PolyExponent>, FunctionExpression {
+public class PolyExponent implements Comparable<PolyExponent> {
 
     private final Exponent exponent;
     private final Power power;

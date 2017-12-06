@@ -6,7 +6,6 @@ import ru.spbau.mit.circuit.logic.system_solving.LinearSystem;
 import ru.spbau.mit.circuit.logic.system_solving.exceptions.ZeroDeterminantException;
 import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
 import ru.spbau.mit.circuit.logic.system_solving.functions.PolyExponent;
-import ru.spbau.mit.circuit.logic.system_solving.functions.Zero;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
@@ -25,7 +24,7 @@ public class Solver {
         n = system.size();
 
         System.out.println(system);
-        System.out.println();
+        System.out.println("System");
         // Convert to Derivative = Sum of Functions
         try {
             system.solve();
@@ -52,7 +51,7 @@ public class Solver {
             Equation<Row<Derivative>,
                     Vector<FunctionVariable, FunctionExpression>> eq = system.get(i);
             FunctionVariable v = eq.coefficients().valueAt(i);
-            v.setValue(new Zero(0));
+            v.setValue(FunctionExpression.constant(1));
         }
     }
 /*

@@ -10,7 +10,6 @@ import java.util.List;
 
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
 import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
-import ru.spbau.mit.circuit.logic.system_solving.functions.Zero;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
@@ -51,9 +50,15 @@ class Vertex {
     Equation<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>> getEquation(
             Collection<Derivative> variables) {
 
+        System.err.println("Vertex:");
         Row<Derivative> vars = new Row<>(variables);
-        Vector<FunctionVariable, FunctionExpression> consts = new Vector<>(new Zero());
+        for (FunctionVariable variable : variables) {
+            System.err.println(variable.id());
+        }
+        Vector<FunctionVariable, FunctionExpression> consts = new Vector<>(FunctionExpression
+                .empty());
         for (Edge edge : edges) {
+            System.err.println(edge.current().id());
             vars.add(edge.current(), edge.getDirection(this));
         }
         return new Equation<>(vars, consts);

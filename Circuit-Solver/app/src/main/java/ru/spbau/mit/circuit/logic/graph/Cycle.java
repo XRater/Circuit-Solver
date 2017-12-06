@@ -7,7 +7,6 @@ import java.util.Deque;
 
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
 import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
-import ru.spbau.mit.circuit.logic.system_solving.functions.Zero;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
@@ -32,7 +31,8 @@ class Cycle {
             Collection<Derivative> variables) {
 
         Row<Derivative> vars = new Row<>(variables);
-        Vector<FunctionVariable, FunctionExpression> consts = new Vector<>(new Zero());
+        Vector<FunctionVariable, FunctionExpression> consts = new Vector<>(FunctionExpression
+                .empty());
 
         Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
@@ -41,7 +41,8 @@ class Cycle {
             if (edge.getCapacity() != 0) {
                 consts.add(edge.charge(), edge.getDirection(curr) / edge.getCapacity());
             }
-            consts.addConst(new Zero(edge.getVoltage() * edge.getDirection(curr)));
+            consts.addConst(FunctionExpression.constant(edge.getVoltage() * edge.getDirection
+                    (curr)));
             curr = edge.getPair(curr);
         }
         return new Equation<>(vars, consts);

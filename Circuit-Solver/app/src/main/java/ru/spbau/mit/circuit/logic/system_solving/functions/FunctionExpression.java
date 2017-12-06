@@ -1,17 +1,25 @@
 package ru.spbau.mit.circuit.logic.system_solving.functions;
 
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Linear;
+import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 
-public interface FunctionExpression extends Linear<FunctionExpression> {
+public class FunctionExpression extends Vector<PrimaryFunction, LinearConstant> {
 
-    @Override
-    default void add(FunctionExpression item) {
+    private static final LinearConstant lc = new LinearConstant();
 
+    private FunctionExpression() {
+        super(lc);
     }
 
-    @Override
-    default void mul(double d) {
-
+    private FunctionExpression(PrimaryFunction function, double cf) {
+        super(lc);
+        add(function, cf);
     }
 
+    public static FunctionExpression empty() {
+        return new FunctionExpression();
+    }
+
+    public static FunctionExpression constant(double c) {
+        return new FunctionExpression(new Identity(), c);
+    }
 }

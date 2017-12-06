@@ -37,7 +37,7 @@ public class Row<T extends Comparable<? super T>> implements Gauss<Row<T>> {
             cfs[i] += item.cfs[i];
             i++;
         }
-        if (!their.hasNext()) {
+        if (their.hasNext()) {
             throw new IllegalAdditionException();
         }
     }
@@ -47,6 +47,7 @@ public class Row<T extends Comparable<? super T>> implements Gauss<Row<T>> {
         for (T t1 : data) {
             if (t1.compareTo(t) == 0) {
                 cfs[index] += cf;
+                return;
             }
             index++;
         }
@@ -72,5 +73,14 @@ public class Row<T extends Comparable<? super T>> implements Gauss<Row<T>> {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (double d : cfs) {
+            sb.append(d).append(" ");
+        }
+        return sb.toString();
     }
 }

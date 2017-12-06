@@ -3,7 +3,7 @@ package ru.spbau.mit.circuit.logic.system_solving.polynoms;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Vector<T extends Comparable<? super T>, S extends Linear<S>> implements
+public class Vector<T extends Comparable<? super T>, S extends Linear<? super S>> implements
         Linear<Vector<T, S>> {
 
     private final TreeMap<T, Double> data = new TreeMap<>();
@@ -15,7 +15,7 @@ public class Vector<T extends Comparable<? super T>, S extends Linear<S>> implem
 
     @Override
     public void add(Vector<T, S> item) {
-        constant.add(constant);
+        constant.add(item.constant);
         for (Map.Entry<T, Double> entry : item.data.entrySet()) {
             add(entry.getKey(), entry.getValue());
         }
@@ -40,4 +40,15 @@ public class Vector<T extends Comparable<? super T>, S extends Linear<S>> implem
             data.put(entry.getKey(), entry.getValue() * d);
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<T, Double> entry : data.entrySet()) {
+            sb.append(entry.getValue()).append(entry.getKey()).append(" ");
+        }
+        sb.append(constant);
+        return sb.toString();
+    }
+
 }
