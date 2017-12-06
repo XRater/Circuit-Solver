@@ -33,6 +33,10 @@ public class Vector<T extends Comparable<? super T>, S extends Linear<? super S>
         constant.add(s);
     }
 
+    public double get(T t) {
+        return data.get(t) == null ? 0 : data.get(t);
+    }
+
     @Override
     public void mul(double d) {
         constant.mul(d);

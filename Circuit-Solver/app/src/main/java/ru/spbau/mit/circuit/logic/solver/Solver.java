@@ -1,11 +1,21 @@
 package ru.spbau.mit.circuit.logic.solver;
 
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.system_solving.Equation;
 import ru.spbau.mit.circuit.logic.system_solving.LinearSystem;
 import ru.spbau.mit.circuit.logic.system_solving.exceptions.ZeroDeterminantException;
 import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
-import ru.spbau.mit.circuit.logic.system_solving.functions.PolyExponent;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
 import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
 import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
@@ -33,15 +43,15 @@ public class Solver {
         }
         System.out.println(system);
 
-        // Find partial solutions
-//        List<PartialSolution> solutions = findGlobalSolution();
+//         Find partial solutions
+        List<PartialSolution> solutions = findGlobalSolution();
 //        for (PartialSolution solution : solutions) {
 //            System.out.println(solution);
 //        }
 
         // Make new system
-        LinearSystem<Row<PolyExponent>, Vector<PolyExponent, FunctionExpression>>
-                partialSystem = new LinearSystem<>(n);
+//        LinearSystem<Row<PolyExponent>, Vector<PolyExponent, FunctionExpression>>
+//                partialSystem = new LinearSystem<>(n);
 //        partialSystem.addEquation(new Equation<>(null, system.get(0).constant().constant()));
 
         // Solve it
@@ -54,14 +64,14 @@ public class Solver {
             v.setValue(FunctionExpression.constant(1));
         }
     }
-/*
+
     private static List<PartialSolution> findGlobalSolution() {
         List<PartialSolution> solution = new ArrayList<>();
         RealMatrix matrix = getMatrix(system);
         Map<Double, List<RealVector>> vectors = getVectors(matrix);
         for (double root : vectors.keySet()) {
             for (RealVector vector : vectors.get(root)) {
-                solution.add(new PartialSolution(vector, new MonomPolyExponent(0, root, 1)));
+//                solution.add(new PartialSolution(vector, new MonomPolyExponent(0, root, 1)));
             }
         }
         return solution;
@@ -97,20 +107,20 @@ public class Solver {
         return root == -0.0 ? 0.0 : root;
     }
 
-    private static RealMatrix getMatrix(LinearSystem<BoundedPolynom<Derivative>,
-            Polynom<FunctionVariable>> system) {
+    private static RealMatrix getMatrix(LinearSystem<Row<Derivative>,
+            Vector<FunctionVariable, FunctionExpression>> system) {
         RealMatrix matrix = new Array2DRowRealMatrix(system.size(), system.size());
         for (int i = 0; i < n; i++) {
-            Derivative derivative = system.get(i).coefficients().valueAt(i).value();
-            Polynom<FunctionVariable> polynom = system.get(i).constant();
+            Derivative derivative = system.get(i).coefficients().valueAt(i);
+            Vector<FunctionVariable, FunctionExpression> right = system.get(i).constant();
 //            Iterator<Monom<FunctionVariable>> iterator = polynom.monoms().iterator();
             for (int j = 0; j < n; j++) {
-                matrix.setEntry(i, j, polynom.getCoefficient(derivative.parent()));
+                matrix.setEntry(i, j, right.get(derivative.parent()));
             }
         }
         return matrix;
     }
-
+/*
     private static Map<Double, Integer> getRealRoots(int n, EigenDecomposition eg) {
         Map<Double, Integer> realRoots = new HashMap<>();
         for (int i = 0; i < n; i++) {
