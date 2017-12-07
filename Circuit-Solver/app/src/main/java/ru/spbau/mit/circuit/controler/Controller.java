@@ -1,22 +1,26 @@
 package ru.spbau.mit.circuit.controler;
 
+import java.util.Collection;
+import java.util.List;
+
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
+import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {
 
     private final Logic logic;
     private final UI ui;
-    private Model model = new Model();
+    private Model model;
 
     public Controller() {
         logic = new Logic(this);
         ui = new UI(this);
-        model = new Model();
+        model = new Model(this);
     }
 
     public Logic getLogic() {
@@ -43,11 +47,23 @@ public class Controller {
         model.add(object);
     }
 
+    public void addAll(Collection<CircuitObject> objects) throws NodesAreAlreadyConnected {
+        model.addAll(objects);
+    }
+
     public void remove(CircuitObject object) {
         model.remove(object);
     }
 
+    public void removeAll(Collection<CircuitObject> objects) {
+        model.removeAll(objects);
+    }
+
     public void clearModel() {
         model.clear();
+    }
+
+    public void deleteUnnecessaryNodes(List<Node> unnecessaryNodes) {
+        ui.deleteUnnecessaryNodes(unnecessaryNodes);
     }
 }

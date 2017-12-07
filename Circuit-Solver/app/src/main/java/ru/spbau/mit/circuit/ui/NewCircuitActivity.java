@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import ru.spbau.mit.circuit.MainActivity;
@@ -50,7 +51,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         drawableModel = new DrawableModel(this, drawer);
         MainActivity.ui.setDrawableModel(drawableModel);
 
-        Button newResistor = findViewById(R.id.newResistor);
+        ImageButton newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
             DrawableResistor r = new DrawableResistor(drawableModel.getPossiblePosition());
             drawableModel.addElement(r);
@@ -155,6 +156,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     if (!node.isRealNode() && node.wires().size() == 1) {
                         delete.setVisibility(View.VISIBLE);
                     }
+                    makeButtonsInvisible();
                 } else {
                     makeButtonsInvisible();
                 }
@@ -181,7 +183,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             }
 
             case MotionEvent.ACTION_MOVE: {
-                System.out.println(motionEvent.getX() + " " + motionEvent.getY());
                 if (chosen == null) {
                     //Move field
                     Drawer.setOffsetX(oldOffsetX + Math.round(motionEvent.getX()) - startX);

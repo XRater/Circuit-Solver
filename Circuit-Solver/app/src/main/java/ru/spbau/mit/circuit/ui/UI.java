@@ -1,10 +1,13 @@
 package ru.spbau.mit.circuit.ui;
 
+import java.util.List;
+
 import ru.spbau.mit.circuit.controler.Controller;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
+import ru.spbau.mit.circuit.model.node.Node;
 
 public class UI {
     private final Controller controller;
@@ -38,5 +41,9 @@ public class UI {
 
     public void removeFromModel(CircuitObject chosen) {
         controller.remove(chosen);
+    }
+
+    public void deleteUnnecessaryNodes(List<Node> unnecessaryNodes) {
+        drawableModel.deleteUnnecessaryNodes(unnecessaryNodes);
     }
 }

@@ -2,10 +2,12 @@ package ru.spbau.mit.circuit.model;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ru.spbau.mit.circuit.controler.Controller;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.InvalidCircuitObjectAddition;
@@ -15,11 +17,16 @@ import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
 
 public class Model {
+    private Controller controller;
     private List<Element> elements = new ArrayList<>();
     private List<Wire> wires = new ArrayList<>();
     private Set<Node> nodes = new HashSet<>();
 
     private Verificator verificator = new Verificator(this);
+
+    public Model(Controller controller) {
+        this.controller = controller;
+    }
 
     public List<Element> elements() {
         return elements;
@@ -56,6 +63,7 @@ public class Model {
         } else {
             throw new IllegalArgumentException();
         }
+        controller.deleteUnnecessaryNodes(verificator.findUnnecessaryWires());
     }
 
     public void remove(CircuitObject object) {
@@ -93,6 +101,7 @@ public class Model {
         } else {
             throw new IllegalArgumentException();
         }
+        controller.deleteUnnecessaryNodes(verificator.findUnnecessaryWires());
     }
 
     // Who should remove unused nodes from the set?
@@ -123,5 +132,17 @@ public class Model {
         nodes.clear();
         elements.clear();
         wires.clear();
+    }
+
+    public void addAll(Collection<CircuitObject> objects) throws NodesAreAlreadyConnected {
+        for (CircuitObject object : objects) {
+            add(object);
+        }
+    }
+
+    public void removeAll(Collection<CircuitObject> objects) {
+        for (CircuitObject object : objects) {
+            remove(object);
+        }
     }
 }

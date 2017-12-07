@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
+import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
@@ -245,35 +247,37 @@ public class DrawableModel {
                 nodesAreAlreadyConnected.printStackTrace();
             }
             ArrayList<Wire> toBeDeleted = new ArrayList<>();
-            ArrayList<Wire> toBeAdded = new ArrayList<>();
-            for (Wire wire : node.wires()) {
-                deleteOldWirePosition((DrawableWire) wire);
-                drawableWires.remove(wire);
+            ArrayList<DrawableWire> toBeAdded = new ArrayList<>();
+            for (DrawableWire wire : drawableWires) {
+                if (!wire.getPath().contains(node.position())) {
+                    continue;
+                }
+                deleteOldWirePosition(wire);
                 toBeDeleted.add(wire);
                 try {
                     DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node);
                     DrawableWire newWire2 = new DrawableWire((DrawableNode) wire.to(), node);
-                    drawableWires.add(newWire1);
                     toBeAdded.add(newWire1);
-                    addNewWirePosition(newWire1);
-                    drawableWires.add(newWire2);
                     toBeAdded.add(newWire2);
-                    addNewWirePosition(newWire2);
                 } catch (IllegalWireException e) {
                     e.printStackTrace();
                 }
             }
             for (Wire wire : toBeDeleted) {
+                drawableWires.remove(wire);
                 MainActivity.ui.removeFromModel(wire);
             }
 
-            for (Wire wire : toBeAdded) {
+            for (DrawableWire wire : toBeAdded) {
                 try {
                     MainActivity.ui.addToModel(wire);
+                    drawableWires.add(wire);
+                    addNewWirePosition(wire);
                 } catch (NodesAreAlreadyConnected nodesAreAlreadyConnected) {
                     nodesAreAlreadyConnected.printStackTrace();
                 }
             }
+            redraw();
         }
     }
 
@@ -322,9 +326,7 @@ public class DrawableModel {
             throw new RuntimeException();
         Wire wire = (Wire) node.wires().toArray()[0];
         //for (Wire wire : node.wires()) {
-        deleteOldWirePosition((DrawableWire) wire);
-        drawableWires.remove(wire);
-        MainActivity.ui.removeFromModel(wire);
+        killWire((DrawableWire) wire);
 //            toBeDeleted.add(wire);
         // }
 //        for (Wire wire : toBeDeleted) {
@@ -337,6 +339,7 @@ public class DrawableModel {
     }
 
     public void rotateElement(Element element) {
+
         List<DrawableWire> adjacent = new ArrayList<>();
         for (DrawableWire wire : drawableWires) {
             if (wire.adjacent(element)) {
@@ -351,5 +354,46 @@ public class DrawableModel {
             wire.build();
             addNewWirePosition(wire);
         }
+    }
+
+    public void deleteUnnecessaryNodes(List<Node> unnecessaryNodes) {
+        for (Node node : unnecessaryNodes) {
+            Iterator<Wire> iter = node.wires().iterator();
+            DrawableWire del1 = (DrawableWire) iter.next();
+            DrawableWire del2 = (DrawableWire) iter.next();
+            DrawableNode from = null;
+            if (del1.from().position().equals(node.position())) {
+                from = new DrawableNode(del1.from().position());
+            } else {
+                from = new DrawableNode(del1.to().position());
+            }
+
+            DrawableNode to = null;
+            if (del2.from().position().equals(node.position())) {
+                to = new DrawableNode(del2.from().position());
+            } else {
+                to = new DrawableNode(del2.to().position());
+            }
+
+            killWire(del1);
+            killWire(del2);
+            try {
+                DrawableWire newWire = new DrawableWire(from, to);
+                drawableWires.add(newWire);
+                MainActivity.ui.addToModel(newWire);
+                addNewWirePosition(newWire);
+            } catch (IllegalWireException e) {
+                e.printStackTrace();
+            } catch (NodesAreAlreadyConnected nodesAreAlreadyConnected) {
+                nodesAreAlreadyConnected.printStackTrace();
+            }
+
+        }
+    }
+
+    private void killWire(DrawableWire wire) {
+        deleteOldWirePosition(wire);
+        MainActivity.ui.removeFromModel(wire);
+        drawableWires.remove(wire);
     }
 }
