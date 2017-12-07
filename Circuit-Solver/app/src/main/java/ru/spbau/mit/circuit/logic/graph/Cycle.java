@@ -2,15 +2,7 @@ package ru.spbau.mit.circuit.logic.graph;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
-
-import ru.spbau.mit.circuit.logic.system_solving.Equation;
-import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
-import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
-import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
 
 class Cycle {
 
@@ -27,27 +19,28 @@ class Cycle {
         edges.add(e);
     }
 
-    Equation<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>> getEquation(
-            Collection<Derivative> variables) {
+    /*
+        Equation<Vector<Derivative>, Row<FunctionVariable, FunctionExpression>> getEquation(
+                Collection<Derivative> variables) {
 
-        Row<Derivative> vars = new Row<>(variables);
-        Vector<FunctionVariable, FunctionExpression> consts = new Vector<>(FunctionExpression
-                .empty());
+            Vector<Derivative> vars = new Vector<>(variables);
+            Row<FunctionVariable, FunctionExpression> consts = new Row<>(FunctionExpression
+                    .empty());
 
-        Vertex curr = edges.get(0).getAdjacent(edges.get(1));
-        curr = edges.get(0).getPair(curr);
-        for (Edge edge : edges) {
-            vars.add(edge.current(), edge.getResistance() * edge.getDirection(curr));
-            if (edge.getCapacity() != 0) {
-                consts.add(edge.charge(), edge.getDirection(curr) / edge.getCapacity());
+            Vertex curr = edges.get(0).getAdjacent(edges.get(1));
+            curr = edges.get(0).getPair(curr);
+            for (Edge edge : edges) {
+                vars.add(edge.current(), edge.getResistance() * edge.getDirection(curr));
+                if (edge.getCapacity() != 0) {
+                    consts.add(edge.charge(), edge.getDirection(curr) / edge.getCapacity());
+                }
+                consts.addConst(FunctionExpression.constant(edge.getVoltage() * edge.getDirection
+                        (curr)));
+                curr = edge.getPair(curr);
             }
-            consts.addConst(FunctionExpression.constant(edge.getVoltage() * edge.getDirection
-                    (curr)));
-            curr = edge.getPair(curr);
+            return new Equation<>(vars, consts);
         }
-        return new Equation<>(vars, consts);
-    }
-
+    */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

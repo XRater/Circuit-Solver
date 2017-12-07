@@ -1,94 +1,130 @@
 package ru.spbau.mit.circuit.logic.solver;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.EigenDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
-import ru.spbau.mit.circuit.logic.CircuitShortingException;
-import ru.spbau.mit.circuit.logic.system_solving.Equation;
-import ru.spbau.mit.circuit.logic.system_solving.LinearSystem;
-import ru.spbau.mit.circuit.logic.system_solving.exceptions.ZeroDeterminantException;
-import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
-import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
-import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
-
+/*
 public class Solver {
 
     private static int n;
-    private static LinearSystem<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>>
-            system;
+    private static LinearSystem<Vector<Derivative>, Row<FunctionVariable, FunctionExpression>>
+            initSystem;
 
-    public static void solve(LinearSystem<Row<Derivative>,
-            Vector<FunctionVariable, FunctionExpression>> systemToSolve) throws
+    public static void solve(LinearSystem<Vector<Derivative>,
+            Row<FunctionVariable, FunctionExpression>> systemToSolve) throws
             CircuitShortingException {
-        system = systemToSolve;
-        n = system.size();
+        initSystem = systemToSolve;
+        n = initSystem.size();
 
-        System.out.println(system);
-        System.out.println("System");
         // Convert to Derivative = Sum of Functions
         try {
-            system.solve();
+            initSystem.solve();
         } catch (ZeroDeterminantException e) {
             throw new CircuitShortingException();
         }
-        System.out.println(system);
+        System.out.println("Diagonal:");
+        System.out.println(initSystem);
 
 //         Find partial solutions
-        List<PartialSolution> solutions = findGlobalSolution();
-//        for (PartialSolution solution : solutions) {
-//            System.out.println(solution);
-//        }
+        ArrayList<PartialSolution> solutions = findGlobalSolution();
+        System.out.println("Partical solutions:");
+        for (PartialSolution solution : solutions) {
+            System.out.println(solution.vector() + " " + solution.function().toString());
+        }
 
-        // Make new system
-//        LinearSystem<Row<PolyExponent>, Vector<PolyExponent, FunctionExpression>>
-//                partialSystem = new LinearSystem<>(n);
-//        partialSystem.addEquation(new Equation<>(null, system.get(0).constant().constant()));
+        // Init variables for c_i
+        Map<FunctionVariable, PartialSolution> derToSol = new HashMap<>();
+        ArrayList<Derivative> derivatives = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            FunctionVariable variable = new FunctionVariable("c" + i);
+            derivatives.add(new Derivative(variable));
+            derToSol.put(variable, solutions.get(i));
+        }
+
+        // Make new System for c_i
+        LinearSystem<Vector<Derivative>, FunctionExpression> partialSystem =
+                makePartialSystem(solutions, derivatives);
+
+        System.out.println("New initSystem:");
+        System.out.println(partialSystem);
 
         // Solve it
+        partialSystem.solve();
 
+        System.out.println("Solved:");
+        System.out.println(partialSystem);
 
-        for (int i = 0; i < system.size(); i++) {
-            Equation<Row<Derivative>,
-                    Vector<FunctionVariable, FunctionExpression>> eq = system.get(i);
-            FunctionVariable v = eq.coefficients().valueAt(i);
-            v.setValue(FunctionExpression.constant(1));
+        for (int i = 0; i < n; i++) {
+            Derivative derivative = partialSystem.get(i).coefficients().valueAt(i);
+            derivative.parent().setValue(partialSystem.get(i).constant().integrate());
         }
+
+
+        for (int i = 0; i < n; i++) {
+            Equation<Vector<Derivative>,
+                    Row<FunctionVariable, FunctionExpression>> eq = initSystem.get(i);
+            Derivative derivative = eq.coefficients().valueAt(i);
+            FunctionVariable function = derivative.parent();
+            FunctionExpression result = FunctionExpression.empty();
+            for (Map.Entry<FunctionVariable, PartialSolution> entry : derToSol.entrySet()) {
+                System.out.println(entry.getKey().value());
+                result.add(entry.getValue().function().mul(entry.getKey().value()), entry
+                        .getValue().coefficientAt(i));
+            }
+            function.setValue(result);
+            derivative.setValue();
+        }
+
+
     }
 
-    private static List<PartialSolution> findGlobalSolution() {
-        List<PartialSolution> solution = new ArrayList<>();
-        RealMatrix matrix = getMatrix(system);
+    @NonNull
+    private static LinearSystem<Vector<Derivative>, FunctionExpression> makePartialSystem
+            (List<PartialSolution> solutions, List<Derivative> derivatives) {
+        LinearSystem<Vector<Derivative>, FunctionExpression>
+                partialSystem = new LinearSystem<>(n);
+        for (int i = 0; i < n; i++) {
+            Vector<Derivative> left = new Vector<>(derivatives);
+            Iterator<Derivative> varsIter = derivatives.iterator();
+            Iterator<PartialSolution> solIter = solutions.iterator();
+            while (varsIter.hasNext()) {
+                left.add(varsIter.next(), solIter.next().coefficientAt(i));
+            }
+            partialSystem.addEquation(new Equation<>(left, initSystem.get(i).constant().constant
+                    ()));
+        }
+        return partialSystem;
+    }
+
+    private static ArrayList<PartialSolution> findGlobalSolution() {
+        ArrayList<PartialSolution> solutions = new ArrayList<>();
+        RealMatrix matrix = getMatrix(initSystem);
+        System.out.println("Matrix:");
+        for (int i = 0; i < n; i++) {
+            System.out.println(matrix.getRowVector(i));
+        }
         Map<Double, List<RealVector>> vectors = getVectors(matrix);
         for (double root : vectors.keySet()) {
             for (RealVector vector : vectors.get(root)) {
-//                solution.add(new PartialSolution(vector, new MonomPolyExponent(0, root, 1)));
+                solutions.add(new PartialSolution(vector, FunctionExpression.exponent(root)));
             }
         }
-        return solution;
+        return solutions;
     }
 
     private static Map<Double, List<RealVector>> getVectors(RealMatrix matrix) {
         EigenDecomposition eg = new EigenDecomposition(matrix);
         Map<Double, List<RealVector>> map = new HashMap<>();
-        RealMatrix roots = eg.getV();
-        System.out.println(roots);
+        RealMatrix vectors = eg.getV();
+//        System.out.println("Normalized");
+//        for (int i = 0; i < n; i++) {
+//            System.out.println(vectors.getColumnVector(i));
+//        }
+        //        System.out.println(vectors);
         //TODO complex roots
         for (int i = 0; i < n; i++) {
-            double root = getRoot(matrix, roots.getColumnMatrix(i));
+            double root = getRoot(matrix, vectors.getColumnMatrix(i));
             if (!map.containsKey(root)) {
                 map.put(root, new ArrayList<>());
             }
-            map.get(root).add(roots.getColumnVector(i));
+            map.get(root).add(vectors.getColumnVector(i));
         }
         return map;
     }
@@ -107,20 +143,23 @@ public class Solver {
         return root == -0.0 ? 0.0 : root;
     }
 
-    private static RealMatrix getMatrix(LinearSystem<Row<Derivative>,
-            Vector<FunctionVariable, FunctionExpression>> system) {
+    private static RealMatrix getMatrix(LinearSystem<Vector<Derivative>,
+            Row<FunctionVariable, FunctionExpression>> system) {
         RealMatrix matrix = new Array2DRowRealMatrix(system.size(), system.size());
         for (int i = 0; i < n; i++) {
-            Derivative derivative = system.get(i).coefficients().valueAt(i);
-            Vector<FunctionVariable, FunctionExpression> right = system.get(i).constant();
-//            Iterator<Monom<FunctionVariable>> iterator = polynom.monoms().iterator();
+//            System.out.println(i + ":");
+            Row<FunctionVariable, FunctionExpression> right = system.get(i).constant();
             for (int j = 0; j < n; j++) {
+                Derivative derivative = system.get(i).coefficients().valueAt(j);
+//                System.out.println(derivative);
                 matrix.setEntry(i, j, right.get(derivative.parent()));
             }
         }
         return matrix;
     }
-/*
+*/
+
+    /*
     private static Map<Double, Integer> getRealRoots(int n, EigenDecomposition eg) {
         Map<Double, Integer> realRoots = new HashMap<>();
         for (int i = 0; i < n; i++) {
@@ -137,4 +176,58 @@ public class Solver {
         return realRoots;
     }
 */
+/*
+    public static void main(String[] args) throws CircuitShortingException {
+        List<Derivative> derivatives = new ArrayList<>();
+        List<FunctionVariable> variables = new ArrayList<>();
+
+        FunctionVariable a = new FunctionVariable("a");
+        FunctionVariable b = new FunctionVariable("b");
+        variables.add(a);
+        variables.add(b);
+
+        Derivative a1 = new Derivative(a);
+        Derivative b1 = new Derivative(b);
+        derivatives.add(a1);
+        derivatives.add(b1);
+
+        Vector<Derivative> row1 = new Vector<>(derivatives);
+        row1.add(a1, 1);
+
+        Vector<Derivative> row2 = new Vector<>(derivatives);
+        row2.add(b1, 1);
+//        row2.add(a1, -1);
+
+
+        Row<FunctionVariable, FunctionExpression> vector1 = new Row<>(FunctionExpression
+                .constant(0));
+        vector1.add(a, 2);
+//        vector1.add(a, 2);
+        vector1.addConst(FunctionExpression.constant(1));
+
+        Row<FunctionVariable, FunctionExpression> vector2 = new Row<>(FunctionExpression
+                .constant(0));
+        vector2.add(b, 3);
+        vector2.addConst(FunctionExpression.constant(1));
+
+
+        LinearSystem<Vector<Derivative>, Row<FunctionVariable, FunctionExpression>> s =
+                new LinearSystem<>(2);
+        s.addEquation(new Equation<>(row1, vector1));
+        s.addEquation(new Equation<>(row2, vector2));
+        System.out.println("Initial system:");
+        System.out.println(s);
+        solve(s);
+
+        System.out.println("Functions:");
+        for (FunctionVariable variable : variables) {
+            System.out.println(variable.value());
+        }
+        System.out.println("Derivatives:");
+        for (FunctionVariable variable : derivatives) {
+            System.out.println(variable.value());
+        }
+    }
+
 }
+*/

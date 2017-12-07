@@ -7,14 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
-import ru.spbau.mit.circuit.logic.solver.Solver;
-import ru.spbau.mit.circuit.logic.system_solving.LinearSystem;
-import ru.spbau.mit.circuit.logic.system_solving.functions.FunctionExpression;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Row;
-import ru.spbau.mit.circuit.logic.system_solving.polynoms.Vector;
-import ru.spbau.mit.circuit.logic.system_solving.variables.Derivative;
-import ru.spbau.mit.circuit.logic.system_solving.variables.FunctionVariable;
-import ru.spbau.mit.circuit.logic.system_solving.variables.Numerator;
+import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
+import ru.spbau.mit.circuit.logic.gauss.variables.Numerator;
 
 public class ConnectedGraph {
 
@@ -38,9 +32,9 @@ public class ConnectedGraph {
 
     public void solve() throws CircuitShortingException {
         findCycles();
-        LinearSystem<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>> system =
-                constructSystem();
-        Solver.solve(system);
+//        LinearSystem<Vector<Derivative>, Row<FunctionVariable, FunctionExpression>> system =
+//                constructSystem();
+//        Solver.solve(system);
     }
 
     public void setCurrents() {
@@ -75,21 +69,22 @@ public class ConnectedGraph {
         }
     }
 
-    private LinearSystem<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>>
-    constructSystem() {
-        LinearSystem<Row<Derivative>, Vector<FunctionVariable, FunctionExpression>> system = new
-                LinearSystem<>(m);
-        for (Vertex node : vertices) {
-            System.out.println(node);
-            system.addEquation(node.getEquation(variables));
+    /*
+        private LinearSystem<Vector<Derivative>, Row<FunctionVariable, FunctionExpression>>
+        constructSystem() {
+            LinearSystem<Vector<Derivative>, Row<FunctionVariable, FunctionExpression>> system = new
+                    LinearSystem<>(m);
+            for (Vertex node : vertices) {
+                System.out.println(node);
+                system.addEquation(node.getEquation(variables));
+            }
+            for (Cycle cycle : cycles) {
+                System.out.println(cycle);
+                system.addEquation(cycle.getEquation(variables));
+            }
+            return system;
         }
-        for (Cycle cycle : cycles) {
-            System.out.println(cycle);
-            system.addEquation(cycle.getEquation(variables));
-        }
-        return system;
-    }
-
+    */
     private Cycle getCycle(Edge edge) {
         Path path = new Path();
         findPath(path, edge.from(), edge.to());
