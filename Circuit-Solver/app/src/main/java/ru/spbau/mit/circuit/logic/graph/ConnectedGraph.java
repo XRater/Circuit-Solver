@@ -7,8 +7,15 @@ import java.util.List;
 import java.util.Set;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
+import ru.spbau.mit.circuit.logic.gauss.LinearSystem;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
+import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
+import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
 import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
+import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
 import ru.spbau.mit.circuit.logic.gauss.variables.Numerator;
+import ru.spbau.mit.circuit.logic.solver.Solver;
 
 public class ConnectedGraph {
 
@@ -32,9 +39,12 @@ public class ConnectedGraph {
 
     public void solve() throws CircuitShortingException {
         findCycles();
-//        LinearSystem<Vector<Derivative>, Row<FunctionVariable, FunctionExpression>> system =
-//                constructSystem();
-//        Solver.solve(system);
+        LinearSystem<
+                Numerical,
+                Vector<Numerical, Derivative>,
+                Row<Numerical, FunctionVariable, PolyFunction>> system = constructSystem();
+        System.out.println(system);
+        Solver.solve(system);
     }
 
     public void setCurrents() {
@@ -69,22 +79,28 @@ public class ConnectedGraph {
         }
     }
 
-    /*
-        private LinearSystem<Vector<Derivative>, Row<FunctionVariable, FunctionExpression>>
-        constructSystem() {
-            LinearSystem<Vector<Derivative>, Row<FunctionVariable, FunctionExpression>> system = new
-                    LinearSystem<>(m);
-            for (Vertex node : vertices) {
-                System.out.println(node);
-                system.addEquation(node.getEquation(variables));
-            }
-            for (Cycle cycle : cycles) {
-                System.out.println(cycle);
-                system.addEquation(cycle.getEquation(variables));
-            }
-            return system;
+    private LinearSystem<
+            Numerical,
+            Vector<Numerical, Derivative>,
+            Row<Numerical, FunctionVariable, PolyFunction>> constructSystem() {
+
+        LinearSystem<Numerical,
+                Vector<Numerical, Derivative>,
+                Row<Numerical, FunctionVariable, PolyFunction>> system =
+                new LinearSystem<>(m);
+
+        for (Vertex node : vertices) {
+            System.out.println(node);
+            system.addEquation(node.getEquation(variables));
         }
-    */
+        for (Cycle cycle : cycles) {
+            System.out.println(cycle);
+            system.addEquation(cycle.getEquation(variables));
+        }
+
+        return system;
+    }
+
     private Cycle getCycle(Edge edge) {
         Path path = new Path();
         findPath(path, edge.from(), edge.to());

@@ -1,7 +1,7 @@
 package ru.spbau.mit.circuit.logic.gauss.variables;
 
 
-import ru.spbau.mit.circuit.logic.gauss.functions1.FunctionExpression;
+import ru.spbau.mit.circuit.logic.gauss.functions1.Function;
 
 public class Derivative extends FunctionVariable {
 
@@ -16,13 +16,13 @@ public class Derivative extends FunctionVariable {
     }
 
     public void setValue() {
-
-//        value = parent.value.differentiate();
-        throw new UnsupportedOperationException();
+//        value = parent.value;
+        value = parent.value.differentiate();
+//        throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setValue(FunctionExpression f) {
+    public void setValue(Function f) {
         throw new UnsupportedOperationException();
     }
 
@@ -31,4 +31,10 @@ public class Derivative extends FunctionVariable {
         return parent.toString() + "'";
     }
 
+    public static void main(String[] args) {
+//        BigDecimal d = new BigDecimal(-21.227446049250313);
+//        BigDecimal f = d.setScale(3, RoundingMode.HALF_EVEN);
+//        f = f.multiply(f).setScale(3.);
+//        System.out.println(f);
+    }
 }

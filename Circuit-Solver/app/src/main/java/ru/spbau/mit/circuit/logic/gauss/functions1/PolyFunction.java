@@ -1,26 +1,47 @@
 package ru.spbau.mit.circuit.logic.gauss.functions1;
 
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.gauss.functions1.exceptions.IllegalDoubleConvertionException;
 
-class PolyFunction implements Linear<Numerical, PolyFunction> {
+public class PolyFunction implements Linear<Numerical, PolyFunction> {
 
-    private Map<PrimaryFunction, PrimaryFunction> data = new TreeMap<>();
+    private final Map<PolyExponent, PolyExponent> data = new TreeMap<>();
+
+    private PolyFunction() {
+    }
+
+    PolyFunction(PolyExponent f) {
+        add(f);
+    }
+
+    public PolyFunction(PolyFunction function) {
+        for (PolyExponent f : function.data.values()) {
+            add(f);
+        }
+    }
 
     @Override
     public PolyFunction add(PolyFunction item) {
-        for (PrimaryFunction function : item.data.values()) {
-            add(function);
+        PolyFunction result = copy();
+        for (PolyExponent function : item.data.values()) {
+            result.add(function);
         }
-        return this;
+        return result;
     }
 
-    private void add(PrimaryFunction function) {
+    private void add(PolyExponent function) {
+        if (function.isZero()) {
+            return;
+        }
         if (data.containsKey(function)) {
+            PolyExponent exponent = data.get(function);
+            System.out.println(exponent + " " + function);
             data.put(function, data.get(function).add(function));
             if (data.get(function).isZero()) {
                 data.remove(function);
@@ -32,66 +53,96 @@ class PolyFunction implements Linear<Numerical, PolyFunction> {
 
     @Override
     public PolyFunction mul(Numerical cf) {
-        for (PrimaryFunction function : data.values()) {
-            function.mul(cf);
+        PolyFunction result = new PolyFunction();
+        for (PolyExponent function : data.values()) {
+            result.add(function.mul(cf));
         }
-        return this;
+        return result;
     }
 
     public PolyFunction mul(PolyFunction other) {
-        Map<PrimaryFunction, PrimaryFunction> old1 = new TreeMap<>();
-        Map<PrimaryFunction, PrimaryFunction> old2 = new TreeMap<>();
-        old1.putAll(data);
-        old2.putAll(other.data);
-        data.clear();
-        for (PrimaryFunction f : old1.values()) {
-            for (PrimaryFunction g : old2.values()) {
-                PrimaryFunction fg = f.copy().mul(g);
-                add(fg);
+        PolyFunction result = new PolyFunction();
+        for (PolyExponent f : data.values()) {
+            for (PolyExponent g : other.data.values()) {
+                result.add(f.mul(g));
             }
         }
-        return this;
-    }
-
-    public static void main(String[] args) {
-        PolyFunction pf = new PolyFunction();
-        pf.add(Functions.constant(1));
-        pf.add(Functions.exponent(2));
-        pf.add(Functions.power(2));
-        pf.add(Functions.power(1));
-
-        PolyFunction pf1 = new PolyFunction();
-//        pf1.add(Functions.power(1));
-//        pf1.add(Functions.power(2));
-//        pf1.add(Functions.exponent(1));
-        pf1.add(Functions.constant(1));
-
-        System.out.println(pf);
-        System.out.println(pf1);
-        System.out.println("Result:");
-        pf.mul(pf1);
-        System.out.println(pf);
-        System.out.println(pf1);
+        return result;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (PrimaryFunction f : data.values()) {
-            sb.append(f).append(" ");
+        if (data.values().isEmpty()) {
+            return "0";
+        }
+        Iterator<PolyExponent> iter = data.values().iterator();
+        sb.append(iter.next().toString());
+        while (iter.hasNext()) {
+            sb.append(" ").append(iter.next().toString());
         }
         return sb.toString();
     }
 
     public PolyFunction copy() {
-        PolyFunction ans = new PolyFunction();
-        for (PrimaryFunction function : data.values()) {
-            ans.add(function.copy());
-        }
-        return ans;
+        return new PolyFunction(this);
     }
 
     public boolean isZero() {
         return data.size() == 0;
     }
+
+    public boolean isIdentity() {
+        if (data.size() != 1) {
+            return false;
+        }
+        return data.values().iterator().next().isIdentity();
+    }
+
+    private PolyFunction div(PolyExponent gcd) {
+        PolyFunction answer = new PolyFunction();
+        for (PolyExponent function : data.values()) {
+            answer.add(function.div(gcd));
+        }
+        return answer;
+    }
+
+    PolyFunction div(PolyFunction function) {
+        if (function.data.size() == 1) {
+            return div(function.data.values().iterator().next());
+        }
+        return this;
+    }
+
+    public PolyFunction differentiate() {
+        PolyFunction ans = new PolyFunction();
+        for (PolyExponent exponent : data.values()) {
+            ans.add(new PolyExponent(
+                    exponent.cf() * exponent.mPow(), exponent.mPow() - 1, exponent.ePow()));
+            ans.add(new PolyExponent(
+                    exponent.cf() * exponent.ePow().doubleValue(), exponent.mPow(), exponent.ePow
+                    ()));
+        }
+        return ans;
+    }
+
+    public double doubleValue() {
+        if (data.size() == 0) {
+            return 0;
+        }
+        if (data.size() != 1) {
+            throw new IllegalDoubleConvertionException();
+        }
+        for (PolyExponent exponent : data.values()) {
+            return exponent.doubleValue();
+        }
+        throw new RuntimeException();
+    }
+
+    public static void main(String[] args) {
+        PolyFunction function = PolyFunctions.polyExponent(1, 2, 2);
+        System.out.println(function);
+        System.out.println(function.differentiate());
+    }
+
 }

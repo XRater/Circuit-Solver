@@ -1,9 +1,10 @@
 package ru.spbau.mit.circuit.logic.gauss.functions1;
 
 //Row<PrimaryFunction, Linear1Constant>
+/*
 @Deprecated
 public class FunctionExpression {
-/*
+
     private static final Linear1Constant lc = new Linear1Constant();
     private static Zero zero = new Zero();
 
@@ -105,5 +106,6 @@ public class FunctionExpression {
             return "";
         }
     }
-*/
+
 }
+*/

@@ -1,15 +1,15 @@
 package ru.spbau.mit.circuit.logic.gauss.variables;
 
 
-import ru.spbau.mit.circuit.logic.gauss.functions1.Function;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 
-public class FunctionVariable extends Variable<Function> {
+public class NumberVariable extends Variable<Numerical> {
 
-    public FunctionVariable() {
+    public NumberVariable() {
         super();
     }
 
-    public FunctionVariable(String name) {
+    public NumberVariable(String name) {
         super(name);
     }
 

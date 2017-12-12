@@ -45,7 +45,7 @@ public class Row<C extends Field<C>, T extends Comparable<? super T>, S extends 
 
     @Override
     public Row<C, T, S> mul(C d) {
-        constant.mul(d);
+        constant = constant.mul(d);
         for (Map.Entry<T, C> entry : data.entrySet()) {
             data.put(entry.getKey(), entry.getValue().mul(d));
         }

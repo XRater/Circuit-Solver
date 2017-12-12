@@ -8,8 +8,11 @@ import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 import ru.spbau.mit.circuit.logic.gauss.exceptions.IllegalEquationSizeException;
 import ru.spbau.mit.circuit.logic.gauss.exceptions.ZeroDeterminantException;
 
-public class LinearSystem<C extends Field<C>, T extends Gauss<C, T>, U extends Linear<C, ? super
-        U>> {
+public class LinearSystem<
+        C extends Field<C>,
+        T extends Gauss<C, T>,
+        U extends Linear<C, U>
+        > {
 
     private final ArrayList<Equation<C, T, U>> equations = new ArrayList<>();
     private final int eqSize;
@@ -78,12 +81,12 @@ public class LinearSystem<C extends Field<C>, T extends Gauss<C, T>, U extends L
                 get(i).mul(k);
                 get(j).add(get(i));
             }
-            get(i).mul(coefficient(i, i).copy().inverse());
+            get(i).mul(coefficient(i, i).inverse());
         }
     }
 
     private C getMulCoefficient(C a, C b) {
-        return b.copy().div(a).negate();
+        return b.div(a).negate();
     }
 
     @Override

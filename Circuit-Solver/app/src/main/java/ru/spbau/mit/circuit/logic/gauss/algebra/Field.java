@@ -1,13 +1,9 @@
 package ru.spbau.mit.circuit.logic.gauss.algebra;
 
 
-public interface Field<T extends Field<T>> {
+public interface Field<T extends Field<T>> extends Linear<T, T> {
 
     T copy();
-
-    T add(T f);
-
-    T mul(T f);
 
     T inverse();
 

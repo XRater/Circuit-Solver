@@ -3,13 +3,15 @@ package ru.spbau.mit.circuit.logic.solver;
 
 import org.apache.commons.math3.linear.RealVector;
 
-/*
+import ru.spbau.mit.circuit.logic.gauss.functions1.Function;
+
+
 class PartialSolution {
 
     private final RealVector vector;
-    private final FunctionExpression function;
+    private final Function function;
 
-    PartialSolution(RealVector vector, FunctionExpression function) {
+    PartialSolution(RealVector vector, Function function) {
         this.vector = vector;
         this.function = function;
     }
@@ -22,8 +24,12 @@ class PartialSolution {
         return vector.getEntry(index);
     }
 
-    public FunctionExpression function() {
+    public Function function() {
         return function;
+    }
+
+    public Function functionAt(int index) {
+        return function.mul(vector.getEntry(index));
     }
 
     @Override
@@ -31,4 +37,3 @@ class PartialSolution {
         return function.toString();
     }
 }
-*/

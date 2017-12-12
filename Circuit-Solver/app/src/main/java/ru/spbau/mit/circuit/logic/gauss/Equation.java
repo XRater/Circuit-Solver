@@ -4,12 +4,11 @@ package ru.spbau.mit.circuit.logic.gauss;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 
-public class Equation<C extends Field<C>, T extends Gauss<C, ? super T>, U extends Linear<C, ?
-        super U>>
+public class Equation<C extends Field<C>, T extends Gauss<C, T>, U extends Linear<C, U>>
         implements Gauss<C, Equation<C, T, U>> {
 
-    private final T coefficients;
-    private final U constant;
+    private T coefficients;
+    private U constant;
 
     public Equation(T coefficients, U constant) {
         this.coefficients = coefficients;
@@ -18,15 +17,15 @@ public class Equation<C extends Field<C>, T extends Gauss<C, ? super T>, U exten
 
     @Override
     public Equation<C, T, U> add(Equation<C, T, U> item) {
-        coefficients.add(item.coefficients);
-        constant.add(item.constant);
+        coefficients = coefficients.add(item.coefficients);
+        constant = constant.add(item.constant);
         return this;
     }
 
     @Override
     public Equation<C, T, U> mul(C c) {
-        coefficients.mul(c);
-        constant.mul(c);
+        coefficients = coefficients.mul(c);
+        constant = constant.mul(c);
         return this;
     }
 

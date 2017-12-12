@@ -10,10 +10,37 @@ public class Function implements Field<Function> {
     private PolyFunction up;
     private PolyFunction down;
 
+    public Function(PolyFunction f) {
+        up = f;
+        down = PolyFunctions.constant(1);
+    }
+
     private Function(Function f) {
         up = f.up;
         down = f.down;
     }
+
+    private Function(PolyFunction up, PolyFunction down) {
+        if (down.isZero()) {
+            throw new IllegalArgumentException();
+        }
+        this.down = down;
+        this.up = up;
+        simplify();
+    }
+
+    private void simplify() {
+//        PolyExponent gcd = gcd(up, down);
+//        up = up.div(gcd);
+//        down.div(gcd);
+        up = up.div(down);
+        down = down.div(down);
+    }
+
+//    private PolyExponent gcd(PolyFunction f, PolyFunction g) {
+//        int ePow = f.
+//        return null;
+//    }
 
     @Override
     public Function copy() {
@@ -22,17 +49,16 @@ public class Function implements Field<Function> {
 
     @Override
     public Function add(Function other) {
-        up.mul(other.down);
-        up.add(other.up.copy().mul(down));
-        down.mul(other.down);
-        return this;
+        return new Function(up.mul(other.down).add(other.up.mul(down)), down.mul(other.down));
     }
 
     @Override
     public Function mul(Function other) {
-        up.mul(other.up);
-        down.mul(other.down);
-        return this;
+        return new Function(up.mul(other.up), down.mul(other.down));
+    }
+
+    public Function mul(double d) {
+        return new Function(up.mul(Numerical.number(d)), down);
     }
 
     @Override
@@ -40,16 +66,12 @@ public class Function implements Field<Function> {
         if (up.isZero()) {
             throw new IllegalInverseException();
         }
-        PolyFunction tmp = up;
-        up = down;
-        down = tmp;
-        return this;
+        return new Function(down, up);
     }
 
     @Override
     public Function negate() {
-        up.mul(Numerical.number(-1));
-        return this;
+        return new Function(up.mul(Numerical.number(-1)), down);
     }
 
     @Override
@@ -62,4 +84,36 @@ public class Function implements Field<Function> {
         throw new UnsupportedOperationException();
     }
 
+    //TODO
+    public Function integrate() {
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        if (isZero()) {
+            return "(0)";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("(").append(up.toString());
+        if (down.isIdentity()) {
+            return sb.append(")").toString();
+        }
+        sb.append(")/(").append(down.toString()).append(")");
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+//        System.out.println(Functions.identity());
+//        System.out.println(Functions.constant(1).mul(Functions.exponent(-2)));
+        System.out.println(Functions.constant(1).add(Functions.constant(0)));
+    }
+
+    //TODO
+    public Function differentiate() {
+        if (down.isIdentity()) {
+            return new Function(up.differentiate(), down);
+        }
+        throw new UnsupportedOperationException();
+    }
 }
