@@ -48,10 +48,10 @@ class Cycle {
 
             if (edge.getCapacity() != 0) {
                 consts.add(edge.charge(),
-                        Numerical.number(edge.getDirection(curr) / edge.getCapacity()));
+                        Numerical.number(-edge.getDirection(curr) / edge.getCapacity()));
             }
 
-            consts.addConst(PolyFunctions.constant(edge.getVoltage() * edge.getDirection
+            consts.addConst(PolyFunctions.constant(-edge.getVoltage() * edge.getDirection
                     (curr)));
             curr = edge.getPair(curr);
         }
