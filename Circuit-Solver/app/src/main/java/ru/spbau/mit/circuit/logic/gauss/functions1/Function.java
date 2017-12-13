@@ -109,7 +109,6 @@ public class Function implements Field<Function> {
         System.out.println(Functions.constant(1).add(Functions.constant(0)));
     }
 
-    //TODO
     public Function differentiate() {
         if (down.isIdentity()) {
             return new Function(up.differentiate(), down);

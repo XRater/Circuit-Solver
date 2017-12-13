@@ -4,7 +4,7 @@ import ru.spbau.mit.circuit.logic.gauss.functions1.Function;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 
 abstract public class Item implements CircuitObject {
-    private Function current; // TODO It should be a value.
+    private Function current;
     private double voltage;
 
     public Function getCurrent() {
