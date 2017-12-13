@@ -40,7 +40,7 @@ public class Model {
         return nodes;
     }
 
-    public void add(CircuitObject object) throws NodesAreAlreadyConnected {
+    private void addOne(CircuitObject object) throws NodesAreAlreadyConnected {
         if (object instanceof Node) {
             nodes.add((Node) object);
         } else if (object instanceof Element) {
@@ -63,10 +63,21 @@ public class Model {
         } else {
             throw new IllegalArgumentException();
         }
-        controller.deleteUnnecessaryNodes(verificator.findUnnecessaryWires());
     }
 
-    public void remove(CircuitObject object) {
+    public void add(CircuitObject object) throws NodesAreAlreadyConnected {
+        addOne(object);
+        clearNodes();
+    }
+
+    public void addAll(Collection<CircuitObject> objects) throws NodesAreAlreadyConnected {
+        for (CircuitObject object : objects) {
+            addOne(object);
+        }
+        clearNodes();
+    }
+
+    private void removeOne(CircuitObject object) {
         if (object instanceof Node) {
             Node node = (Node) object;
             if (!nodes().contains(node)) {
@@ -101,13 +112,37 @@ public class Model {
         } else {
             throw new IllegalArgumentException();
         }
-        controller.deleteUnnecessaryNodes(verificator.findUnnecessaryWires());
     }
 
-    // Who should remove unused nodes from the set?
-//    public boolean removeWire(Wire wire) {
-//        return wires.remove(wire);
-//    }
+    public void remove(CircuitObject object) {
+        removeOne(object);
+        clearNodes();
+    }
+
+    public void removeAll(Collection<CircuitObject> objects) {
+        for (CircuitObject object : objects) {
+            removeOne(object);
+        }
+        clearNodes();
+    }
+
+    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded) throws NodesAreAlreadyConnected {
+        for (CircuitObject object : toBeDeleted) {
+            removeOne(object);
+        }
+        for (CircuitObject object : toBeAdded) {
+            addOne(object);
+        }
+        clearNodes();
+    }
+
+    private void clearNodes() {
+        Node node = verificator.findUnnecessaryWires();
+        while (node != null) {
+            controller.deleteUnnecessaryNodes(node);
+            node = verificator.findUnnecessaryWires();
+        }
+    }
 
     @Override
     public String toString() {
@@ -132,17 +167,5 @@ public class Model {
         nodes.clear();
         elements.clear();
         wires.clear();
-    }
-
-    public void addAll(Collection<CircuitObject> objects) throws NodesAreAlreadyConnected {
-        for (CircuitObject object : objects) {
-            add(object);
-        }
-    }
-
-    public void removeAll(Collection<CircuitObject> objects) {
-        for (CircuitObject object : objects) {
-            remove(object);
-        }
     }
 }
