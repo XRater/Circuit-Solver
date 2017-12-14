@@ -1,19 +1,21 @@
 package ru.spbau.mit.circuit.logic.graph;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.DecompositionSolver;
-import org.apache.commons.math3.linear.LUDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-import org.apache.commons.math3.linear.SingularMatrixException;
-
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
+import ru.spbau.mit.circuit.logic.gauss.LinearSystem;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
+import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
+import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
+import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
+import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.gauss.variables.Numerator;
+import ru.spbau.mit.circuit.logic.solver.Solver;
 
 public class ConnectedGraph {
 
@@ -23,38 +25,31 @@ public class ConnectedGraph {
     private int m = 0;
 
     private Set<Vertex> vertices = new HashSet<>();
-    private ArrayList<Edge> edges = new ArrayList<>();
+    private List<Edge> edges = new ArrayList<>();
 
-    private ArrayList<Cycle> cycles = new ArrayList<>();
+    private List<Cycle> cycles = new ArrayList<>();
 
-    private RealVector solution;
+    private final Collection<Derivative> variables = new ArrayList<>();
 
     ConnectedGraph(Vertex root) {
+        Numerator.refresh();
         this.root = root;
         n++;
     }
 
     public void solve() throws CircuitShortingException {
         findCycles();
-        RealMatrix system = constructSystem();
-        RealVector voltages = constructAnswer();
-        System.out.println(voltages);
-
-        DecompositionSolver solver = null;
-        try {
-            solver = new LUDecomposition(system).getSolver();
-            solution = solver.solve(voltages);
-        } catch (SingularMatrixException e) {
-            throw new CircuitShortingException();
-        }
-        //solution = solver.solve(voltages);
-
-        System.out.println(solution);
+        LinearSystem<
+                Numerical,
+                Vector<Numerical, Derivative>,
+                Row<Numerical, FunctionVariable, PolyFunction>> system = constructSystem();
+        System.out.println(system);
+        Solver.solve(system);
     }
 
     public void setCurrents() {
-        for (int i = 0; i < edges.size(); i++) {
-            edges.get(i).setCurrent(solution.getEntry(i));
+        for (Edge edge : edges) {
+            edge.updateCurrent();
         }
     }
 
@@ -79,33 +74,31 @@ public class ConnectedGraph {
         for (Edge edge : edges) {
             if (!edge.isInTree()) {
                 Cycle cycle = getCycle(edge);
-                System.out.println(cycle);
                 cycles.add(cycle);
             }
         }
     }
 
-    private RealMatrix constructSystem() {
-        RealMatrix system = new Array2DRowRealMatrix(m, m);
-        int index = 0;
-        for (Vertex vertex : vertices) {
-            system.setRowVector(index++, vertex.getEquation(m));
+    private LinearSystem<
+            Numerical,
+            Vector<Numerical, Derivative>,
+            Row<Numerical, FunctionVariable, PolyFunction>> constructSystem() {
+
+        LinearSystem<Numerical,
+                Vector<Numerical, Derivative>,
+                Row<Numerical, FunctionVariable, PolyFunction>> system =
+                new LinearSystem<>(m);
+
+        for (Vertex node : vertices) {
+            System.out.println(node);
+            system.addEquation(node.getEquation(variables));
         }
         for (Cycle cycle : cycles) {
-            system.setRowVector(index++, cycle.getEquation(m));
+            System.out.println(cycle);
+            system.addEquation(cycle.getEquation(variables));
         }
-        for (int i = 0; i < m; i++) {
-            System.out.println(Arrays.toString(system.getRow(i)));
-        }
-        return system;
-    }
 
-    private RealVector constructAnswer() {
-        RealVector answer = new ArrayRealVector(m);
-        for (int i = 0; i <= m - n; i++) {
-            answer.setEntry(i + n - 1, cycles.get(i).getVoltage());
-        }
-        return answer;
+        return system;
     }
 
     private Cycle getCycle(Edge edge) {
@@ -131,6 +124,7 @@ public class ConnectedGraph {
     }
 
     private void addEdge(Edge edge) {
+        variables.add(edge.current());
         edge.setIndex(edges.size());
         edges.add(edge);
         m++;
@@ -142,6 +136,7 @@ public class ConnectedGraph {
         for (Edge edge : edges) {
             sb.append(edge.toString()).append("\n");
         }
+        sb.append("Variables ").append(variables.toString()).append("\n");
         return sb.toString();
     }
 }

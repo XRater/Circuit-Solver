@@ -1,11 +1,18 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealVector;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
+
+import ru.spbau.mit.circuit.logic.gauss.Equation;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
+import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunctions;
+import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
+import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
+import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
+import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
 
 class Cycle {
 
@@ -22,26 +29,33 @@ class Cycle {
         edges.add(e);
     }
 
-    double getVoltage() {
-        double voltage = 0;
-        Vertex curr = edges.get(0).getAdjacent(edges.get(1));
-        curr = edges.get(0).getPair(curr);
-        for (Edge edge : edges) {
-            voltage += edge.getVoltage() * edge.getDirection(curr);
-            curr = edge.getPair(curr);
-        }
-        return voltage;
-    }
 
-    RealVector getEquation(int m) {
-        RealVector equation = new ArrayRealVector(m);
+    Equation<
+            Numerical,
+            Vector<Numerical, Derivative>,
+            Row<Numerical, FunctionVariable, PolyFunction>
+            > getEquation(Collection<Derivative> variables) {
+
+        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
+        Row<Numerical, FunctionVariable, PolyFunction> consts =
+                new Row<>(PolyFunctions.zero());
+
         Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
         for (Edge edge : edges) {
-            equation.setEntry(edge.index(), edge.getResistance() * edge.getDirection(curr));
+            vars.add(edge.current(),
+                    Numerical.number(edge.getResistance() * edge.getDirection(curr)));
+
+            if (edge.getCapacity() != 0) {
+                consts.add(edge.charge(),
+                        Numerical.number(-edge.getDirection(curr) / edge.getCapacity()));
+            }
+
+            consts.addConst(PolyFunctions.constant(-edge.getVoltage() * edge.getDirection
+                    (curr)));
             curr = edge.getPair(curr);
         }
-        return equation;
+        return new Equation<>(vars, consts);
     }
 
     @Override

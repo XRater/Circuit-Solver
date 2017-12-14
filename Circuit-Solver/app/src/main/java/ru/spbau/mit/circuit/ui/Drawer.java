@@ -106,7 +106,7 @@ public class Drawer {
     private void showCurrents(DrawableModel drawableModel) {
         for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
-            String current = String.format("%.2f", Math.abs(e.getCurrent()));
+            String current = e.getCurrent().toString();
             canvas.drawText(current + "A", e.x() - CELL_SIZE / 4, e.y() -
                             CELL_SIZE / 3 * 2,
                     ELEMENTS_PAINT);
@@ -120,20 +120,25 @@ public class Drawer {
             this.canvas = canvas;
         }
 
+        @Override
         public void drawLine(float startX, float startY, float stopX, float stopY, @NonNull Paint
                 paint) {
-            canvas.drawLine(startX + Drawer.offsetX, startY + Drawer.offsetY, stopX + Drawer.offsetX,
+            canvas.drawLine(startX + Drawer.offsetX, startY + Drawer.offsetY, stopX + Drawer
+                            .offsetX,
                     stopY + Drawer.offsetY, paint);
         }
 
+        @Override
         public void drawColor(int color) {
             canvas.drawColor(color);
         }
 
+        @Override
         public void drawCircle(float cx, float cy, float radius, @NonNull Paint paint) {
             canvas.drawCircle(cx + Drawer.offsetX, cy + Drawer.offsetY, radius, paint);
         }
 
+        @Override
         public void drawText(String text, float x, float y, @NonNull Paint paint) {
             canvas.drawText(text, x + Drawer.offsetX, y + Drawer.offsetY, paint);
         }
