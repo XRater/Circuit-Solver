@@ -137,10 +137,10 @@ public class Model {
     }
 
     private void clearNodes() {
-        Node node = verificator.findUnnecessaryWires();
+        Node node = verificator.findUnnecessaryNode();
         while (node != null) {
             controller.deleteUnnecessaryNodes(node);
-            node = verificator.findUnnecessaryWires();
+            node = verificator.findUnnecessaryNode();
         }
     }
 
