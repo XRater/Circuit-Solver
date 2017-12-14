@@ -74,4 +74,11 @@ public class Verificator {
         }
         return null;
     }
+
+    public boolean verify() {
+        if (findUnnecessaryNode() != null) {
+            return false;
+        }
+        return true;
+    }
 }

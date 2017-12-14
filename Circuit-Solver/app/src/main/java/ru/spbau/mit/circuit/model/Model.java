@@ -75,7 +75,7 @@ public class Model implements Serializable {
         for (CircuitObject object : objects) {
             addOne(object);
         }
-        if (verificator.findUnnecessaryNode() != null) {
+        if (!verificator.verify()) {
             throw new InvalidCircuitObjectAddition("There is a node with 2 or less wires");
         }
     }
