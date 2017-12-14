@@ -99,7 +99,6 @@ public class Controller {
         this.model = model2;
         ui.setCircuitWasLoaded();
         Intent intent = new Intent(activity.getApplicationContext(), NewCircuitActivity.class);
-        intent.putExtra("Model", model2);
         activity.startActivity(intent);
     }
 
