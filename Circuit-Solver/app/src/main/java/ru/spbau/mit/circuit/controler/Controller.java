@@ -13,6 +13,7 @@ import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
+import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.storage.DBHelper;
 import ru.spbau.mit.circuit.storage.Drive;
 import ru.spbau.mit.circuit.storage.Local;
@@ -22,6 +23,7 @@ public class Controller {
 
     private final Logic logic;
     private final UI ui;
+    private final Converter converter;
     public DBHelper dbHelper;
     private Model model;
     private Local localStorage;
@@ -31,8 +33,9 @@ public class Controller {
         logic = new Logic(this);
         ui = new UI(this);
         model = new Model(this);
-        localStorage = new Local(activity);
-        driveStorage = new Drive();
+        converter = new Converter(activity);
+//        localStorage = new Local(activity);
+//        driveStorage = new Drive();
     }
 
     public Logic getLogic() {
@@ -59,7 +62,7 @@ public class Controller {
         model.add(object);
     }
 
-    public void addAll(Collection<CircuitObject> objects) throws NodesAreAlreadyConnected {
+    public void addAll(List<CircuitObject> objects) throws NodesAreAlreadyConnected {
         model.addAll(objects);
     }
 
@@ -67,8 +70,13 @@ public class Controller {
         model.remove(object);
     }
 
-    public void removeAll(Collection<CircuitObject> objects) {
+    public void removeAll(List<CircuitObject> objects) {
         model.removeAll(objects);
+    }
+
+    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+            throws NodesAreAlreadyConnected {
+        model.removeThenAdd(toBeDeleted, toBeAdded);
     }
 
     public void clearModel() {
@@ -79,11 +87,27 @@ public class Controller {
         ui.deleteUnnecessaryNodes(unnecessaryNode);
     }
 
-
-    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded) throws NodesAreAlreadyConnected {
-        model.removeThenAdd(toBeDeleted, toBeAdded);
+    public void saveToNewFile(int storageNumber, Model model, String filename) {
+        try {
+            converter.saveToNewFile(storageNumber, model, filename);
+        } catch (IOException e) {
+            throw new RuntimeException();
+        }
     }
 
+    public Collection<String> getFiles(int storageNumber) {
+        return converter.getFiles(storageNumber);
+    }
+
+    public Model loadFromFile(int storageNumber, String filename) {
+        try {
+            return converter.loadFromFile(storageNumber, filename);
+        } catch (IOException e) {
+            throw new RuntimeException();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException();
+        }
+    }
 
     public void saveToLocalDB() {
         try {
