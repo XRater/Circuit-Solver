@@ -3,39 +3,37 @@ package ru.spbau.mit.circuit.logic.graph;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.model.elements.Item;
+import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.node.Node;
 
 public class Graph {
 
-    private HashMap<Point, VisitableNode> nodes = new HashMap<>();
+    private Map<Node, VisitableVertex> vertices = new HashMap<>();
 
     public Graph(Model model) {
 
         int number = 0; //FOR DEBUG
-        for (Element element : model.getElements()) {
-            if (!nodes.containsKey(element.getFrom())) {
-                System.out.println(element.getFrom().toString() + " " + number);
-                VisitableNode node = new VisitableNode(number++);
-                nodes.put(element.getFrom(), node);
-            }
-            if (!nodes.containsKey(element.getTo())) {
-                System.out.println(element.getTo().toString() + " " + number);
-                VisitableNode node = new VisitableNode(number++);
-                nodes.put(element.getTo(), node);
-            }
+        for (Node node : model.nodes()) {
+            vertices.put(node, new VisitableVertex(number++));
         }
-
-        for (Element element : model.getElements()) {
-            addNewEdge(nodes.get(element.getFrom()), nodes.get(element.getTo()), element);
+        for (Wire wire : model.wires()) {
+            addNewEdge(vertices.get(wire.from()), vertices.get(wire.to()),
+                    wire);
+        }
+        for (Element element : model.elements()) {
+            addNewEdge(vertices.get(element.from()), vertices.get(element.to()),
+                    element);
         }
     }
 
     public List<ConnectedGraph> decompose() {
         List<ConnectedGraph> graphs = new LinkedList<>();
-        for (VisitableNode node : nodes.values()) {
+        for (VisitableVertex node : vertices.values()) {
             if (!node.visited) {
                 ConnectedGraph graph = addAdjacentEdges(new ConnectedGraph(node), node);
                 graphs.add(graph);
@@ -45,17 +43,17 @@ public class Graph {
         return graphs;
     }
 
-    private void addNewEdge(Node u, Node v, Element element) {
-        Edge e = new Edge(element, u, v);
+    private void addNewEdge(Vertex u, Vertex v, Item item) {
+        Edge e = new Edge(item, u, v);
         u.add(e);
         v.add(e);
     }
 
-    private ConnectedGraph addAdjacentEdges(ConnectedGraph graph, VisitableNode node) {
+    private ConnectedGraph addAdjacentEdges(ConnectedGraph graph, VisitableVertex node) {
         node.visited = true;
         for (Edge edge : node.getEdges()) {
-            VisitableNode u = (VisitableNode) edge.to();
-            VisitableNode v = (VisitableNode) edge.from();
+            VisitableVertex u = (VisitableVertex) edge.to();
+            VisitableVertex v = (VisitableVertex) edge.from();
             if (!u.visited) {
                 graph.add(u, edge);
                 addAdjacentEdges(graph, u);
@@ -68,10 +66,10 @@ public class Graph {
         return graph;
     }
 
-    private class VisitableNode extends Node {
+    private class VisitableVertex extends Vertex {
         private boolean visited;
 
-        private VisitableNode(int ID) {
+        private VisitableVertex(int ID) {
             super(ID);
         }
     }

@@ -8,11 +8,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-class Node {
+class Vertex {
     private final List<Edge> edges = new LinkedList<>();
     private int ID; //FOR DEBUG
 
-    Node(int ID) {
+    Vertex(int ID) {
         this.ID = ID;
     }
 

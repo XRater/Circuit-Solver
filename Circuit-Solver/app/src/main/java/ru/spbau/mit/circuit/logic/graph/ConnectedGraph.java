@@ -17,19 +17,19 @@ import ru.spbau.mit.circuit.logic.CircuitShortingException;
 
 public class ConnectedGraph {
 
-    private final Node root;
+    private final Vertex root;
 
     private int n = 0;
     private int m = 0;
 
-    private Set<Node> nodes = new HashSet<>();
+    private Set<Vertex> vertices = new HashSet<>();
     private ArrayList<Edge> edges = new ArrayList<>();
 
     private ArrayList<Cycle> cycles = new ArrayList<>();
 
     private RealVector solution;
 
-    ConnectedGraph(Node root) {
+    ConnectedGraph(Vertex root) {
         this.root = root;
         n++;
     }
@@ -58,16 +58,16 @@ public class ConnectedGraph {
         }
     }
 
-    void add(Node u, Edge edge) {
-        nodes.add(u);
+    void add(Vertex u, Edge edge) {
+        vertices.add(u);
         edge.addToTree();
         addEdge(edge);
         n++;
     }
 
     void addEdges() {
-        for (Node node : nodes) {
-            for (Edge edge : node.getEdges()) {
+        for (Vertex vertex : vertices) {
+            for (Edge edge : vertex.getEdges()) {
                 if (edge.index() == -1) {
                     addEdge(edge);
                 }
@@ -88,8 +88,8 @@ public class ConnectedGraph {
     private RealMatrix constructSystem() {
         RealMatrix system = new Array2DRowRealMatrix(m, m);
         int index = 0;
-        for (Node node : nodes) {
-            system.setRowVector(index++, node.getEquation(m));
+        for (Vertex vertex : vertices) {
+            system.setRowVector(index++, vertex.getEquation(m));
         }
         for (Cycle cycle : cycles) {
             system.setRowVector(index++, cycle.getEquation(m));
@@ -114,7 +114,7 @@ public class ConnectedGraph {
         return new Cycle(path, edge);
     }
 
-    private boolean findPath(Path path, Node from, Node to) {
+    private boolean findPath(Path path, Vertex from, Vertex to) {
         if (from.equals(to)) {
             return true;
         }
