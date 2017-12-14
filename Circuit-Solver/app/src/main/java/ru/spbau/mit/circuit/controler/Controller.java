@@ -7,15 +7,15 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
-import ru.spbau.mit.circuit.Storage.DBHelper;
-import ru.spbau.mit.circuit.Storage.Drive;
-import ru.spbau.mit.circuit.Storage.Local;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
+import ru.spbau.mit.circuit.storage.DBHelper;
+import ru.spbau.mit.circuit.storage.Drive;
+import ru.spbau.mit.circuit.storage.Local;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {

@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit.Storage;
+package ru.spbau.mit.circuit.storage;
 
 import android.app.Activity;
 import android.content.ContentValues;

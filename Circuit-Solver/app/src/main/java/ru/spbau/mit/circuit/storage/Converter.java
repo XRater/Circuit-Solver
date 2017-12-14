@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit.Storage;
+package ru.spbau.mit.circuit.storage;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
