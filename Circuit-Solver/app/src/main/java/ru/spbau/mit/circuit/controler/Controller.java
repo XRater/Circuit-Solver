@@ -78,8 +78,13 @@ public class Controller {
         model.clear();
     }
 
-    public void deleteUnnecessaryNodes(List<Node> unnecessaryNodes) {
-        ui.deleteUnnecessaryNodes(unnecessaryNodes);
+    public void deleteUnnecessaryNodes(Node unnecessaryNode) {
+        ui.deleteUnnecessaryNodes(unnecessaryNode);
+    }
+
+
+    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded) throws NodesAreAlreadyConnected {
+        model.removeThenAdd(toBeDeleted, toBeAdded);
     }
 
 

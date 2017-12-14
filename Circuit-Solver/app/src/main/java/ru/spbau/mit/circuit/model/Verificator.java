@@ -2,9 +2,7 @@ package ru.spbau.mit.circuit.model;
 
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -59,8 +57,7 @@ public class Verificator {
         return true;
     }
 
-    public List<Node> findUnnecessaryWires() {
-        List<Node> needToMerge = new ArrayList<>();
+    public Node findUnnecessaryNode() {
         for (Node node : model.nodes()) {
             if (node.wires().size() != 2) {
                 continue;
@@ -72,9 +69,9 @@ public class Verificator {
                 }
             }
             if (!elementEnd) {
-                needToMerge.add(node);
+                return node;
             }
         }
-        return needToMerge;
+        return null;
     }
 }

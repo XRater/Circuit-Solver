@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
-import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 import static ru.spbau.mit.circuit.ui.Drawer.ELEMENTS_PAINT;
 import static ru.spbau.mit.circuit.ui.Drawer.NODE_RADIUS;
@@ -19,10 +18,9 @@ public class DrawableNode extends Node implements Drawable {
         super(point);
     }
 
-    public DrawableNode(Point point, boolean realNode, DrawableWire wire) {
+    public DrawableNode(Point point, boolean realNode) {
         super(point);
         this.realNode = realNode;
-        wires.add(wire);
     }
 
     public DrawableNode(int x, int y) {
@@ -44,5 +42,9 @@ public class DrawableNode extends Node implements Drawable {
 
     public void makeReal() {
         realNode = true;
+    }
+
+    public void makeSimple() {
+        realNode = false;
     }
 }
