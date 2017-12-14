@@ -40,19 +40,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void onNewCircuit(View view) {
         controller.clearModel();
-        ui.clearModel();
+        ui.setCircuitWasNotLoaded();
         Intent intent = new Intent(MainActivity.this, NewCircuitActivity.class);
         startActivity(intent);
     }
 
     public void onLoadCircuit(View view) {
-        Toast toast = Toast.makeText(MainActivity.this,
-                "Load circuit", Toast.LENGTH_SHORT);
-        toast.show();
-
-//        controller.saveToLocalDB();
-
-//        controller.loadFromLocalDB();
+        Intent intent = new Intent(MainActivity.this, LoadActivity.class);
+        startActivity(intent);
     }
 
     public void onSettings(View view) {

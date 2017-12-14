@@ -1,75 +1,63 @@
 package ru.spbau.mit.circuit.storage;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import java.io.ByteArrayInputStream;
-import java.util.Collection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Local implements Storage {
     private DBHelper dbHelper;
 
     public Local(Activity activity) {
-    }
-
-    @Override
-    public void saveToNewFile(byte[] stream, String filename) {
-
-    }
-
-    @Override
-    public Collection<String> getFiles() {
-        return null;
-    }
-
-    @Override
-    public ByteArrayInputStream loadFromFile(String filename) {
-        return null;
-    }
-/*
-    public Local(Activity activity) {
         dbHelper = new DBHelper(activity.getApplicationContext());
     }
 
-    public void save(Model model) throws IOException, SQLException {
+    @Override
+    public void save(byte[] bytes, String name) throws SQLException {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        byte[] bytes = Converter.serialize(model);
-        System.out.println(bytes.toString());
-//        java.sql.Blob blob = null;
-//        blob.setBytes(1, bytes);
-
-        cv.put("name", "Model");
+        cv.put("name", name);
         cv.put("model", bytes);
+
         db.insert("mytable", null, cv);
         dbHelper.close();
     }
 
-    public Model load() {
+    @Override
+    public List<String> getCircuits() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor c = db.query("mytable", null, null, null, null, null, null);
+        ArrayList<String> names = new ArrayList<>();
+        if (c.moveToFirst()) {
+            int nameColIndex = c.getColumnIndex("name");
+            do {
+                names.add(c.getString(nameColIndex));
+            } while (c.moveToNext());
+        }
+        c.close();
+        dbHelper.close();
+        return names;
+    }
+
+    @Override
+    public ByteArrayInputStream load(String name) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor c = db.query("mytable", null, null, null, null, null, null);
 
-        // ставим позицию курсора на первую строку выборки
-        // если в выборке нет строк, вернется false
         if (c.moveToFirst()) {
-            // определяем номера столбцов по имени в выборке
             int nameColIndex = c.getColumnIndex("name");
             int modelColIndex = c.getColumnIndex("model");
 
             do {
-
-//                System.out.println(
-//                        "name = " + c.getString(nameColIndex) +
-//                                ", Model = " + c.getBlob(modelColIndex));
-                if (c.getString(nameColIndex).equals("Model")) {
-                    try {
-                        return Converter.deserialize(new ByteArrayInputStream(c.getBlob
-                                (modelColIndex)));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                if (c.getString(nameColIndex).equals(name)) {
+                    return new ByteArrayInputStream(c.getBlob(modelColIndex));
                 }
             } while (c.moveToNext());
         }
@@ -77,5 +65,5 @@ public class Local implements Storage {
         dbHelper.close();
         return null;
     }
-*/
+
 }

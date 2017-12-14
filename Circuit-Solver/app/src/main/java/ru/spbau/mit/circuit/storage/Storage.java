@@ -2,14 +2,15 @@ package ru.spbau.mit.circuit.storage;
 
 
 import java.io.ByteArrayInputStream;
-import java.util.Collection;
+import java.sql.SQLException;
+import java.util.List;
 
 public interface Storage {
 
-    void saveToNewFile(byte[] stream, String filename);
+    void save(byte[] stream, String name) throws SQLException;
 
-    Collection<String> getFiles();
+    List<String> getCircuits();
 
-    ByteArrayInputStream loadFromFile(String filename);
+    ByteArrayInputStream load(String name);
 
 }
