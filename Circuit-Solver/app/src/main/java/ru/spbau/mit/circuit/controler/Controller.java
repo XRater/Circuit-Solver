@@ -28,7 +28,7 @@ public class Controller {
         model = new Model(this);
         converter = new Converter(activity);
 //        localStorage = new Local(activity);
-//        driveStorage = new Drive();
+//        driveStorage = new DriveStorage();
     }
 
     public Logic getLogic() {

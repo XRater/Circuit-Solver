@@ -22,7 +22,7 @@ public class Converter {
 
     public Converter(Activity activity) {
         storageList.add(new Local(activity));
-        storageList.add(new Drive(activity));
+        storageList.add(new DriveStorage(activity));
     }
 
     public void saveToNewFile(int storageNumber, Model model, String filename) throws IOException {

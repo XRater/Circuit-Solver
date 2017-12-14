@@ -1,19 +1,31 @@
 package ru.spbau.mit.circuit.storage;
 
 import android.app.Activity;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.sql.SQLException;
-
-import ru.spbau.mit.circuit.model.Model;
+import java.util.Collection;
 
 public class Local implements Storage {
     private DBHelper dbHelper;
 
+    public Local(Activity activity) {
+    }
+
+    @Override
+    public void saveToNewFile(byte[] stream, String filename) {
+
+    }
+
+    @Override
+    public Collection<String> getFiles() {
+        return null;
+    }
+
+    @Override
+    public ByteArrayInputStream loadFromFile(String filename) {
+        return null;
+    }
+/*
     public Local(Activity activity) {
         dbHelper = new DBHelper(activity.getApplicationContext());
     }
@@ -65,5 +77,5 @@ public class Local implements Storage {
         dbHelper.close();
         return null;
     }
-
+*/
 }
