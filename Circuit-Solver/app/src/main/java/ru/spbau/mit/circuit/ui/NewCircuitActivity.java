@@ -153,10 +153,11 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     rotate.setVisibility(View.VISIBLE);
                 } else if (chosen instanceof DrawableNode) {
                     DrawableNode node = (DrawableNode) chosen;
-                    if (!node.isRealNode() && node.wires().size() == 1) {
+                    if (!node.isRealNode()) { // May be condition about how many wires it has.
                         delete.setVisibility(View.VISIBLE);
+                    } else {
+                        makeButtonsInvisible();
                     }
-                    makeButtonsInvisible();
                 } else {
                     makeButtonsInvisible();
                 }

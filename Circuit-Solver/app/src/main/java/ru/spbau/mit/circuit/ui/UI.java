@@ -29,6 +29,10 @@ public class UI {
         controller.add(e);
     }
 
+    public void addToModel(List<CircuitObject> e) throws NodesAreAlreadyConnected {
+        controller.addAll(e);
+    }
+
     public void setDrawableModel(DrawableModel drawableModel) {
         this.drawableModel = drawableModel;
     }
@@ -43,7 +47,15 @@ public class UI {
         controller.remove(chosen);
     }
 
-    public void deleteUnnecessaryNodes(List<Node> unnecessaryNodes) {
-        drawableModel.deleteUnnecessaryNodes(unnecessaryNodes);
+    public void removeFromModel(List<CircuitObject> chosen) {
+        controller.removeAll(chosen);
+    }
+
+    public void deleteUnnecessaryNodes(Node unnecessaryNode) {
+        drawableModel.deleteUnnecessaryNodes(unnecessaryNode);
+    }
+
+    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded) throws NodesAreAlreadyConnected {
+        controller.removeThenAdd(toBeDeleted, toBeAdded);
     }
 }
