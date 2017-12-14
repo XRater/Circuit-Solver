@@ -1,9 +1,11 @@
 package ru.spbau.mit.circuit.model.elements;
 
 
+import java.io.Serializable;
+
 import ru.spbau.mit.circuit.model.node.Node;
 
-public class Wire extends Item {
+public class Wire extends Item implements Serializable {
     private final Node from;
     private final Node to;
 

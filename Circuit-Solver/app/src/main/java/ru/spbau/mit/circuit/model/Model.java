@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.model;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,13 +17,13 @@ import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
 
-public class Model {
-    private Controller controller;
+public class Model implements Serializable {
+    private transient Controller controller;
     private List<Element> elements = new ArrayList<>();
     private List<Wire> wires = new ArrayList<>();
     private Set<Node> nodes = new HashSet<>();
 
-    private Verificator verificator = new Verificator(this);
+    private transient Verificator verificator = new Verificator(this);
 
     public Model(Controller controller) {
         this.controller = controller;

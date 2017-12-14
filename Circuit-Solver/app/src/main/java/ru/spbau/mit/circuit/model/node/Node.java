@@ -1,5 +1,6 @@
 package ru.spbau.mit.circuit.model.node;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -12,7 +13,7 @@ import ru.spbau.mit.circuit.model.interfaces.Wireable;
 //ATTENTION you may have two different nodes in one point. Do not override hash/equals.
 
 // In fact, in release version all nodes might be different. But right now they are not.
-public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable {
+public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable, Serializable {
 
     protected Collection<Wire> wires = new HashSet<>();
     private Point point;

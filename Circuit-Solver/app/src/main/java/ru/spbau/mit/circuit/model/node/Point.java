@@ -1,9 +1,11 @@
 package ru.spbau.mit.circuit.model.node;
 
+import java.io.Serializable;
+
 import ru.spbau.mit.circuit.model.interfaces.Centered;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 
-public class Point implements Centered, WireEnd {
+public class Point implements Centered, WireEnd, Serializable {
     private final int x;
     private final int y;
 

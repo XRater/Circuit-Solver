@@ -11,13 +11,15 @@ import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class MainActivity extends AppCompatActivity {
-    private static final Controller controller = new Controller();
-    public static final UI ui = controller.getUi();
+    public static UI ui;
+    private static Controller controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        controller = new Controller(this);
+        ui = controller.getUi();
     }
 
     public void onNewCircuit(View view) {
@@ -31,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(MainActivity.this,
                 "Load circuit", Toast.LENGTH_SHORT);
         toast.show();
+
+        controller.saveToLocalDB();
+
+        controller.loadFromLocalDB();
     }
 
     public void onSettings(View view) {
