@@ -75,7 +75,9 @@ public class Model implements Serializable {
         for (CircuitObject object : objects) {
             addOne(object);
         }
-        clearNodes();
+        if (verificator.findUnnecessaryNode() != null) {
+            throw new InvalidCircuitObjectAddition("There is a node with 2 or less wires");
+        }
     }
 
     private void removeOne(CircuitObject object) {
@@ -84,7 +86,7 @@ public class Model implements Serializable {
             if (!nodes().contains(node)) {
                 throw new InvalidCircuitObjectDeletion("No such element");
             }
-            if (!verificator.unique(node)) {
+            if (!verificator.isolated(node)) {
                 throw new InvalidCircuitObjectDeletion("Deleted node is the end of the wire.");
             }
             nodes.remove(object);
@@ -103,10 +105,10 @@ public class Model implements Serializable {
             }
             wire.to().deleteWire(wire);
             wire.from().deleteWire(wire);
-            if (verificator.unique(wire.from())) {
+            if (verificator.isolated(wire.from())) {
                 remove(wire.from());
             }
-            if (verificator.unique(wire.to())) {
+            if (verificator.isolated(wire.to())) {
                 remove(wire.to());
             }
             wires.remove(object);
@@ -127,7 +129,8 @@ public class Model implements Serializable {
         clearNodes();
     }
 
-    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded) throws NodesAreAlreadyConnected {
+    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+            throws NodesAreAlreadyConnected {
         for (CircuitObject object : toBeDeleted) {
             removeOne(object);
         }

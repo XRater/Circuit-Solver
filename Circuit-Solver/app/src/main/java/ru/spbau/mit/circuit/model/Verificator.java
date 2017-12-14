@@ -43,7 +43,7 @@ public class Verificator {
         return oneWire(wire.from(), wire.to());
     }
 
-    public boolean unique(Node node) {
+    public boolean isolated(Node node) {
         for (Element element : model.elements()) {
             if (element.adjacent(node)) {
                 return false;

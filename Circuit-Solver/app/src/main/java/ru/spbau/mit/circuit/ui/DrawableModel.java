@@ -72,8 +72,8 @@ public class DrawableModel {
             toast.show();
             return;
         }
-        addNewElementPosition(e);
-        drawer.drawModel(this);
+        addNewObjectPosition(e);
+        redraw();
     }
 
     public WireEnd getHolded() {
@@ -105,9 +105,9 @@ public class DrawableModel {
             //}
         }
 
-        deleteOldElementPosition(drawable);
+        deleteOldObjectPosition(drawable);
         element.replace(point); // Model changed
-        addNewElementPosition(drawable);
+        addNewObjectPosition(drawable);
 
         for (DrawableWire wire : wiresToUpdate) {
             wire.build();
@@ -164,26 +164,36 @@ public class DrawableModel {
                 field.get(new Point(point.x() - Drawer.CELL_SIZE, point.y())) == null;
     }
 
-    private void addNewElementPosition(Drawable drawable) {
-        Element element = (Element) drawable;
-        Point center = element.center();
-        field.put(center, drawable);
-        field.put(Point.getCenter(center, element.from().position()), drawable);
-        field.put(Point.getCenter(center, element.to().position()), drawable);
+    private void addNewObjectPosition(Drawable drawable) {
+        if (drawable instanceof Element) {
+            Element element = (Element) drawable;
+            Point center = element.center();
+            field.put(center, drawable);
+            field.put(Point.getCenter(center, element.from().position()), drawable);
+            field.put(Point.getCenter(center, element.to().position()), drawable);
 
-        field.put(element.to().position(), (DrawableNode) element.to());
-        field.put(element.from().position(), (DrawableNode) element.from());
+            field.put(element.to().position(), (DrawableNode) element.to());
+            field.put(element.from().position(), (DrawableNode) element.from());
+        }
+        if (drawable instanceof Wire) {
+            addNewWirePosition((DrawableWire) drawable);
+        }
     }
 
-    private void deleteOldElementPosition(Drawable drawable) {
-        Element element = (Element) drawable;
-        Point center = element.center();
-        field.remove(center);
-        field.remove(Point.getCenter(center, element.from().position()));
-        field.remove(Point.getCenter(center, element.to().position()));
+    private void deleteOldObjectPosition(Drawable drawable) {
+        if (drawable instanceof Element) {
+            Element element = (Element) drawable;
+            Point center = element.center();
+            field.remove(center);
+            field.remove(Point.getCenter(center, element.from().position()));
+            field.remove(Point.getCenter(center, element.to().position()));
 
-        field.remove(element.to().position());
-        field.remove(element.from().position());
+            field.remove(element.to().position());
+            field.remove(element.from().position());
+        }
+        if (drawable instanceof Wire) {
+            deleteOldWirePosition((DrawableWire) drawable);
+        }
     }
 
     private void addNewWirePosition(DrawableWire wire) {
@@ -215,12 +225,46 @@ public class DrawableModel {
         wire.clearPath();
     }
 
-    public void connect(DrawableNode chosen) {
-        ArrayList<CircuitObject> toBeDeleted = new ArrayList<>();
-        ArrayList<CircuitObject> toBeAdded = new ArrayList<>();
-        DrawableWire dw = null;
-        makeRealIfNeсessary(holded, toBeDeleted, toBeAdded);
-        makeRealIfNeсessary(chosen, toBeDeleted, toBeAdded);
+    public void connect(DrawableNode second) {
+        DrawableNode first = holded;
+        List<CircuitObject> toBeDeleted = new ArrayList<>();
+        List<CircuitObject> toBeAdded = new ArrayList<>();
+
+        if (!first.isRealNode()) {
+            toBeAdded.add(first);
+        }
+        if (!second.isRealNode()) {
+            toBeAdded.add(second);
+        }
+        splitWires(first, toBeDeleted, toBeAdded);
+        splitWires(second, toBeDeleted, toBeAdded);
+
+        DrawableWire dw = new DrawableWire(first, second);
+        toBeAdded.add(dw); // Everything excepting last wire should be added.
+
+        try {
+            MainActivity.ui.removeThenAdd(toBeDeleted, toBeAdded);
+//            drawableWires.add(dw); // If OK adding.
+//            addNewWirePosition(dw);
+        } catch (NodesAreAlreadyConnected ex) {
+            Toast toast = Toast.makeText(activity.getApplicationContext(),
+                    "Nodes were already connected.", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+
+        for (CircuitObject object : toBeDeleted) {
+            Drawable drawable = (Drawable) object;
+            deleteOldObjectPosition(drawable);
+        }
+
+        for (CircuitObject object : toBeAdded) {
+            Drawable drawable = (Drawable) object;
+            if (drawable instanceof DrawableWire) {
+                ((DrawableWire) drawable).build();
+            }
+            addNewObjectPosition(drawable);
+        }
 
         drawableWires.removeAll(toBeDeleted);
         for (CircuitObject object : toBeAdded) {
@@ -229,53 +273,39 @@ public class DrawableModel {
             }
         }
 
-        try {
-            dw = new DrawableWire(holded, chosen);
-            toBeAdded.add(dw); // Everything excepting last wire should be added.
-            MainActivity.ui.removeThenAdd(toBeDeleted, toBeAdded);
-            drawableWires.add(dw); // If OK adding.
-            addNewWirePosition(dw);
-        } catch (NodesAreAlreadyConnected ex) {
-            Toast toast = Toast.makeText(activity.getApplicationContext(),
-                    "Nodes were already connected.", Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        } catch (IllegalWireException e) {
-            // No info for user.
-            e.printStackTrace();
-            return;
-        }
-
         unhold();
         redraw();
     }
 
-    private void makeRealIfNeсessary(DrawableNode node, ArrayList<CircuitObject> toBeDeleted, ArrayList<CircuitObject> toBeAdded) {
-        if (!node.isRealNode()) {
-            node.makeReal();
-            realNodes.add(node);
-
-            for (DrawableWire wire : drawableWires) {
-                if (!wire.getPath().contains(node.position())) {
-                    continue;
-                }
-                toBeDeleted.add(wire);
-                deleteOldWirePosition(wire);
-                try {
-                    DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node);
-                    addNewWirePosition(newWire1);
-                    DrawableWire newWire2 = new DrawableWire((DrawableNode) wire.to(), node);
-                    addNewWirePosition(newWire2);
-                    toBeAdded.add(newWire1);
-                    toBeAdded.add(newWire2);
-                } catch (IllegalWireException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            toBeAdded.add(0, node);
-            redraw();
+    private void splitWires(DrawableNode node, List<CircuitObject> toBeDeleted,
+                            List<CircuitObject> toBeAdded) {
+        if (node.isRealNode()) {
+            // No wires through real node.
+            return;
         }
+        node.makeReal();
+        realNodes.add(node);
+
+        for (DrawableWire wire : drawableWires) {
+            if (!wire.getPath().contains(node.position())) {
+                continue;
+            }
+            toBeDeleted.add(wire);
+            // Not here. Update model at first, if successful then update your model.
+//            deleteOldWirePosition(wire);
+//            try {
+            DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node);
+//                addNewWirePosition(newWire1);
+            DrawableWire newWire2 = new DrawableWire((DrawableNode) wire.to(), node);
+//            addNewWirePosition(newWire2);
+            toBeAdded.add(newWire1);
+            toBeAdded.add(newWire2);
+//            } catch (IllegalWireException e) {
+//                e.printStackTrace();
+//            }
+        }
+//        toBeAdded.add(0, node);
+//        redraw();
     }
 
     public void hold(DrawableNode chosen) {
@@ -309,7 +339,7 @@ public class DrawableModel {
                 }
             }
             drawableWires.removeAll(toBeDeleted);
-            deleteOldElementPosition(chosen);
+            deleteOldObjectPosition(chosen);
         }
         toBeDeleted.add((CircuitObject) chosen);
         MainActivity.ui.removeFromModel(toBeDeleted);
@@ -341,9 +371,9 @@ public class DrawableModel {
                 deleteOldWirePosition(wire);
             }
         }
-        deleteOldElementPosition((Drawable) element);
+        deleteOldObjectPosition((Drawable) element);
         element.rotate();
-        addNewElementPosition((Drawable) element);
+        addNewObjectPosition((Drawable) element);
         for (DrawableWire wire : adjacent) {
             wire.build();
             addNewWirePosition(wire);
@@ -355,36 +385,36 @@ public class DrawableModel {
         ArrayList<CircuitObject> toBeDeleted = new ArrayList<>();
         ArrayList<CircuitObject> toBeAdded = new ArrayList<>();
         //for (Node node : unnecessaryNodes) {
-            Iterator<Wire> iter = node.wires().iterator();
-            DrawableWire del1 = (DrawableWire) iter.next();
-            DrawableWire del2 = (DrawableWire) iter.next();
+        Iterator<Wire> iter = node.wires().iterator();
+        DrawableWire del1 = (DrawableWire) iter.next();
+        DrawableWire del2 = (DrawableWire) iter.next();
         DrawableNode from;
         if (!del1.from().position().equals(node.position())) {
             from = (DrawableNode) del1.from();
-            } else {
+        } else {
             from = (DrawableNode) del1.to();
-            }
+        }
 
         DrawableNode to;
         if (!del2.from().position().equals(node.position())) {
             to = (DrawableNode) del2.from();
-            } else {
+        } else {
             to = (DrawableNode) del2.to();
-            }
+        }
         deleteOldWirePosition(del1);
         toBeDeleted.add(del1);
         drawableWires.remove(del1);
         deleteOldWirePosition(del2);
         toBeDeleted.add(del2);
         drawableWires.remove(del2);
-            try {
-                DrawableWire newWire = new DrawableWire(from, to);
-                drawableWires.add(newWire);
-                toBeAdded.add(newWire);
-                addNewWirePosition(newWire);
-            } catch (IllegalWireException e) {
-                e.printStackTrace();
-            }
+        try {
+            DrawableWire newWire = new DrawableWire(from, to);
+            drawableWires.add(newWire);
+            toBeAdded.add(newWire);
+            addNewWirePosition(newWire);
+        } catch (IllegalWireException e) {
+            e.printStackTrace();
+        }
         ((DrawableNode) node).makeSimple();
         realNodes.remove(node);
         toBeDeleted.add((DrawableNode) node);

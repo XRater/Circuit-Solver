@@ -7,7 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.Queue;
 
 import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.elements.IllegalWireException;
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableModel;
@@ -22,9 +21,9 @@ public class DrawableWire extends Wire implements Drawable {
     private static Point prev[][] = new Point[FIELD_SIZE][FIELD_SIZE];
     private LinkedHashSet<Point> path = new LinkedHashSet<>();
 
-    public DrawableWire(DrawableNode from, DrawableNode to) throws IllegalWireException {
+    public DrawableWire(DrawableNode from, DrawableNode to) {
         super(from, to);
-        build();
+//        build();
     }
 
     @Override
@@ -58,7 +57,8 @@ public class DrawableWire extends Wire implements Drawable {
             x = p.x();
             y = p.y();
             Point scaled = new Point(x * CELL_SIZE, y * CELL_SIZE);
-            if (x + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point((x + 1) * CELL_SIZE, y * CELL_SIZE)) instanceof Element)
+            if (x + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point((x + 1) * CELL_SIZE, y
+                    * CELL_SIZE)) instanceof Element)
                     && areOverlapping(scaled, new Point((x + 1) * CELL_SIZE, y * CELL_SIZE))) {
                 if (dist[x + 1][y] > dist[x][y] + 1) {
                     dist[x + 1][y] = dist[x][y] + 1;
@@ -66,7 +66,8 @@ public class DrawableWire extends Wire implements Drawable {
                     queue.add(new Point(x + 1, y));
                 }
             }
-            if (x - 1 >= 0 && !(DrawableModel.getByPoint(new Point((x - 1) * CELL_SIZE, y * CELL_SIZE)) instanceof Element)
+            if (x - 1 >= 0 && !(DrawableModel.getByPoint(new Point((x - 1) * CELL_SIZE, y *
+                    CELL_SIZE)) instanceof Element)
                     && areOverlapping(scaled, new Point((x - 1) * CELL_SIZE, y * CELL_SIZE))) {
                 if (dist[x - 1][y] > dist[x][y] + 1) {
                     dist[x - 1][y] = dist[x][y] + 1;
@@ -74,7 +75,8 @@ public class DrawableWire extends Wire implements Drawable {
                     queue.add(new Point(x - 1, y));
                 }
             }
-            if (y + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point(x * CELL_SIZE, (y + 1) * CELL_SIZE)) instanceof Element)
+            if (y + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point(x * CELL_SIZE, (y + 1)
+                    * CELL_SIZE)) instanceof Element)
                     && areOverlapping(scaled, new Point(x * CELL_SIZE, (y + 1) * CELL_SIZE))) {
                 if (dist[x][y + 1] > dist[x][y] + 1) {
                     dist[x][y + 1] = dist[x][y] + 1;
@@ -82,7 +84,8 @@ public class DrawableWire extends Wire implements Drawable {
                     queue.add(new Point(x, y + 1));
                 }
             }
-            if (y - 1 >= 0 && !(DrawableModel.getByPoint(new Point(x * CELL_SIZE, (y - 1) * CELL_SIZE)) instanceof Element)
+            if (y - 1 >= 0 && !(DrawableModel.getByPoint(new Point(x * CELL_SIZE, (y - 1) *
+                    CELL_SIZE)) instanceof Element)
                     && areOverlapping(scaled, new Point(x * CELL_SIZE, (y - 1) * CELL_SIZE))) {
                 if (dist[x][y - 1] > dist[x][y] + 1) {
                     dist[x][y - 1] = dist[x][y] + 1;
