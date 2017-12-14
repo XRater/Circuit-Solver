@@ -3,7 +3,6 @@ package ru.spbau.mit.circuit.controler;
 import android.app.Activity;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,20 +13,14 @@ import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.storage.Converter;
-import ru.spbau.mit.circuit.storage.DBHelper;
-import ru.spbau.mit.circuit.storage.Drive;
-import ru.spbau.mit.circuit.storage.Local;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {
 
     private final Logic logic;
     private final UI ui;
-    private final Converter converter;
-    public DBHelper dbHelper;
     private Model model;
-    private Local localStorage;
-    private Drive driveStorage;
+    private final Converter converter;
 
     public Controller(Activity activity) {
         logic = new Logic(this);
@@ -107,19 +100,5 @@ public class Controller {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException();
         }
-    }
-
-    public void saveToLocalDB() {
-        try {
-            localStorage.save(model);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void loadFromLocalDB() {
-        localStorage.load();
     }
 }
