@@ -1,9 +1,9 @@
 package ru.spbau.mit.circuit.controler;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
@@ -13,20 +13,23 @@ import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.storage.Converter;
+import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {
 
     private final Logic logic;
     private final UI ui;
-    private Model model;
     private final Converter converter;
+    private Model model;
+    private Activity activity;
 
     public Controller(Activity activity) {
         logic = new Logic(this);
         ui = new UI(this);
         model = new Model(this);
         converter = new Converter(activity);
+        this.activity = activity;
 //        localStorage = new Local(activity);
 //        driveStorage = new Drive();
     }
@@ -43,9 +46,9 @@ public class Controller {
         return model;
     }
 
-    public void updateView() {
-        ui.load(model);
-    }
+    //public void updateView() {
+    //    ui.load(model);
+    //}
 
     public void calculateCurrents() throws CircuitShortingException {
         logic.calculateCurrents(model);
@@ -80,25 +83,27 @@ public class Controller {
         ui.deleteUnnecessaryNodes(unnecessaryNode);
     }
 
-    public void saveToNewFile(int storageNumber, Model model, String filename) {
+    public boolean save(Converter.Mode mode, String filename) {
         try {
-            converter.saveToNewFile(storageNumber, model, filename);
+            return converter.save(mode, model, filename);
         } catch (IOException e) {
             throw new RuntimeException();
         }
     }
 
-    public Collection<String> getFiles(int storageNumber) {
-        return converter.getFiles(storageNumber);
+
+    public void load(Converter.Mode mode, String filename) {
+        Model model2 = converter.load(mode, filename);
+        model2.setController(this);
+        model2.initializeVerificator();
+        this.model = model2;
+        ui.setCircuitWasLoaded();
+        Intent intent = new Intent(activity.getApplicationContext(), NewCircuitActivity.class);
+        intent.putExtra("Model", model2);
+        activity.startActivity(intent);
     }
 
-    public Model loadFromFile(int storageNumber, String filename) {
-        try {
-            return converter.loadFromFile(storageNumber, filename);
-        } catch (IOException e) {
-            throw new RuntimeException();
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException();
-        }
+    public List<String> getCircuits(Converter.Mode mode) {
+        return converter.getCircuits(mode);
     }
 }

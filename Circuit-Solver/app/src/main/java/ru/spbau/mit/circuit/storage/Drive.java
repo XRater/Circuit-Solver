@@ -4,7 +4,7 @@ package ru.spbau.mit.circuit.storage;
 import android.app.Activity;
 
 import java.io.ByteArrayInputStream;
-import java.util.Collection;
+import java.util.List;
 
 public class Drive implements Storage {
 
@@ -13,17 +13,17 @@ public class Drive implements Storage {
     }
 
     @Override
-    public void saveToNewFile(byte[] stream, String filename) {
+    public void save(byte[] stream, String filename) {
 
     }
 
     @Override
-    public Collection<String> getFiles() {
+    public List<String> getCircuits() {
         return null;
     }
 
     @Override
-    public ByteArrayInputStream loadFromFile(String filename) {
+    public ByteArrayInputStream load(String filename) {
         return null;
     }
 }

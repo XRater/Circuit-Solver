@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.NewCircuitActivity"></activity>
+        <activity android:name=".LoadActivity" />
     </application>
 
 </manifest>

@@ -20,6 +20,7 @@ import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableCapacitor;
@@ -43,7 +44,10 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_circuit);
-
+        MainActivity.ui.clearModel();
+        if (MainActivity.ui.circuitWasLoaded) {
+            Uploader.load();
+        }
         final SurfaceView surface = findViewById(R.id.surface);
         SurfaceHolder surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
@@ -133,7 +137,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     .setView(taskEditText)
                     .setMessage("Name this circuit")
                     .setPositiveButton("This device", (dialog1, which) -> {
-                        if (!MainActivity.ui.save(String.valueOf(taskEditText.getText()))) { //type
+                        if (!MainActivity.ui.save(Converter.Mode.LOCAL,
+                                String.valueOf(taskEditText.getText()))) {
                             Toast.makeText(getApplicationContext(),
                                     "This name already exists, please choose another one.",
                                     Toast.LENGTH_SHORT).show();
@@ -141,6 +146,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     })
                     .setNegativeButton("Google Drive", null)
                     .create();
+            dialog.show();
         });
         surface.setOnTouchListener(NewCircuitActivity.this);
     }
