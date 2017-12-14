@@ -58,4 +58,8 @@ public class UI {
     public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded) throws NodesAreAlreadyConnected {
         controller.removeThenAdd(toBeDeleted, toBeAdded);
     }
+
+    public boolean save(String name) {
+        return controller.save();
+    }
 }

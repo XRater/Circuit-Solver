@@ -124,6 +124,24 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             drawableModel.rotateElement(element);
             drawableModel.redraw();
         });
+
+        Button save = findViewById(R.id.save);
+        save.setOnClickListener(v -> {
+            final EditText taskEditText = new EditText(this);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Choose where you want to save this circuit.")
+                    .setView(taskEditText)
+                    .setMessage("Name this circuit")
+                    .setPositiveButton("This device", (dialog1, which) -> {
+                        if (!MainActivity.ui.save(String.valueOf(taskEditText.getText()))) { //type
+                            Toast.makeText(getApplicationContext(),
+                                    "This name already exists, please choose another one.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("Google Drive", null)
+                    .create();
+        });
         surface.setOnTouchListener(NewCircuitActivity.this);
     }
 
