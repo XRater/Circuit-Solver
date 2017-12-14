@@ -11,7 +11,7 @@ import java.sql.SQLException;
 
 import ru.spbau.mit.circuit.model.Model;
 
-public class Local {
+public class Local implements Storage {
     private DBHelper dbHelper;
 
     public Local(Activity activity) {
@@ -51,7 +51,8 @@ public class Local {
 //                                ", Model = " + c.getBlob(modelColIndex));
                 if (c.getString(nameColIndex).equals("Model")) {
                     try {
-                        return Converter.deserialize(new ByteArrayInputStream(c.getBlob(modelColIndex)));
+                        return Converter.deserialize(new ByteArrayInputStream(c.getBlob
+                                (modelColIndex)));
                     } catch (IOException e) {
                         e.printStackTrace();
                     } catch (ClassNotFoundException e) {
