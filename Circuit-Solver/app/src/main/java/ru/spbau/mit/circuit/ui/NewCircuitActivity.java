@@ -44,10 +44,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_circuit);
-        MainActivity.ui.clearModel();
-        if (MainActivity.ui.circuitWasLoaded) {
-            Uploader.load();
-        }
+
         final SurfaceView surface = findViewById(R.id.surface);
         SurfaceHolder surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
@@ -153,6 +150,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        if (MainActivity.ui.circuitWasLoaded) {
+            Uploader.load(drawableModel);
+        }
         drawableModel.redraw();
     }
 

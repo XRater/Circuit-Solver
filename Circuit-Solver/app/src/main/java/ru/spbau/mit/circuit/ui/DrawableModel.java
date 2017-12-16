@@ -199,6 +199,11 @@ public class DrawableModel {
         // TODO make node beautiful
     }
 
+    public void addWire(DrawableWire drawableWire) {
+        drawableWires.add(drawableWire);
+        addNewWirePosition(drawableWire);
+    }
+
     private void deleteOldWirePosition(DrawableWire wire) {
         LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
@@ -402,5 +407,19 @@ public class DrawableModel {
         deleteOldWirePosition(wire);
         MainActivity.ui.removeFromModel(wire);
         drawableWires.remove(wire);
+    }
+
+    public void addRealNode(DrawableNode node) {
+        realNodes.add(node);
+    }
+
+    public void loadElement(Drawable element) {
+        drawables.add(element);
+        addNewElementPosition(element);
+    }
+
+    public void loadWire(DrawableWire wire) {
+        drawableWires.add(wire);
+        addNewWirePosition(wire);
     }
 }
