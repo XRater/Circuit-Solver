@@ -25,16 +25,18 @@ public class LoadActivity extends Activity {
         });
         Button local = findViewById(R.id.local);
         local.setOnClickListener(v -> {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1, MainActivity.ui.getCircuits(Converter.Mode.LOCAL));
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_list_item_1, MainActivity.ui.getCircuits(Converter
+                    .Mode.LOCAL));
             names.setAdapter(adapter);
             mode = Converter.Mode.LOCAL;
         });
 
         Button drive = findViewById(R.id.drive);
         drive.setOnClickListener(v -> {
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                    android.R.layout.simple_list_item_1, MainActivity.ui.getCircuits(Converter.Mode.DRIVE));
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_list_item_1, MainActivity.ui.getCircuits(Converter
+                    .Mode.DRIVE));
             names.setAdapter(adapter);
             mode = Converter.Mode.DRIVE;
         });
