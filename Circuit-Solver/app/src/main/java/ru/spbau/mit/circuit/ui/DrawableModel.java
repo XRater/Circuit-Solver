@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -13,7 +12,6 @@ import java.util.Set;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.elements.IllegalWireException;
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
@@ -220,6 +218,7 @@ public class DrawableModel {
         }
     }
 
+    @Deprecated //TODO
     private void addNewWirePosition(DrawableWire wire) {
         LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
@@ -395,50 +394,20 @@ public class DrawableModel {
         redraw();
     }
 
-    public void deleteUnnecessaryNodes(Node node) {
-        ArrayList<CircuitObject> toBeDeleted = new ArrayList<>();
-        ArrayList<CircuitObject> toBeAdded = new ArrayList<>();
-        //for (Node node : unnecessaryNodes) {
-        Iterator<Wire> iter = node.wires().iterator();
-        DrawableWire del1 = (DrawableWire) iter.next();
-        DrawableWire del2 = (DrawableWire) iter.next();
-        DrawableNode from;
-        if (!del1.from().position().equals(node.position())) {
-            from = (DrawableNode) del1.from();
-        } else {
-            from = (DrawableNode) del1.to();
-        }
+    public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
 
-        DrawableNode to;
-        if (!del2.from().position().equals(node.position())) {
-            to = (DrawableNode) del2.from();
-        } else {
-            to = (DrawableNode) del2.to();
-        }
+        DrawableWire del1 = (DrawableWire) first;
+        DrawableWire del2 = (DrawableWire) second;
+
         deleteOldWirePosition(del1);
-        toBeDeleted.add(del1);
-        drawableWires.remove(del1);
         deleteOldWirePosition(del2);
-        toBeDeleted.add(del2);
         drawableWires.remove(del2);
-        try {
-            DrawableWire newWire = new DrawableWire(from, to);
-            drawableWires.add(newWire);
-            toBeAdded.add(newWire);
-            addNewWirePosition(newWire);
-        } catch (IllegalWireException e) {
-            e.printStackTrace();
-        }
-        ((DrawableNode) node).makeSimple();
-        realNodes.remove(node);
-        toBeDeleted.add((DrawableNode) node);
-        System.out.println("Deleted " + node);
-        //}
-        try {
-            MainActivity.ui.removeThenAdd(toBeDeleted, toBeAdded);
-        } catch (NodesAreAlreadyConnected nodesAreAlreadyConnected) {
-            nodesAreAlreadyConnected.printStackTrace();
-        }
+
+        ((DrawableNode) common).makeSimple();
+        realNodes.remove(common);
+
+        addNewObjectPosition(del1);
+
         redraw();
     }
 
