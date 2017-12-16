@@ -141,7 +141,14 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                                     Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .setNegativeButton("Google Drive", null)
+                    .setNegativeButton("Google Drive", (dialog1, which) -> {
+                        if (!MainActivity.ui.save(Converter.Mode.DRIVE,
+                                String.valueOf(taskEditText.getText()))) {
+                            Toast.makeText(getApplicationContext(),
+                                    "This name already exists, please choose another one.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    })
                     .create();
             dialog.show();
         });

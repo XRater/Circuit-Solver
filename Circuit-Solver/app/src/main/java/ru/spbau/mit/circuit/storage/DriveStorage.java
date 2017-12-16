@@ -77,6 +77,7 @@ public class DriveStorage implements Storage {
 
                     return mDriveResourceClient.createFile(parent, changeSet, contents);
                 });
+        System.out.println("done " + filename);
     }
 
     @Override
@@ -90,9 +91,11 @@ public class DriveStorage implements Storage {
 
         try {
             Tasks.await(queryTask);
+            System.out.println("QueryTasks finished");
             for (Metadata metadata : queryTask.getResult()) {
                 circuitsNames.add(metadata.getTitle());
             }
+            System.out.println(circuitsNames.toString());
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

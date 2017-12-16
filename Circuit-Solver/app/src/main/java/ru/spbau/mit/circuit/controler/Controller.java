@@ -83,26 +83,59 @@ public class Controller {
         ui.deleteUnnecessaryNodes(unnecessaryNode);
     }
 
+    private Boolean saved = null;
+
     public boolean save(Converter.Mode mode, String filename) {
-        try {
-            return converter.save(mode, model, filename);
-        } catch (IOException e) {
-            throw new RuntimeException();
+        saved = null;
+        Thread thread = new Thread(() -> {
+            try {
+                saved = converter.save(mode, model, filename);
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+        });
+        thread.start();
+        while (saved == null) {
+
         }
+        return saved;
     }
 
 
     public void load(Converter.Mode mode, String filename) {
-        Model model2 = converter.load(mode, filename);
-        model2.setController(this);
-        model2.initializeVerificator();
-        this.model = model2;
+        this.model = null;
+        Thread thread = new Thread(() -> {
+            Model model2 = converter.load(mode, filename);
+            model2.setController(this);
+            model2.initializeVerificator();
+            this.model = model2;
+        });
+        thread.start();
+//        Model model2 = converter.load(mode, filename);
+//        model2.setController(this);
+//        model2.initializeVerificator();
+//        this.model = model2;
+//        ui.setCircuitWasLoaded();
+        while (model == null) {
+
+        }
         ui.setCircuitWasLoaded();
         Intent intent = new Intent(activity.getApplicationContext(), NewCircuitActivity.class);
         activity.startActivity(intent);
     }
 
+
+    private List<String> circs;
+
     public List<String> getCircuits(Converter.Mode mode) {
-        return converter.getCircuits(mode);
+        circs = null;
+        Thread thread = new Thread(() -> {
+            circs = converter.getCircuits(mode);
+        });
+        thread.start();
+        while (circs == null) {
+
+        }
+        return circs;
     }
 }

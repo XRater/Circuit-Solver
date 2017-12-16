@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ru.spbau.mit.circuit.controler.Controller;
-import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.storage.DriveStorage;
 import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
@@ -60,21 +59,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onLoadCircuit(View view) {
-//        Intent intent = new Intent(MainActivity.this, LoadActivity.class);
-//        startActivity(intent);
-        System.out.println(Thread.currentThread());
-        Thread thread = new Thread(() ->
-                System.out.println(controller.getCircuits(Converter.Mode.DRIVE)));
-        thread.start();
+        Intent intent = new Intent(MainActivity.this, LoadActivity.class);
+        startActivity(intent);
+//        System.out.println(Thread.currentThread());
+//        Thread thread = new Thread(() ->
+//                System.out.println(controller.getCircuits(Converter.Mode.DRIVE)));
+//        thread.start();
     }
 
     public void onSettings(View view) {
 //        Toast toast = Toast.makeText(getApplicationContext(),
 //                "Settings", Toast.LENGTH_SHORT);
 //        toast.show();
-        Thread thread = new Thread(() ->
-                controller.load(Converter.Mode.DRIVE, "Hello"));
-        thread.start();
+
     }
 
     @Override
