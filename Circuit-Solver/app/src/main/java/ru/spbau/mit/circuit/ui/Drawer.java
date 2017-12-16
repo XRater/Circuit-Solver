@@ -13,7 +13,7 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class Drawer {
     public static final int CELL_SIZE = 80;
-    public static final int FIELD_SIZE = 30;
+    public static final int FIELD_SIZE = 25;
     public static final int NODE_RADIUS = CELL_SIZE / 7;
 
     public static final Paint ELEMENTS_PAINT = new Paint();

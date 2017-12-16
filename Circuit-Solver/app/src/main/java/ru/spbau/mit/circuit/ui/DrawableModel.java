@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +24,11 @@ import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class DrawableModel {
-    private static Map<Point, Drawable> field = new HashMap<>();
-    private static Set<DrawableWire> drawableWires = new HashSet<>();
+    private static Map<Point, Drawable> field = new LinkedHashMap<>();
+    private static Set<DrawableWire> drawableWires = new LinkedHashSet<>();
     private final Drawer drawer;
-    private Set<Drawable> drawables = new HashSet<>();
-    private Set<DrawableNode> realNodes = new HashSet<>();
+    private Set<Drawable> drawables = new LinkedHashSet<>();
+    private Set<DrawableNode> realNodes = new LinkedHashSet<>();
     private Activity activity;
 
     private DrawableNode holded;
@@ -88,11 +87,11 @@ public class DrawableModel {
 
     public void move(Drawable drawable, Point point) {
         //horizontal case
-        int realx = Math.max(2 * Drawer.CELL_SIZE, point.x());
-        realx = Math.min((Drawer.FIELD_SIZE - 2) * Drawer.CELL_SIZE, realx);
-        int realy = Math.max(0, point.y());
-        realy = Math.min(Drawer.FIELD_SIZE * Drawer.CELL_SIZE, realy);
-        point = new Point(realx, realy);
+        int realX = Math.max(2 * Drawer.CELL_SIZE, point.x());
+        realX = Math.min((Drawer.FIELD_SIZE - 2) * Drawer.CELL_SIZE, realX);
+        int realY = Math.max(0, point.y());
+        realY = Math.min(Drawer.FIELD_SIZE * Drawer.CELL_SIZE, realY);
+        point = new Point(realX, realY);
 
         Element element = (Element) drawable;
 
@@ -100,24 +99,42 @@ public class DrawableModel {
             return;
         }
         List<DrawableWire> wiresToUpdate = new ArrayList<>();
-        for (DrawableWire wire : drawableWires) {
-            //if (wire.adjacent(element)) {
-            wiresToUpdate.add(wire);
-            deleteOldWirePosition(wire);
-            //}
-        }
+//        for (DrawableWire wire : drawableWires) {
+//            //if (wire.adjacent(element)) {
+//            wiresToUpdate.add(wire);
+//            deleteOldWirePosition(wire);
+//            //}
+//        }
 
         deleteOldObjectPosition(drawable);
         element.replace(point); // Model changed
-        addNewObjectPosition(drawable);
+
+        for (DrawableWire wire : drawableWires) {
+            if (wire.adjacent(element)) {
+                wiresToUpdate.add(wire);
+                continue;
+            }
+            if (wire.getPath().contains(element.center()) ||
+                    wire.getPath().contains(element.to().position()) ||
+                    wire.getPath().contains(element.from().position()) ||
+                    wire.getPath().contains(
+                            Point.getCenter(element.center(), element.to().position())) ||
+                    wire.getPath().contains(
+                            Point.getCenter(element.center(), element.from().position()))) {
+                wiresToUpdate.add(wire);
+            }
+
+        }
 
         for (DrawableWire wire : wiresToUpdate) {
-//            wire.build();
-//            addNewWirePosition(wire);
+            deleteOldWirePosition(wire);
+        }
+        addNewObjectPosition(drawable);
+        for (DrawableWire wire : wiresToUpdate) {
             addNewObjectPosition(wire);
         }
+
         redraw();
-        System.out.println(field.size());
     }
 
     private boolean isValid(Point point, Element element) {
@@ -179,6 +196,7 @@ public class DrawableModel {
             field.put(element.from().position(), (DrawableNode) element.from());
         }
         if (drawable instanceof Wire) {
+            // To many additions.
             drawableWires.add((DrawableWire) drawable);
             ((DrawableWire) drawable).build();
             addNewWirePosition((DrawableWire) drawable);

@@ -52,7 +52,8 @@ public class DrawableWire extends Wire implements Drawable {
         Point start = new Point(x, y);
         dist[x][y] = 0;
         queue.add(start);
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty() &&
+                dist[to().x() / CELL_SIZE][to().y() / CELL_SIZE] == Integer.MAX_VALUE) {
             Point p = queue.poll();
             x = p.x();
             y = p.y();
