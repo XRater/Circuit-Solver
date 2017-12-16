@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -402,14 +404,38 @@ public class DrawableModel {
         DrawableWire del1 = (DrawableWire) first;
         DrawableWire del2 = (DrawableWire) second;
 
-        deleteOldWirePosition(del1);
-        deleteOldWirePosition(del2);
-        drawableWires.remove(del2);
+        //deleteOldWirePosition(del1);
+        //deleteOldWirePosition(del2);
 
         ((DrawableNode) common).makeSimple();
+        drawableWires.remove(del2);
+        field.put(common.position(), (Drawable) common); // Map modified after deleting wire.
+
         realNodes.remove(common);
 
-        addNewObjectPosition(del1);
+        if (first.to().position().equals(common.position())) {
+            if (del2.to().equals(common.position())) {
+                List<Point> list = new LinkedList<>(del2.getPath());
+                Collections.reverse(list);
+                del1.getPath().addAll(list);
+            } else {
+                del1.getPath().addAll(del2.getPath());
+            }
+        } else {
+            List<Point> list1 = new LinkedList<>(del1.getPath());
+            Collections.reverse(list1);
+            del1.getPath().clear();
+            del1.getPath().addAll(list1);
+            if (common.position().equals(del2.from())) {
+                del1.getPath().addAll(del2.getPath());
+            } else {
+                List<Point> list2 = new LinkedList<>(del2.getPath());
+                Collections.reverse(list2);
+                del1.getPath().addAll(list2);
+            }
+        }
+
+        //addNewObjectPosition(del1);
 
         redraw();
     }

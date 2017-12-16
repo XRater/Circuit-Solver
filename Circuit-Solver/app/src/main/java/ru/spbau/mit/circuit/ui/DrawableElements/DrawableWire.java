@@ -137,6 +137,10 @@ public class DrawableWire extends Wire implements Drawable {
         return path;
     }
 
+    public void setPath(LinkedHashSet<Point> path) {
+        this.path = path;
+    }
+
     public void clearPath() {
         path.clear();
     }
