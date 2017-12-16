@@ -85,7 +85,7 @@ public class Drawer {
         for (Drawable element : drawableModel.drawables()) {
             element.draw(canvas);
         }
-        for (DrawableWire wire : drawableModel.wires()) {
+        for (DrawableWire wire : DrawableModel.wires()) {
             wire.draw(canvas);
         }
         for (DrawableNode node : drawableModel.realNodes()) {

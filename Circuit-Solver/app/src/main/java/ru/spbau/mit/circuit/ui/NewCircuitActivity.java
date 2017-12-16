@@ -196,7 +196,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     //Click on Element
                     Point point = getPoint(motionEvent.getX(), motionEvent.getY());
 
-
                     drawableModel.move(chosen, point);
                 } else if (chosen instanceof Node) {
                 } else {

@@ -249,6 +249,9 @@ public class DrawableModel {
     }
 
     public void connect(DrawableNode second) {
+        // May be info for user is required here, but I am not sure.
+        if (second.position().equals(holded.position()))
+            return;
         // Collect changes
         DrawableNode first = holded;
         unhold();
@@ -266,7 +269,7 @@ public class DrawableModel {
         splitWires(second, toBeDeleted, toBeAdded);
 
         DrawableWire dw = new DrawableWire(first, second);
-        toBeAdded.add(dw); // Everything excepting last wire should be added.
+        toBeAdded.add(dw);
 
         // Try to apply changes to model
         try {
