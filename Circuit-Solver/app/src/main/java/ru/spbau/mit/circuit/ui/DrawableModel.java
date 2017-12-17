@@ -382,6 +382,11 @@ public class DrawableModel {
     }
 
     public void rotateElement(Element element) {
+        if (!canRotate(element)) {
+            Toast.makeText(activity.getApplicationContext(), "It is not possible to rotate the element here.",
+                    Toast.LENGTH_SHORT);
+            return;
+        }
         List<DrawableWire> adjacent = new ArrayList<>();
         for (DrawableWire wire : drawableWires) {
             if (wire.adjacent(element)) {
@@ -399,6 +404,34 @@ public class DrawableModel {
         redraw();
     }
 
+    private boolean canRotate(Element element) {
+        int x = element.center().x();
+        int y = element.center().y();
+        if (element.isHorizontal()) {
+            return pointIsNotForbidden(new Point(x, y + Drawer.CELL_SIZE)) &&
+                    pointIsNotForbidden(new Point(x, y + 2 * Drawer.CELL_SIZE)) &&
+                    pointIsNotForbidden(new Point(x, y - Drawer.CELL_SIZE)) &&
+                    pointIsNotForbidden(new Point(x, y + 2 * Drawer.CELL_SIZE));
+        } else {
+            return pointIsNotForbidden(new Point(x + Drawer.CELL_SIZE, y)) &&
+                    pointIsNotForbidden(new Point(x + 2 * Drawer.CELL_SIZE, y)) &&
+                    pointIsNotForbidden(new Point(x - Drawer.CELL_SIZE, y)) &&
+                    pointIsNotForbidden(new Point(x + 2 * Drawer.CELL_SIZE, y));
+        }
+    }
+
+    private boolean pointIsNotForbidden(Point point) {
+        Drawable d = field.get(point);
+        if (d instanceof Element) {
+            return false;
+        } else if (d instanceof DrawableNode) {
+            DrawableNode node = (DrawableNode) d;
+            if (((DrawableNode) d).isRealNode())
+                return false;
+        }
+        return true;
+    }
+
     public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
 
         DrawableWire del1 = (DrawableWire) first;
@@ -414,7 +447,7 @@ public class DrawableModel {
         realNodes.remove(common);
 
         if (first.to().position().equals(common.position())) {
-            if (del2.to().equals(common.position())) {
+            if (del2.to().position().equals(common.position())) {
                 List<Point> list = new LinkedList<>(del2.getPath());
                 Collections.reverse(list);
                 del1.getPath().addAll(list);
@@ -426,7 +459,7 @@ public class DrawableModel {
             Collections.reverse(list1);
             del1.getPath().clear();
             del1.getPath().addAll(list1);
-            if (common.position().equals(del2.from())) {
+            if (common.position().equals(del2.from().position())) {
                 del1.getPath().addAll(del2.getPath());
             } else {
                 List<Point> list2 = new LinkedList<>(del2.getPath());
