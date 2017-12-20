@@ -48,7 +48,7 @@ public class LinearSystem<
 
     public void solve() {
         zeroBottomPart();
-        normalize();
+        makeDiagonal();
     }
 
     private void zeroBottomPart() {
@@ -68,7 +68,7 @@ public class LinearSystem<
         }
     }
 
-    private void normalize() {
+    private void makeDiagonal() {
         for (int i = size() - 1; i >= 0; i--) {
             if (coefficient(i, i).isZero()) {
                 throw new ZeroDeterminantException();

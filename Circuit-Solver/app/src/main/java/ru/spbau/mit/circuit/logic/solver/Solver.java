@@ -4,7 +4,10 @@ package ru.spbau.mit.circuit.logic.solver;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.DecompositionSolver;
 import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
@@ -55,12 +58,20 @@ public class Solver {
         System.out.println("Diagonal:");
         System.out.println(initSystem);
 
-//         Find partial solutions
+
+        RealMatrix A = getRightSideMatrix(initSystem);
+        RealVector constants = getRightSideConstants(initSystem);
+
+        //         Find partial solutions
+        // TODO change to e^A
         ArrayList<PartialSolution> solutions = findGlobalSolution();
-        System.out.println("Partical solutions:");
+        System.out.println("Partial solutions:");
         for (PartialSolution solution : solutions) {
             System.out.println(solution.vector() + " " + solution.function().toString());
         }
+
+        DecompositionSolver solver = new LUDecomposition(A).getSolver();
+        RealVector resultConstant = solver.solve(constants);
 
         Map<NumberVariable, PartialSolution> constantsForParts = new HashMap<>();
         ArrayList<NumberVariable> numberVariables = new ArrayList<>();
@@ -69,7 +80,6 @@ public class Solver {
             numberVariables.add(variable);
             constantsForParts.put(variable, solutions.get(i));
         }
-
 
         // Init variables for c_i
 /*        Map<FunctionVariable, PartialSolution> derToSol = new HashMap<>();
@@ -129,6 +139,7 @@ public class Solver {
                         Numerical.number(entry.getValue().coefficientAt(i)));
                 result = result.add(entry.getValue().function().mul(cf.value()));
             }
+            result.add(Functions.constant(resultConstant.getEntry(i)));
             function.setValue(result);
             derivative.setValue();
         }
@@ -149,6 +160,18 @@ public class Solver {
             derivative.setValue();
         }
 */
+    }
+
+    private static RealVector getRightSideConstants(
+            LinearSystem<
+                    Numerical,
+                    Vector<Numerical, Derivative>,
+                    Row<Numerical, FunctionVariable, PolyFunction>> initSystem) {
+        RealVector vector = new ArrayRealVector(n);
+        for (int i = 0; i < n; i++) {
+            vector.setEntry(i, initSystem.get(i).constant().constant().doubleValue());
+        }
+        return vector;
     }
 
     private static LinearSystem<
@@ -207,7 +230,7 @@ public class Solver {
 
     private static ArrayList<PartialSolution> findGlobalSolution() {
         ArrayList<PartialSolution> solutions = new ArrayList<>();
-        RealMatrix matrix = getMatrix(initSystem);
+        RealMatrix matrix = getRightSideMatrix(initSystem);
         System.out.println("Matrix:");
         for (int i = 0; i < n; i++) {
             System.out.println(matrix.getRowVector(i));
@@ -256,7 +279,7 @@ public class Solver {
         return root == -0.0 ? 0.0 : root;
     }
 
-    private static RealMatrix getMatrix(LinearSystem<
+    private static RealMatrix getRightSideMatrix(LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
             Row<Numerical, FunctionVariable, PolyFunction>> system) {
