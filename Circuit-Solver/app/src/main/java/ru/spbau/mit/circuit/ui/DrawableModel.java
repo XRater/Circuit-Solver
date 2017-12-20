@@ -440,7 +440,7 @@ public class DrawableModel {
             return false;
         } else if (d instanceof DrawableNode) {
             DrawableNode node = (DrawableNode) d;
-            if (((DrawableNode) d).isRealNode()) {
+            if (node.isRealNode()) {
                 return false;
             }
         }
@@ -461,27 +461,47 @@ public class DrawableModel {
 
         realNodes.remove(common);
 
-        if (first.to().position().equals(common.position())) {
-            if (del2.to().position().equals(common.position())) {
-                List<Point> list = new LinkedList<>(del2.getPath());
-                Collections.reverse(list);
-                del1.getPath().addAll(list);
-            } else {
-                del1.getPath().addAll(del2.getPath());
-            }
-        } else {
+        Point startFirst = del1.getPath().iterator().next();
+        Point startSecond = del2.getPath().iterator().next();
+        //del1.from().position().equals()
+//        if ((startFirst.equals(del1.from().position()))) { // Если начало провода совпадает с уже проведенным путем.
+//            if (startSecond.equals(common.position())) {
+//                List<Point> list = new LinkedList<>(del2.getPath());
+//                Collections.reverse(list);
+//                del1.getPath().addAll(list);
+//                System.out.println("1");
+//            } else {
+//                del1.getPath().addAll(del2.getPath());
+//                System.out.println("1");
+//            }
+//        } else {
+//            List<Point> list1 = new LinkedList<>(del1.getPath());
+//            Collections.reverse(list1);
+//            del1.getPath().clear();
+//            del1.getPath().addAll(list1);
+//            if (common.position().equals(del2.from().position())) {
+//                del1.getPath().addAll(del2.getPath());
+//                System.out.println("3");
+//            } else {
+//                List<Point> list2 = new LinkedList<>(del2.getPath());
+//                Collections.reverse(list2);
+//                del1.getPath().addAll(list2);
+//                System.out.println("4");
+//            }
+//        }
+        if (startFirst.equals(common.position())) {
             List<Point> list1 = new LinkedList<>(del1.getPath());
             Collections.reverse(list1);
             del1.getPath().clear();
             del1.getPath().addAll(list1);
-            if (common.position().equals(del2.from().position())) {
-                del1.getPath().addAll(del2.getPath());
-            } else {
-                List<Point> list2 = new LinkedList<>(del2.getPath());
-                Collections.reverse(list2);
-                del1.getPath().addAll(list2);
-            }
         }
+        if (!(startSecond.equals(common.position()))) {
+            List<Point> list2 = new LinkedList<>(del2.getPath());
+            Collections.reverse(list2);
+            del2.getPath().clear();
+            del2.getPath().addAll(list2);
+        }
+        del1.getPath().addAll(del2.getPath());
 
         //addNewObjectPosition(del1);
 
