@@ -99,12 +99,6 @@ public class DrawableModel {
             return;
         }
         List<DrawableWire> wiresToUpdate = new ArrayList<>();
-//        for (DrawableWire wire : drawableWires) {
-//            //if (wire.adjacent(element)) {
-//            wiresToUpdate.add(wire);
-//            deleteOldWirePosition(wire);
-//            //}
-//        }
 
         deleteOldObjectPosition(drawable);
         element.replace(point); // Model changed
@@ -137,6 +131,7 @@ public class DrawableModel {
         redraw();
     }
 
+    // Think about real Nodes.
     private boolean isValid(Point point, Element element) {
         if (element.isHorizontal()) {
             return isValidPoint(point, element) &&
@@ -158,9 +153,17 @@ public class DrawableModel {
         if (cur == null) {
             return true;
         }
-        if (cur instanceof DrawableNode && !((DrawableNode) cur).isRealNode()) {
-            return true;
-        } else if (!(cur == element || cur == element.to() || cur == element.from())) {
+        //if (cur instanceof DrawableNode && !((DrawableNode) cur).isRealNode()) {
+        //    return true;
+        if (cur instanceof DrawableNode) {
+            DrawableNode node = ((DrawableNode) cur);
+            if (!node.isRealNode()) {
+                return true;
+            } else if (cur == element.to() || cur == element.from()) {
+                return true;
+            }
+            return false;
+        } else if (!(cur == element)) {
             return false;
         }
         return true;
@@ -229,21 +232,27 @@ public class DrawableModel {
                 node = new DrawableNode(p, false);
                 field.put(p, node);
             }
-            //node.addWire(wire); I forgot what it does.
         }
-        // TODO make node beautiful
     }
 
     private void deleteOldWirePosition(DrawableWire wire) {
         LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
             DrawableNode node = (DrawableNode) field.get(p);
-            // FIXME
             if (node != null) {
-//                node.deleteWire(wire);
                 if (!node.isRealNode())// && node.hasZeroWires())
                 {
-                    field.put(node.position(), null);
+                    boolean flag = false;
+                    // Now we are checking if this Point is covered with any of other wires.
+                    for (DrawableWire another : drawableWires) {
+                        if (another != wire && another.getPath().contains(node.position())) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (!flag) {
+                        field.put(node.position(), null);
+                    }
                 }
             }
         }
@@ -384,7 +393,7 @@ public class DrawableModel {
     public void rotateElement(Element element) {
         if (!canRotate(element)) {
             Toast.makeText(activity.getApplicationContext(), "It is not possible to rotate the element here.",
-                    Toast.LENGTH_SHORT);
+                    Toast.LENGTH_SHORT).show();
             return;
         }
         List<DrawableWire> adjacent = new ArrayList<>();
