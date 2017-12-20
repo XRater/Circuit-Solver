@@ -204,6 +204,9 @@ public class DrawableModel {
             ((DrawableWire) drawable).build();
             addNewWirePosition((DrawableWire) drawable);
         }
+        if (drawable instanceof Node) {
+            field.put(((Node) drawable).position(), drawable);
+        }
     }
 
     private void deleteOldObjectPosition(Drawable drawable) {
@@ -251,7 +254,7 @@ public class DrawableModel {
                         }
                     }
                     if (!flag) {
-                        field.put(node.position(), null);
+                        field.remove(node.position());
                     }
                 }
             }
@@ -261,8 +264,9 @@ public class DrawableModel {
 
     public void connect(DrawableNode second) {
         // May be info for user is required here, but I am not sure.
-        if (second.position().equals(holded.position()))
+        if (second.position().equals(holded.position())) {
             return;
+        }
         // Collect changes
         DrawableNode first = holded;
         unhold();
@@ -392,7 +396,8 @@ public class DrawableModel {
 
     public void rotateElement(Element element) {
         if (!canRotate(element)) {
-            Toast.makeText(activity.getApplicationContext(), "It is not possible to rotate the element here.",
+            Toast.makeText(activity.getApplicationContext(), "It is not possible to rotate the " +
+                            "element here.",
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -435,8 +440,9 @@ public class DrawableModel {
             return false;
         } else if (d instanceof DrawableNode) {
             DrawableNode node = (DrawableNode) d;
-            if (((DrawableNode) d).isRealNode())
+            if (((DrawableNode) d).isRealNode()) {
                 return false;
+            }
         }
         return true;
     }
