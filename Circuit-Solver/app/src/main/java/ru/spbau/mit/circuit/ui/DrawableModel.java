@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -87,10 +85,18 @@ public class DrawableModel {
 
     public void move(Drawable drawable, Point point) {
         //horizontal case
-        int realX = Math.max(2 * Drawer.CELL_SIZE, point.x());
-        realX = Math.min((Drawer.FIELD_SIZE - 2) * Drawer.CELL_SIZE, realX);
-        int realY = Math.max(0, point.y());
-        realY = Math.min(Drawer.FIELD_SIZE * Drawer.CELL_SIZE, realY);
+        int realX = 0, realY = 0;
+        if (((Element) drawable).isHorizontal()) {
+            realX = Math.max(2 * Drawer.CELL_SIZE, point.x());
+            realX = Math.min((Drawer.FIELD_SIZE - 2) * Drawer.CELL_SIZE, realX);
+            realY = Math.max(0, point.y());
+            realY = Math.min(Drawer.FIELD_SIZE * Drawer.CELL_SIZE, realY);
+        } else {
+            realX = Math.max(0, point.x());
+            realX = Math.min(Drawer.FIELD_SIZE * Drawer.CELL_SIZE, realX);
+            realY = Math.max(2 * Drawer.CELL_SIZE, point.y());
+            realY = Math.min((Drawer.FIELD_SIZE - 2) * Drawer.CELL_SIZE, realY);
+        }
         point = new Point(realX, realY);
 
         Element element = (Element) drawable;
@@ -131,7 +137,6 @@ public class DrawableModel {
         redraw();
     }
 
-    // Think about real Nodes.
     private boolean isValid(Point point, Element element) {
         if (element.isHorizontal()) {
             return isValidPoint(point, element) &&
@@ -153,8 +158,6 @@ public class DrawableModel {
         if (cur == null) {
             return true;
         }
-        //if (cur instanceof DrawableNode && !((DrawableNode) cur).isRealNode()) {
-        //    return true;
         if (cur instanceof DrawableNode) {
             DrawableNode node = ((DrawableNode) cur);
             if (!node.isRealNode()) {
@@ -173,7 +176,7 @@ public class DrawableModel {
         int x = 5 * Drawer.CELL_SIZE;
         int y = 5 * Drawer.CELL_SIZE;
         while (!canPut(new Point(x, y))) {
-            x += 2 * Drawer.CELL_SIZE;
+            //x += 2 * Drawer.CELL_SIZE;
             y += 2 * Drawer.CELL_SIZE;
         }
         return new Point(x, y);
@@ -312,15 +315,13 @@ public class DrawableModel {
             }
             addNewObjectPosition(drawable);
         }
-
         redraw();
     }
 
     private void splitWires(DrawableNode node, List<CircuitObject> toBeDeleted,
                             List<CircuitObject> toBeAdded) {
         if (node.isRealNode()) {
-            // No wires through real node.
-            return;
+            return; // No wires through real node.
         }
 
         for (DrawableWire wire : drawableWires) {
@@ -421,16 +422,18 @@ public class DrawableModel {
     private boolean canRotate(Element element) {
         int x = element.center().x();
         int y = element.center().y();
-        if (element.isHorizontal()) {
-            return pointIsNotForbidden(new Point(x, y + Drawer.CELL_SIZE)) &&
+        if (element.isHorizontal()) { // If it is horizontal, it is going to become vertical.
+            return y >= 2 * Drawer.CELL_SIZE && y <= Drawer.FIELD_SIZE - 2 * Drawer.CELL_SIZE &&
+                    pointIsNotForbidden(new Point(x, y + Drawer.CELL_SIZE)) &&
                     pointIsNotForbidden(new Point(x, y + 2 * Drawer.CELL_SIZE)) &&
                     pointIsNotForbidden(new Point(x, y - Drawer.CELL_SIZE)) &&
                     pointIsNotForbidden(new Point(x, y + 2 * Drawer.CELL_SIZE));
         } else {
-            return pointIsNotForbidden(new Point(x + Drawer.CELL_SIZE, y)) &&
+            return x >= 2 * Drawer.CELL_SIZE && x <= Drawer.FIELD_SIZE - 2 * Drawer.CELL_SIZE &&
+                    pointIsNotForbidden(new Point(x + Drawer.CELL_SIZE, y)) &&
                     pointIsNotForbidden(new Point(x + 2 * Drawer.CELL_SIZE, y)) &&
                     pointIsNotForbidden(new Point(x - Drawer.CELL_SIZE, y)) &&
-                    pointIsNotForbidden(new Point(x + 2 * Drawer.CELL_SIZE, y));
+                    pointIsNotForbidden(new Point(x - 2 * Drawer.CELL_SIZE, y));
         }
     }
 
@@ -448,12 +451,8 @@ public class DrawableModel {
     }
 
     public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
-
         DrawableWire del1 = (DrawableWire) first;
         DrawableWire del2 = (DrawableWire) second;
-
-        //deleteOldWirePosition(del1);
-        //deleteOldWirePosition(del2);
 
         ((DrawableNode) common).makeSimple();
         drawableWires.remove(del2);
@@ -461,50 +460,7 @@ public class DrawableModel {
 
         realNodes.remove(common);
 
-        Point startFirst = del1.getPath().iterator().next();
-        Point startSecond = del2.getPath().iterator().next();
-        //del1.from().position().equals()
-//        if ((startFirst.equals(del1.from().position()))) { // Если начало провода совпадает с уже проведенным путем.
-//            if (startSecond.equals(common.position())) {
-//                List<Point> list = new LinkedList<>(del2.getPath());
-//                Collections.reverse(list);
-//                del1.getPath().addAll(list);
-//                System.out.println("1");
-//            } else {
-//                del1.getPath().addAll(del2.getPath());
-//                System.out.println("1");
-//            }
-//        } else {
-//            List<Point> list1 = new LinkedList<>(del1.getPath());
-//            Collections.reverse(list1);
-//            del1.getPath().clear();
-//            del1.getPath().addAll(list1);
-//            if (common.position().equals(del2.from().position())) {
-//                del1.getPath().addAll(del2.getPath());
-//                System.out.println("3");
-//            } else {
-//                List<Point> list2 = new LinkedList<>(del2.getPath());
-//                Collections.reverse(list2);
-//                del1.getPath().addAll(list2);
-//                System.out.println("4");
-//            }
-//        }
-        if (startFirst.equals(common.position())) {
-            List<Point> list1 = new LinkedList<>(del1.getPath());
-            Collections.reverse(list1);
-            del1.getPath().clear();
-            del1.getPath().addAll(list1);
-        }
-        if (!(startSecond.equals(common.position()))) {
-            List<Point> list2 = new LinkedList<>(del2.getPath());
-            Collections.reverse(list2);
-            del2.getPath().clear();
-            del2.getPath().addAll(list2);
-        }
-        del1.getPath().addAll(del2.getPath());
-
-        //addNewObjectPosition(del1);
-
+        DrawableWire.mergePath(del1, del2, common);
         redraw();
     }
 

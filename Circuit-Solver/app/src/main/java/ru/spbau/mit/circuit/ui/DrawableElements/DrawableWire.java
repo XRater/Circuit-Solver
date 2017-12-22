@@ -3,11 +3,15 @@ package ru.spbau.mit.circuit.ui.DrawableElements;
 import android.graphics.Canvas;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableModel;
 import ru.spbau.mit.circuit.ui.DrawableNode;
@@ -24,6 +28,25 @@ public class DrawableWire extends Wire implements Drawable {
     public DrawableWire(DrawableNode from, DrawableNode to) {
         super(from, to);
 //        build();
+    }
+
+    public static void mergePath(DrawableWire first, DrawableWire second, Node common) {
+        Point startFirst = first.getPath().iterator().next();
+        Point startSecond = second.getPath().iterator().next();
+
+        if (startFirst.equals(common.position())) {
+            List<Point> list1 = new LinkedList<>(first.getPath());
+            Collections.reverse(list1);
+            first.getPath().clear();
+            first.getPath().addAll(list1);
+        }
+        if (!(startSecond.equals(common.position()))) {
+            List<Point> list2 = new LinkedList<>(second.getPath());
+            Collections.reverse(list2);
+            second.getPath().clear();
+            second.getPath().addAll(list2);
+        }
+        first.getPath().addAll(second.getPath());
     }
 
     @Override
