@@ -24,11 +24,10 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 public class DrawableModel {
     private static Map<Point, Drawable> field = new LinkedHashMap<>();
     private static Set<DrawableWire> drawableWires = new LinkedHashSet<>();
-    private final Drawer drawer;
+    private final Activity activity;
+    private Drawer drawer;
     private Set<Drawable> drawables = new LinkedHashSet<>();
     private Set<DrawableNode> realNodes = new LinkedHashSet<>();
-    private Activity activity;
-
     private DrawableNode holded;
     private boolean showingCurrents;
 
@@ -468,5 +467,9 @@ public class DrawableModel {
         deleteOldWirePosition(wire);
         MainActivity.ui.removeFromModel(wire);
         drawableWires.remove(wire);
+    }
+
+    public void setDrawer(Drawer drawer) {
+        this.drawer = drawer;
     }
 }

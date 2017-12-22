@@ -29,7 +29,7 @@ import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
 
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
-    private DrawableModel drawableModel;
+    private static DrawableModel drawableModel; // static because after turning the screen onCrate is called.
     private Drawer drawer;
 
     private Drawable chosen;
@@ -48,9 +48,12 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         SurfaceHolder surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
         drawer = new Drawer(surfaceHolder);
-        drawableModel = new DrawableModel(this, drawer);
-        MainActivity.ui.setDrawableModel(drawableModel);
-
+        if (drawableModel == null) {
+            drawableModel = new DrawableModel(this, drawer);
+            MainActivity.ui.setDrawableModel(drawableModel);
+        } else {
+            drawableModel.setDrawer(drawer);
+        }
         ImageButton newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
             DrawableResistor r = new DrawableResistor(drawableModel.getPossiblePosition());
@@ -212,7 +215,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 } else {
                     // WirePoint
                 }
-                //chosen = null;
                 return true;
             }
         }
