@@ -16,13 +16,13 @@ public class JordanForm {
 
     private final List<JordanCell> cells = new ArrayList<>();
 
-    public static JordanForm getJordanForm(RealMatrix matrix) {
+    private int size;
+
+    public JordanForm(RealMatrix matrix) {
         if (!matrix.isSquare()) {
             throw new IllegalArgumentException();
         }
-        int n = matrix.getRowDimension();
 
-        JordanForm form = new JordanForm();
         Map<Complex, Integer> roots = getEigenValues(matrix);
 
         for (Map.Entry<Complex, Integer> entry : roots.entrySet()) {
@@ -31,14 +31,12 @@ public class JordanForm {
             }
             List<Integer> cellsSizes = getCellsSizes(matrix, entry.getKey(), entry.getValue());
             for (int size : cellsSizes) {
-                form.addCell(entry.getKey(), size);
+                addCell(entry.getKey(), size);
             }
         }
-
-        return form;
     }
 
-    private static List<Integer> getCellsSizes(RealMatrix matrix, Complex root, int multiplicity) {
+    private List<Integer> getCellsSizes(RealMatrix matrix, Complex root, int multiplicity) {
         int n = matrix.getRowDimension();
         matrix = matrix.subtract(
                 Matrices.identity(matrix.getRowDimension()).scalarMultiply(root.getReal()));
@@ -76,7 +74,7 @@ public class JordanForm {
         return ans;
     }
 
-    private static Map<Complex, Integer> getEigenValues(RealMatrix matrix) {
+    private Map<Complex, Integer> getEigenValues(RealMatrix matrix) {
         Map<Complex, Integer> ans = new HashMap<>();
         EigenDecomposition eg = new EigenDecomposition(matrix);
         for (int i = 0; i < matrix.getRowDimension(); i++) {
@@ -92,21 +90,38 @@ public class JordanForm {
 
     private void addCell(Complex value, int size) {
         cells.add(new JordanCell(value, size));
+        this.size += size;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public List<JordanCell> getCells() {
+        return cells;
     }
 
     public static class JordanCell {
 
-        private final Complex value;
+        private final Complex lambda;
         private final int size;
 
-        private JordanCell(Complex value, int size) {
-            this.value = value;
+        private JordanCell(Complex lambda, int size) {
+            this.lambda = lambda;
             this.size = size;
         }
 
         @Override
         public String toString() {
-            return "Cell " + value.toString() + ":" + size;
+            return "Cell " + lambda.toString() + ":" + size;
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public double lambda() {
+            return lambda.getReal();
         }
     }
 
@@ -123,7 +138,7 @@ public class JordanForm {
         matrix.setEntry(0, 1, 0);
         matrix.setEntry(1, 1, 0);
 
-        System.out.println(getJordanForm(matrix));
+//        System.out.println(new JordanForm(matrix));
     }
 
     static void print(RealMatrix m) {
