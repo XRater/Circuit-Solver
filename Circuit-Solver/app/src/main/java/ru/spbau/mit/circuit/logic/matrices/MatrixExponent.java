@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit.logic.solver;
+package ru.spbau.mit.circuit.logic.matrices;
 
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -46,7 +46,7 @@ public class MatrixExponent {
     }
 
     public static void main(String[] args) {
-        
+
 //        print(matrix, 2);
 
 //        RealMatrix m = eg.getV();

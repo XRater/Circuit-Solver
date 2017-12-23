@@ -1,15 +1,16 @@
 package ru.spbau.mit.circuit.logic.gauss.functions1;
 
 
+import org.apache.commons.math3.util.BigReal;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.functions1.exceptions.IllegalDoubleConvertionException;
 
-public class PolyFunction implements Linear<Numerical, PolyFunction> {
+public class PolyFunction implements Linear<BigReal, PolyFunction> {
 
     private final Map<PolyExponent, PolyExponent> data = new TreeMap<>();
 
@@ -52,10 +53,10 @@ public class PolyFunction implements Linear<Numerical, PolyFunction> {
     }
 
     @Override
-    public PolyFunction mul(Numerical cf) {
+    public PolyFunction mul(BigReal cf) {
         PolyFunction result = new PolyFunction();
         for (PolyExponent function : data.values()) {
-            result.add(function.mul(cf));
+            result.add(function.multiply(cf));
         }
         return result;
     }
@@ -64,7 +65,7 @@ public class PolyFunction implements Linear<Numerical, PolyFunction> {
         PolyFunction result = new PolyFunction();
         for (PolyExponent f : data.values()) {
             for (PolyExponent g : other.data.values()) {
-                result.add(f.mul(g));
+                result.add(f.multiply(g));
             }
         }
         return result;
@@ -102,7 +103,7 @@ public class PolyFunction implements Linear<Numerical, PolyFunction> {
     private PolyFunction div(PolyExponent gcd) {
         PolyFunction answer = new PolyFunction();
         for (PolyExponent function : data.values()) {
-            answer.add(function.div(gcd));
+            answer.add(function.divide(gcd));
         }
         return answer;
     }

@@ -1,12 +1,13 @@
 package ru.spbau.mit.circuit.logic.gauss;
 
 
+import org.apache.commons.math3.util.BigReal;
+
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 
-public class Id implements Linear<Numerical, Id> {
+public class Id implements Linear<BigReal, Id> {
 
-    Numerical n = Numerical.identity();
+    BigReal n = BigReal.ONE;
 
     @Override
     public Id add(Id item) {
@@ -15,8 +16,8 @@ public class Id implements Linear<Numerical, Id> {
     }
 
     @Override
-    public Id mul(Numerical cf) {
-        n = n.mul(cf);
+    public Id mul(BigReal cf) {
+        n = n.multiply(cf);
         return this;
     }
 

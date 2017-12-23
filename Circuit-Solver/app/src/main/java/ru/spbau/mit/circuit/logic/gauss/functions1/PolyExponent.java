@@ -3,17 +3,21 @@ package ru.spbau.mit.circuit.logic.gauss.functions1;
 
 import android.support.annotation.NonNull;
 
+import org.apache.commons.math3.Field;
+import org.apache.commons.math3.FieldElement;
+import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.exception.NullArgumentException;
+import org.apache.commons.math3.util.BigReal;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.functions1.exceptions.IllegalDoubleConvertionException;
 import ru.spbau.mit.circuit.logic.gauss.functions1.exceptions
         .IllegalFunctionTransformationException;
 
-public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponent> {
+public class PolyExponent implements Comparable<PolyExponent>, FieldElement<PolyExponent> {
 
     private final double cf;
     private final int mPow;
@@ -60,11 +64,6 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
     }
 
     @Override
-    public PolyExponent copy() {
-        return new PolyExponent(this);
-    }
-
-    @Override
     public PolyExponent add(PolyExponent f) {
         if (f != null) {
             if (f.mPow != mPow || !ePow.equals(f.ePow)) {
@@ -76,7 +75,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
     }
 
     @Override
-    public PolyExponent mul(PolyExponent f) {
+    public PolyExponent multiply(PolyExponent f) {
         if (f != null) {
             return new PolyExponent(cf * f.cf, mPow + f.mPow, ePow.add(f
                     .ePow));
@@ -85,7 +84,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
     }
 
     @Override
-    public PolyExponent inverse() {
+    public PolyExponent reciprocal() {
         return new PolyExponent(1 / cf, -mPow, ePow.negate());
     }
 
@@ -94,18 +93,37 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return new PolyExponent(-cf, mPow, ePow);
     }
 
-    @Override
     public boolean isZero() {
         return sim(cf, 0);
     }
 
-    @Override
     public boolean isIdentity() {
         return sim(cf, 1) && mPow == 0 && ePow.signum() == 0;
     }
 
-    public PolyExponent mul(Numerical num) {
-        return new PolyExponent(cf * num.value(), mPow, ePow);
+    public PolyExponent multiply(BigReal num) {
+        return new PolyExponent(cf * num.doubleValue(), mPow, ePow);
+    }
+
+    @Override
+    public PolyExponent subtract(PolyExponent a) throws NullArgumentException {
+        return this.add(a.negate());
+    }
+
+    @Override
+    public PolyExponent multiply(int n) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public PolyExponent divide(PolyExponent a) throws NullArgumentException,
+            MathArithmeticException {
+        return this.multiply(a.reciprocal());
+    }
+
+    @Override
+    public Field<PolyExponent> getField() {
+        return new PolyExponents();
     }
 
     @Override

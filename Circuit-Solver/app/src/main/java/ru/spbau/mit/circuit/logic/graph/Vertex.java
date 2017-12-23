@@ -3,13 +3,14 @@ package ru.spbau.mit.circuit.logic.graph;
 
 import android.support.annotation.NonNull;
 
+import org.apache.commons.math3.util.BigReal;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.gauss.Equation;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
 import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunctions;
 import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
@@ -51,17 +52,17 @@ class Vertex {
 
 
     Equation<
-            Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>
+            BigReal,
+            Vector<BigReal, Derivative>,
+            Row<BigReal, FunctionVariable, PolyFunction>
             > getEquation(Collection<Derivative> variables) {
 
-        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
-        Row<Numerical, FunctionVariable, PolyFunction> consts =
+        Vector<BigReal, Derivative> vars = new Vector<>(variables, BigReal.ZERO);
+        Row<BigReal, FunctionVariable, PolyFunction> consts =
                 new Row<>(PolyFunctions.zero());
 
         for (Edge edge : edges) {
-            vars.add(edge.current(), Numerical.number(edge.getDirection(this)));
+            vars.add(edge.current(), new BigReal(edge.getDirection(this)));
         }
         return new Equation<>(vars, consts);
     }

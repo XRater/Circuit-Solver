@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.gauss.linear_containers;
 
 
+import org.apache.commons.math3.FieldElement;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,9 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.gauss.Gauss;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
 
-public class Vector<C extends Field<C>, T extends Comparable<? super T>> implements Gauss<C,
+public class Vector<C extends FieldElement<C>, T extends Comparable<? super T>> implements Gauss<C,
         Vector<C, T>> {
 
     private final ArrayList<T> data = new ArrayList<>();
@@ -77,7 +78,7 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
     @Override
     public Vector<C, T> mul(C c) {
         for (int i = 0; i < size; i++) {
-            C newC = cfs.get(i).mul(c);
+            C newC = cfs.get(i).multiply(c);
             cfs.set(i, newC);
         }
         return this;

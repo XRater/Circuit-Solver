@@ -2,10 +2,11 @@ package ru.spbau.mit.circuit.logic.gauss.functions1;
 
 import android.support.annotation.NonNull;
 
-import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
+import org.apache.commons.math3.FieldElement;
+
 import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 
-interface PrimaryFunction extends Comparable<PrimaryFunction>, Field<PrimaryFunction> {
+interface PrimaryFunction extends Comparable<PrimaryFunction>, FieldElement<PrimaryFunction> {
 
     int rank();
 
@@ -24,10 +25,5 @@ interface PrimaryFunction extends Comparable<PrimaryFunction>, Field<PrimaryFunc
         } else {
             return compare(o);
         }
-    }
-
-    @Override
-    default boolean isIdentity() {
-        throw new UnsupportedOperationException();
     }
 }

@@ -1,11 +1,15 @@
 package ru.spbau.mit.circuit.logic.gauss.functions1;
 
 
-import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
+import org.apache.commons.math3.Field;
+import org.apache.commons.math3.FieldElement;
+import org.apache.commons.math3.exception.MathArithmeticException;
+import org.apache.commons.math3.exception.NullArgumentException;
+import org.apache.commons.math3.util.BigReal;
+
 import ru.spbau.mit.circuit.logic.gauss.algebra.exceptions.IllegalInverseException;
 
-public class Function implements Field<Function> {
+public class Function implements FieldElement<Function> {
 
     private PolyFunction up;
     private PolyFunction down;
@@ -30,21 +34,13 @@ public class Function implements Field<Function> {
     }
 
     private void simplify() {
-//        PolyExponent gcd = gcd(up, down);
-//        up = up.div(gcd);
-//        down.div(gcd);
         up = up.div(down);
         down = down.div(down);
     }
 
-//    private PolyExponent gcd(PolyFunction f, PolyFunction g) {
-//        int ePow = f.
-//        return null;
-//    }
-
     @Override
-    public Function copy() {
-        return new Function(this);
+    public Function divide(Function a) throws NullArgumentException, MathArithmeticException {
+        return this.multiply(a.reciprocal());
     }
 
     @Override
@@ -53,16 +49,16 @@ public class Function implements Field<Function> {
     }
 
     @Override
-    public Function mul(Function other) {
+    public Function multiply(Function other) {
         return new Function(up.mul(other.up), down.mul(other.down));
     }
 
     public Function mul(double d) {
-        return new Function(up.mul(Numerical.number(d)), down);
+        return new Function(up.mul(new BigReal(d)), down);
     }
 
     @Override
-    public Function inverse() {
+    public Function reciprocal() {
         if (up.isZero()) {
             throw new IllegalInverseException();
         }
@@ -71,17 +67,21 @@ public class Function implements Field<Function> {
 
     @Override
     public Function negate() {
-        return new Function(up.mul(Numerical.number(-1)), down);
+        return new Function(up.mul(new BigReal(-1)), down);
     }
 
     @Override
+    public Function subtract(Function a) throws NullArgumentException {
+        return new Function(up.mul(new BigReal(-1)), down);
+    }
+
+    @Override
+    public Function multiply(int n) {
+        throw new UnsupportedOperationException();
+    }
+
     public boolean isZero() {
         return up.isZero();
-    }
-
-    @Override
-    public boolean isIdentity() {
-        throw new UnsupportedOperationException();
     }
 
     //TODO
@@ -114,5 +114,10 @@ public class Function implements Field<Function> {
             return new Function(up.differentiate(), down);
         }
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Field<Function> getField() {
+        return new Functions();
     }
 }

@@ -38,5 +38,4 @@ public class PolyFunctions {
     public static PolyFunction polyExponent(double cf, int mPow, double ePow) {
         return new PolyFunction(new PolyExponent(cf, mPow, ePow));
     }
-
 }

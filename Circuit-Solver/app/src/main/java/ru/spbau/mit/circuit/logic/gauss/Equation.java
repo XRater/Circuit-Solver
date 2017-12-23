@@ -1,10 +1,11 @@
 package ru.spbau.mit.circuit.logic.gauss;
 
 
-import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
+import org.apache.commons.math3.FieldElement;
+
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 
-public class Equation<C extends Field<C>, T extends Gauss<C, T>, U extends Linear<C, U>>
+public class Equation<C extends FieldElement<C>, T extends Gauss<C, T>, U extends Linear<C, U>>
         implements Gauss<C, Equation<C, T, U>> {
 
     private T coefficients;
