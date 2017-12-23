@@ -1,6 +1,6 @@
 package ru.spbau.mit.circuit.logic.gauss.algebra;
 
-
+/*
 import ru.spbau.mit.circuit.logic.gauss.algebra.exceptions.IllegalInverseException;
 
 public class Numerical implements Field<Numerical> {
@@ -70,3 +70,4 @@ public class Numerical implements Field<Numerical> {
         return Double.toString(value);
     }
 }
+*/
