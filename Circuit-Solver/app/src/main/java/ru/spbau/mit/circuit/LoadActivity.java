@@ -17,12 +17,14 @@ public class LoadActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.load_activity);
+
         ListView names = findViewById(R.id.names);
         names.setOnItemClickListener((parent, view, position, id) -> {
             String name = ((TextView) view).getText().toString();
             MainActivity.ui.load(mode, name);
 
         });
+
         Button local = findViewById(R.id.local);
         local.setOnClickListener(v -> {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
