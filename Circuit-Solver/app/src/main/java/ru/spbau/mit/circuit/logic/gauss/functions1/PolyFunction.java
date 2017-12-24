@@ -41,8 +41,6 @@ public class PolyFunction implements Linear<BigReal, PolyFunction> {
             return;
         }
         if (data.containsKey(function)) {
-            PolyExponent exponent = data.get(function);
-            System.out.println(exponent + " " + function);
             data.put(function, data.get(function).add(function));
             if (data.get(function).isZero()) {
                 data.remove(function);

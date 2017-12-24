@@ -3,8 +3,7 @@ package ru.spbau.mit.circuit.logic.gauss.functions1;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.math3.FieldElement;
-
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
+import org.apache.commons.math3.util.BigReal;
 
 interface PrimaryFunction extends Comparable<PrimaryFunction>, FieldElement<PrimaryFunction> {
 
@@ -12,7 +11,7 @@ interface PrimaryFunction extends Comparable<PrimaryFunction>, FieldElement<Prim
 
     int compare(PrimaryFunction o);
 
-    PrimaryFunction mul(Numerical num);
+    PrimaryFunction mul(BigReal num);
 
 //    Pair<PrimaryFunction, Double> integrate();
 

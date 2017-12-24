@@ -1,6 +1,6 @@
-package ru.spbau.mit.circuit.logic.matrices;
+package ru.spbau.mit.circuit.logic.matrix_exponent;
 
-
+/*
 import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
@@ -152,3 +152,4 @@ public class JordanForm {
         System.out.print("\n");
     }
 }
+*/

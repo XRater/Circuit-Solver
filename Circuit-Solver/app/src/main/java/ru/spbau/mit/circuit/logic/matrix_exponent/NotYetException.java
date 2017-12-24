@@ -1,4 +1,4 @@
-package ru.spbau.mit.circuit.logic.matrices;
+package ru.spbau.mit.circuit.logic.matrix_exponent;
 
 
 class NotYetException extends RuntimeException {

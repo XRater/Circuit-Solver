@@ -1,19 +1,23 @@
 package ru.spbau.mit.circuit.logic.gauss.algebra;
 
 
-//public interface Field<T extends Field<T>> extends Linear<T, T> {
+//public interface Field<T extends Field<T>> extends FieldElement<T> {
 //
-//    T copy();
+//    @Override
+//    default T subtract(T a) throws NullArgumentException {
+//        return add(a.negate());
+//    }
 //
-//    T inverse();
-//
-//    T negate();
-//
-//    default T div(T f) {
-//        return mul(f.copy().inverse());
+//    @Override
+//    default T divide(T f) {
+//        return multiply(f.reciprocal());
 //    }
 //
 //    boolean isZero();
 //
 //    boolean isIdentity();
+//
+//    T getZero();
+//
+//    static T getIdentity();
 //}
