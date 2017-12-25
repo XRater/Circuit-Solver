@@ -1,13 +1,13 @@
 package ru.spbau.mit.circuit.logic.gauss.linear_containers;
 
-import org.apache.commons.math3.FieldElement;
 
 import java.util.Map;
 import java.util.TreeMap;
 
+import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 
-public class Row<C extends FieldElement<C>, T extends Comparable<? super T>, S extends Linear<C, S>>
+public class Row<C extends Field<C>, T extends Comparable<? super T>, S extends Linear<C, S>>
         implements
         Linear<C, Row<C, T, S>> {
 
@@ -45,8 +45,8 @@ public class Row<C extends FieldElement<C>, T extends Comparable<? super T>, S e
     }
 
     @Override
-    public Row<C, T, S> mul(C d) {
-        constant = constant.mul(d);
+    public Row<C, T, S> multiplyConstant(C d) {
+        constant = constant.multiplyConstant(d);
         for (Map.Entry<T, C> entry : data.entrySet()) {
             data.put(entry.getKey(), entry.getValue().multiply(d));
         }

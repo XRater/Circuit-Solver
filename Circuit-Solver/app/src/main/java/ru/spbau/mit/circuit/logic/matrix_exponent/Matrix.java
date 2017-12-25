@@ -1,42 +1,41 @@
 package ru.spbau.mit.circuit.logic.matrix_exponent;
 
-import org.apache.commons.math3.Field;
-import org.apache.commons.math3.FieldElement;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.util.BigReal;
-
 import java.lang.reflect.Array;
 
-public class Matrix<T extends FieldElement<T>> {
+import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
+
+public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, Matrix<T>> {
 
     private final T[][] data;
-    private final int size;
-    private final Field<T> field;
+    private final int n;
+    private final int m;
+    private final T zero;
 
-    public Matrix(int size, Field<T> field) {
-        data = (T[][]) (Array.newInstance(field.getZero().getClass(), size, size));
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                data[i][j] = field.getZero();
-            }
-        }
-        this.field = field;
-        this.size = size;
+    public Matrix(int n, T zero) {
+        this(n, n, zero);
     }
 
-    // TODO
-    public Matrix(RealMatrix matrix) {
-        data = null;
-        field = null;
-        size = 0;
+    public Matrix(int n, int m, T zero) {
+        this.zero = zero;
+        this.n = n;
+        this.m = m;
+        data = (T[][]) (Array.newInstance(zero.getClass(), n, m));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                data[i][j] = zero.getZero();
+            }
+        }
     }
 
     public Matrix(Matrix<T> matrix) {
-        data = (T[][]) new Object[matrix.size][matrix.size];
-        this.size = matrix.size;
-        this.field = matrix.field;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        this.zero = matrix.zero;
+        this.n = matrix.n;
+        this.m = matrix.m;
+        data = (T[][]) (Array.newInstance(zero.getClass(), n, m));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 data[i][j] = matrix.data[i][j];
             }
         }
@@ -50,39 +49,50 @@ public class Matrix<T extends FieldElement<T>> {
         return data[i][j];
     }
 
+    @Override
     public Matrix<T> getZero() {
-        return new Matrix<T>(data.length, field);
+        return new Matrix<>(n, m, zero);
     }
 
-    public Matrix<T> getOne() {
-        return Matrices.identity(data.length, field);
+    public Matrix<T> getZero(int sz) {
+        return new Matrix<>(sz, zero);
     }
 
+    @Override
+    public Matrix<T> getIdentity() {
+        if (n != m) {
+            throw new MatrixException();
+        }
+        return Matrices.identity(n, zero);
+    }
+
+    public Matrix<T> getIdentity(int sz) {
+        return Matrices.identity(sz, zero);
+    }
+
+    @Override
     public Matrix<T> add(Matrix<T> matrix) {
-        Matrix<T> ans = new Matrix<>(matrix.size, matrix.field);
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        if (n != matrix.n || m != matrix.m) {
+            throw new IllegalArgumentException();
+        }
+        Matrix<T> ans = new Matrix<>(matrix.n, matrix.m, matrix.zero);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 ans.set(i, j, get(i, j).add(matrix.get(i, j)));
             }
         }
         return ans;
     }
 
-    public Matrix<T> multiply(T t) {
-        Matrix<T> ans = new Matrix<>(this.size, this.field);
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                ans.set(i, j, get(i, j).multiply(t));
-            }
-        }
-        return ans;
-    }
-
+    @Override
     public Matrix<T> multiply(Matrix<T> matrix) {
-        Matrix<T> ans = new Matrix<>(matrix.size, matrix.field);
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                for (int k = 0; k < size; k++) {
+        if (m != matrix.n) {
+            throw new IllegalArgumentException();
+        }
+        Matrix<T> ans = new Matrix<>(n, matrix.m, matrix.zero);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < matrix.m; j++) {
+                for (int k = 0; k < m; k++) {
                     ans.set(i, j, ans.get(i, j)
                             .add(data[i][k].multiply(matrix.data[k][j])));
                 }
@@ -92,10 +102,64 @@ public class Matrix<T extends FieldElement<T>> {
     }
 
     @Override
+    public Matrix<T> negate() {
+        return this.multiplyConstant(zero.getIdentity().negate());
+    }
+
+    @Override
+    public Matrix<T> reciprocal() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isZero() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (!data[i][j].isZero()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isIdentity() {
+        if (n != m) {
+            return false;
+        }
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (i != j) {
+                    if (!data[i][j].isZero()) {
+                        return false;
+                    }
+                } else {
+                    if (!data[i][j].isIdentity()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public Matrix<T> multiplyConstant(T t) {
+        Matrix<T> ans = new Matrix<>(this.n, this.zero);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                ans.set(i, j, get(i, j).multiply(t));
+            }
+        }
+        return ans;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 if (j != 0) {
                     sb.append(' ');
                 }
@@ -107,12 +171,27 @@ public class Matrix<T extends FieldElement<T>> {
     }
 
     public static void main(String[] args) {
-        Matrix<BigReal> A = new Matrix<BigReal>(2, BigReal.ZERO.getField());
-        A.set(0, 0, new BigReal(1));
-        A.set(0, 1, new BigReal(1));
-        A.set(1, 0, new BigReal(1));
-        A.set(1, 1, new BigReal(1));
+        Matrix<Numerical> A = new Matrix<>(2, Numerical.zero());
+        A.set(0, 0, Numerical.number(1));
+        A.set(0, 1, Numerical.number(1));
+        A.set(1, 0, Numerical.number(1));
+        A.set(1, 1, Numerical.number(1));
         System.out.println(A.multiply(A));
         //        Matrix<BigReal> B = new Matrix<BigReal>(2, BigReal.ZERO.getField());
+    }
+
+    public int size() {
+        if (n != m) {
+            throw new IllegalArgumentException();
+        }
+        return n;
+    }
+
+    public int n() {
+        return n;
+    }
+
+    public int m() {
+        return m;
     }
 }

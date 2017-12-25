@@ -3,25 +3,23 @@ package ru.spbau.mit.circuit.logic.gauss.functions1;
 
 import android.support.annotation.NonNull;
 
-import org.apache.commons.math3.Field;
-import org.apache.commons.math3.FieldElement;
-import org.apache.commons.math3.exception.MathArithmeticException;
-import org.apache.commons.math3.exception.NullArgumentException;
-import org.apache.commons.math3.util.BigReal;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
+import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.functions1.exceptions.IllegalDoubleConvertionException;
 import ru.spbau.mit.circuit.logic.gauss.functions1.exceptions
         .IllegalFunctionTransformationException;
 
-public class PolyExponent implements Comparable<PolyExponent>, FieldElement<PolyExponent> {
+public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponent>,
+        Linear<Numerical, PolyExponent> {
 
     private final double cf;
     private final int mPow;
-    private final int scale = 10;
+    private final int scale = 20;
     private BigDecimal ePow = new BigDecimal(0);
     private int precision = 2;
 
@@ -93,37 +91,67 @@ public class PolyExponent implements Comparable<PolyExponent>, FieldElement<Poly
         return new PolyExponent(-cf, mPow, ePow);
     }
 
+    @Override
+    public PolyExponent multiplyConstant(Numerical num) {
+        return new PolyExponent(cf * num.value(), mPow, ePow);
+    }
+
+    @Override
     public boolean isZero() {
-        return sim(cf, 0);
+        return isEquals(cf, 0);
     }
 
+    @Override
     public boolean isIdentity() {
-        return sim(cf, 1) && mPow == 0 && ePow.signum() == 0;
-    }
-
-    public PolyExponent multiply(BigReal num) {
-        return new PolyExponent(cf * num.doubleValue(), mPow, ePow);
+        return isEquals(cf, 1) && mPow == 0 && ePow.signum() == 0;
     }
 
     @Override
-    public PolyExponent subtract(PolyExponent a) throws NullArgumentException {
-        return this.add(a.negate());
+    public PolyExponent getZero() {
+        return new PolyExponent(0, 0, 0);
     }
 
     @Override
-    public PolyExponent multiply(int n) {
-        throw new UnsupportedOperationException();
+    public PolyExponent getIdentity() {
+        return new PolyExponent(1, 0, 0);
     }
 
-    @Override
-    public PolyExponent divide(PolyExponent a) throws NullArgumentException,
-            MathArithmeticException {
-        return this.multiply(a.reciprocal());
+    public PolyFunction integrate() {
+        if (isEquals(ePow.doubleValue(), 0)) {
+            if (mPow != -1) {
+                return PolyFunctions.power(cf / (mPow + 1), mPow + 1);
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        } else {
+            if (mPow == 0) {
+                return PolyFunctions.exponent(cf / ePow.doubleValue(), ePow.doubleValue());
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
     }
 
-    @Override
-    public Field<PolyExponent> getField() {
-        return new PolyExponents();
+    private String writeNumber(double d) {
+        if (isEquals(d, Math.round(d))) {
+            if (Math.round(d) == 0 || Math.round(d) == 1) {
+                return "";
+            }
+            return String.valueOf(Math.round(d));
+        }
+        String res = Double.toString(d);
+        return res.substring(0, res.indexOf('.') + precision);
+    }
+
+    private boolean isEquals(double x, double y) {
+        return Math.abs(x - y) < 0.0001;
+    }
+
+    public double doubleValue() {
+        if (ePow.signum() != 0 || mPow != 0) {
+            throw new IllegalDoubleConvertionException();
+        }
+        return cf;
     }
 
     @Override
@@ -144,31 +172,5 @@ public class PolyExponent implements Comparable<PolyExponent>, FieldElement<Poly
         }
         res += "e^" + writeNumber(ePow.doubleValue()) + "t";
         return res;
-    }
-
-    private String writeNumber(double d) {
-        if (sim(d, Math.round(d))) {
-            if (Math.round(d) == 0 || Math.round(d) == 1) {
-                return "";
-            }
-            return String.valueOf(Math.round(d));
-        }
-        String res = Double.toString(d);
-        return res.substring(0, res.indexOf('.') + precision);
-    }
-
-    private boolean sim(double x, double y) {
-        return Math.abs(x - y) < 0.0001;
-    }
-
-    public void print() {
-        System.out.println(cf + " " + mPow + " " + ePow);
-    }
-
-    public double doubleValue() {
-        if (ePow.signum() != 0 || mPow != 0) {
-            throw new IllegalDoubleConvertionException();
-        }
-        return cf;
     }
 }

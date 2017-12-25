@@ -1,6 +1,6 @@
 package ru.spbau.mit.circuit.logic.gauss.algebra;
 
-/*
+
 import ru.spbau.mit.circuit.logic.gauss.algebra.exceptions.IllegalInverseException;
 
 public class Numerical implements Field<Numerical> {
@@ -28,22 +28,17 @@ public class Numerical implements Field<Numerical> {
     }
 
     @Override
-    public Numerical copy() {
-        return new Numerical(value);
-    }
-
-    @Override
     public Numerical add(Numerical f) {
         return new Numerical(value + f.value);
     }
 
     @Override
-    public Numerical mul(Numerical f) {
+    public Numerical multiply(Numerical f) {
         return new Numerical(value * f.value);
     }
 
     @Override
-    public Numerical inverse() {
+    public Numerical reciprocal() {
         if (!isZero()) {
             return new Numerical(1 / value);
         }
@@ -66,8 +61,17 @@ public class Numerical implements Field<Numerical> {
     }
 
     @Override
+    public Numerical getZero() {
+        return Numerical.zero();
+    }
+
+    @Override
+    public Numerical getIdentity() {
+        return Numerical.identity();
+    }
+
+    @Override
     public String toString() {
         return Double.toString(value);
     }
 }
-*/

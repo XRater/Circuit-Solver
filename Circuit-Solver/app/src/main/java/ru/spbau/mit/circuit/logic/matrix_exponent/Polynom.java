@@ -3,32 +3,31 @@ package ru.spbau.mit.circuit.logic.matrix_exponent;
 
 import android.support.annotation.NonNull;
 
-import org.apache.commons.math3.Field;
-import org.apache.commons.math3.FieldElement;
-import org.apache.commons.math3.exception.MathArithmeticException;
-import org.apache.commons.math3.exception.NullArgumentException;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class Polynom<T extends FieldElement<T>> implements FieldElement<Polynom<T>> {
+import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
+
+public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T, Polynom<T>> {
 
     private final ArrayList<T> monoms = new ArrayList<>();
-    private final Field<T> field;
+    private final T zero;
 
-    public Polynom(Field<T> field) {
-        this.field = field;
+    public Polynom(T zero) {
+        this.zero = zero;
     }
 
-    public Polynom(Field<T> field, List<T> cfs) {
-        this.field = field;
+    public Polynom(T zero, List<T> cfs) {
+        this.zero = zero;
         for (int i = 0; i < cfs.size(); i++) {
             addMonom(i, cfs.get(i));
         }
     }
 
     public Polynom(Polynom<T> p) {
-        field = p.field;
+        zero = p.zero;
         int index = 0;
         for (T t : p.monoms) {
             addMonom(index, t);
@@ -38,13 +37,13 @@ public class Polynom<T extends FieldElement<T>> implements FieldElement<Polynom<
 
     private void addMonom(int index, T value) {
         while (index >= monoms.size()) {
-            monoms.add(field.getZero());
+            monoms.add(zero.getZero());
         }
         monoms.set(index, monoms.get(index).add(value));
     }
 
     @Override
-    public Polynom<T> add(Polynom<T> p) throws NullArgumentException {
+    public Polynom<T> add(Polynom<T> p) {
         Polynom<T> ans = new Polynom<>(this);
         int index = 0;
         for (T t : p.monoms) {
@@ -55,7 +54,7 @@ public class Polynom<T extends FieldElement<T>> implements FieldElement<Polynom<
     }
 
     @Override
-    public Polynom<T> subtract(Polynom<T> p) throws NullArgumentException {
+    public Polynom<T> subtract(Polynom<T> p) {
         Polynom<T> ans = new Polynom<>(this);
         int index = 0;
         for (T t : p.monoms) {
@@ -66,24 +65,8 @@ public class Polynom<T extends FieldElement<T>> implements FieldElement<Polynom<
     }
 
     @Override
-    public Polynom<T> negate() throws NullArgumentException {
-        Polynom<T> ans = new Polynom<>(this);
-        int index = 0;
-        for (T t : monoms) {
-            ans.addMonom(index, t.negate());
-            index++;
-        }
-        return ans;
-    }
-
-    @Override
-    public Polynom<T> multiply(int n) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Polynom<T> multiply(Polynom<T> p) throws NullArgumentException {
-        Polynom<T> ans = new Polynom<>(field);
+    public Polynom<T> multiply(Polynom<T> p) {
+        Polynom<T> ans = new Polynom<>(zero);
         for (int i = 0; i < monoms.size(); i++) {
             for (int j = 0; j < p.monoms.size(); j++) {
                 ans.addMonom(i + j, monoms.get(i).multiply(p.monoms.get(j)));
@@ -93,24 +76,62 @@ public class Polynom<T extends FieldElement<T>> implements FieldElement<Polynom<
     }
 
     @Override
-    public Polynom<T> divide(Polynom<T> a) throws NullArgumentException, MathArithmeticException {
-        throw new UnsupportedOperationException();
+    public Polynom<T> negate() {
+        return this.multiplyConstant(zero.getIdentity().negate());
     }
 
     @Override
-    public Polynom<T> reciprocal() throws MathArithmeticException {
-        throw new UnsupportedOperationException();
+    public Polynom<T> multiplyConstant(T cf) {
+        Polynom<T> ans = new Polynom<>(this);
+        int index = 0;
+        for (T t : monoms) {
+            ans.addMonom(index, t.multiply(cf));
+            index++;
+        }
+        return ans;
     }
 
     @Override
-    public Field<Polynom<T>> getField() {
-//        return new PolynomField(field);
+    public boolean isZero() {
+        for (int i = 0; i < monoms.size(); i++) {
+            if (!monoms.get(i).isZero()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isIdentity() {
+        for (int i = 0; i < monoms.size(); i++) {
+            if (i == 0 && !monoms.get(i).isIdentity()) {
+                return false;
+            }
+            if (i != 0 && !monoms.get(i).isZero()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public Polynom<T> getZero() {
+        return new Polynom<>(zero.getZero());
+    }
+
+    @Override
+    public Polynom<T> getIdentity() {
+        return new Polynom<T>(zero, Collections.singletonList(zero.getIdentity()));
+    }
+
+    @Override
+    public Polynom<T> reciprocal() {
         throw new UnsupportedOperationException();
     }
 
     public T evaluate(T t) {
-        T ans = field.getZero();
-        T power = field.getOne();
+        T ans = zero.getZero();
+        T power = zero.getIdentity();
         for (int i = 0; i < monoms.size(); i++) {
             ans = ans.add(power.multiply(monoms.get(i)));
             power = power.multiply(t);
@@ -120,10 +141,10 @@ public class Polynom<T extends FieldElement<T>> implements FieldElement<Polynom<
 
     @NonNull
     public Matrix<T> evaluate(Matrix<T> matrix) {
-        Matrix<T> ans = matrix.getZero();
-        Matrix<T> power = matrix.getOne();
+        Matrix<T> ans = matrix.getZero(matrix.size());
+        Matrix<T> power = matrix.getIdentity(matrix.size());
         for (int i = 0; i < monoms.size(); i++) {
-            ans = ans.add(power.multiply(monoms.get(i)));
+            ans = ans.add(power.multiplyConstant(monoms.get(i)));
             power = power.multiply(matrix);
         }
         return ans;
@@ -131,6 +152,10 @@ public class Polynom<T extends FieldElement<T>> implements FieldElement<Polynom<
 
     @Override
     public String toString() {
-        return monoms.toString();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < monoms.size(); i++) {
+            sb.append(' ').append(monoms.get(i)).append("x^").append(i);
+        }
+        return sb.toString();
     }
 }

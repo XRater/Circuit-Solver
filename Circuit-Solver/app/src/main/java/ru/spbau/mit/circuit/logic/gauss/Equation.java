@@ -1,11 +1,9 @@
 package ru.spbau.mit.circuit.logic.gauss;
 
-
-import org.apache.commons.math3.FieldElement;
-
+import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 
-public class Equation<C extends FieldElement<C>, T extends Gauss<C, T>, U extends Linear<C, U>>
+public class Equation<C extends Field<C>, T extends Gauss<C, T>, U extends Linear<C, U>>
         implements Gauss<C, Equation<C, T, U>> {
 
     private T coefficients;
@@ -24,9 +22,9 @@ public class Equation<C extends FieldElement<C>, T extends Gauss<C, T>, U extend
     }
 
     @Override
-    public Equation<C, T, U> mul(C c) {
-        coefficients = coefficients.mul(c);
-        constant = constant.mul(c);
+    public Equation<C, T, U> multiplyConstant(C c) {
+        coefficients = coefficients.multiplyConstant(c);
+        constant = constant.multiplyConstant(c);
         return this;
     }
 

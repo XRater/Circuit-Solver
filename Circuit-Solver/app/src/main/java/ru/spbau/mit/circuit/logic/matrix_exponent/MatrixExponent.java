@@ -3,76 +3,62 @@ package ru.spbau.mit.circuit.logic.matrix_exponent;
 
 import android.support.annotation.NonNull;
 
-import org.apache.commons.math3.Field;
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.util.BigReal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.functions1.Function;
 import ru.spbau.mit.circuit.logic.gauss.functions1.Functions;
 
 public class MatrixExponent {
 
-    private static final Field<BigReal> realField = new BigReal(0).getField();
-    private static final Field<Function> functionField = Functions.constant(0).getField();
+    private static final Numerical numericalZero = Numerical.zero();
+    private static final Function functionZero = Functions.zero();
 
-//    private static Matrix<Function> matrixExponent(JordanForm j) {
-//        FunctionMatrix matrix = new FunctionMatrix(j.size());
-//
-//        int row = 0;
-//
-//        for (JordanForm.JordanCell cell : j.getCells()) {
-//            double cf = 1;
-//            for (int diag = 0; diag < cell.size(); diag++) {
-//                cf /= (diag + 1);
-//                for (int index = 0; index < cell.size() - diag; index++) {
-//                    matrix.set(row + index, row + diag + index,
-//                            PolyFunctions.polyExponent(cf, diag, cell.lambda()));
-//                }
-//            }
-//            row += cell.size();
-//        }
-//
-//        return matrix;
-//    }
-
-    private static Matrix<Function> matrixExponent(RealMatrix matrix) {
+    public static Matrix<Function> matrixExponent(RealMatrix matrix) {
         Map<Complex, Integer> roots = getEigenValues(matrix);
         Polynom<Function> polynom = buildVariablePolynom(roots);
-        return polynom.evaluate(Matrices.getPolynomMatrix(matrix));
+        return polynom.evaluate(Matrices.getFunctionMatrix(matrix));
     }
 
     @NonNull
     private static Polynom<Function> buildVariablePolynom(Map<Complex, Integer> roots) {
-        Polynom<Function> ans = new Polynom<>(functionField);
-
-        BlockArray blockArray = new BlockArray(roots);
+        Polynom<Function> ans = new Polynom<>(functionZero);
 
         // Make list of roots with duplicates
-        List<Double> rootList = new ArrayList<>();
+        List<Complex> rootList = new ArrayList<>();
         for (Map.Entry<Complex, Integer> entry : roots.entrySet()) {
             for (int i = 0; i < entry.getValue(); i++) {
+                // TODO
                 if (entry.getKey().getImaginary() != 0) {
                     throw new NotYetException();
                 }
-                rootList.add(entry.getKey().getReal());
+                rootList.add(entry.getKey());
             }
         }
 
-        Polynom<Function> coefficient = new Polynom<>(functionField);
+        Polynom<Function> coefficient = new Polynom<>(functionZero,
+                Collections.singletonList(Functions.constant(1)));
+
+        SubtractColumn subtractColumn = new SubtractColumn(rootList);
 
         for (int i = 0; i < rootList.size(); i++) {
-            coefficient = coefficient.multiply(new Polynom<>(functionField,
-                    Arrays.asList(Functions.constant(rootList.get(i)), Functions.constant(1))));
-            ans = ans.add(coefficient.multiply(blockArray.first()));
-            blockArray.next();
+            ans = ans.add(coefficient.multiply(
+                    new Polynom<>(functionZero,
+                            Collections.singletonList(subtractColumn.first()))));
+            subtractColumn.next();
+            coefficient = coefficient.multiply(new Polynom<>(functionZero,
+                    Arrays.asList(Functions.constant(
+                            -rootList.get(i).getReal()), Functions.constant(1))));
         }
 
         return ans;
@@ -92,7 +78,8 @@ public class MatrixExponent {
         return ans;
     }
 
-    static void print(RealMatrix m, int sz) {
+    static void print(RealMatrix m) {
+        int sz = m.getColumnDimension();
         for (int i = 0; i < sz; i++) {
             for (int j = 0; j < sz; j++) {
                 System.out.print(m.getEntry(i, j) + " ");
@@ -104,11 +91,11 @@ public class MatrixExponent {
 
     public static void main(String[] args) {
 
-        Map<Complex, Integer> map = new HashMap<>();
-        map.put(new Complex(1, 0), 1);
-//        map.put(new Complex(2, 0), 2);
+        RealMatrix matrix = new Array2DRowRealMatrix(1, 1);
+        matrix.setEntry(0, 0, 0);
 
-        System.out.println(buildVariablePolynom(map));
+        print(matrix);
+        System.out.println(matrixExponent(matrix));
     }
 
 }

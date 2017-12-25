@@ -51,7 +51,7 @@ public class JordanForm {
         int rank = solver.getRank();
         while (rank != n - multiplicity) {
             rowsSizes.add(rank);
-            powMatrix = powMatrix.multiply(matrix);
+            powMatrix = powMatrix.multiplyConstant(matrix);
             solver = new SingularValueDecomposition(powMatrix);
             rank = solver.getRank();
         }

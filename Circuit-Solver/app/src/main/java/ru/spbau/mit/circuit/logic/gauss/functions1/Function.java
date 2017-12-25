@@ -1,15 +1,11 @@
 package ru.spbau.mit.circuit.logic.gauss.functions1;
 
-
-import org.apache.commons.math3.Field;
-import org.apache.commons.math3.FieldElement;
-import org.apache.commons.math3.exception.MathArithmeticException;
-import org.apache.commons.math3.exception.NullArgumentException;
-import org.apache.commons.math3.util.BigReal;
-
+import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.algebra.exceptions.IllegalInverseException;
 
-public class Function implements FieldElement<Function> {
+public class Function implements Field<Function>, Linear<Numerical, Function> {
 
     private PolyFunction up;
     private PolyFunction down;
@@ -39,22 +35,19 @@ public class Function implements FieldElement<Function> {
     }
 
     @Override
-    public Function divide(Function a) throws NullArgumentException, MathArithmeticException {
-        return this.multiply(a.reciprocal());
-    }
-
-    @Override
     public Function add(Function other) {
-        return new Function(up.mul(other.down).add(other.up.mul(down)), down.mul(other.down));
+        return new Function(up.multiply(other.down).add(other.up.multiply(down)), down.multiply
+                (other.down));
     }
 
     @Override
     public Function multiply(Function other) {
-        return new Function(up.mul(other.up), down.mul(other.down));
+        return new Function(up.multiply(other.up), down.multiply(other.down));
     }
 
-    public Function mul(double d) {
-        return new Function(up.mul(new BigReal(d)), down);
+    @Override
+    public Function multiplyConstant(Numerical d) {
+        return new Function(up.multiplyConstant(d), down);
     }
 
     @Override
@@ -67,26 +60,41 @@ public class Function implements FieldElement<Function> {
 
     @Override
     public Function negate() {
-        return new Function(up.mul(new BigReal(-1)), down);
+        return new Function(up.multiplyConstant(Numerical.number(-1)), down);
     }
 
     @Override
-    public Function subtract(Function a) throws NullArgumentException {
-        return new Function(up.mul(new BigReal(-1)), down);
-    }
-
-    @Override
-    public Function multiply(int n) {
-        throw new UnsupportedOperationException();
-    }
-
     public boolean isZero() {
         return up.isZero();
     }
 
-    //TODO
+    @Override
+    public boolean isIdentity() {
+        return up.isIdentity() && down.isIdentity();
+    }
+
+    @Override
+    public Function getZero() {
+        return Functions.constant(0);
+    }
+
+    @Override
+    public Function getIdentity() {
+        return Functions.identity();
+    }
+
     public Function integrate() {
-        return this;
+        if (!down.isIdentity()) {
+            throw new IllegalArgumentException();
+        }
+        return new Function(up.integrate(), down);
+    }
+
+    public Function differentiate() {
+        if (down.isIdentity()) {
+            return new Function(up.differentiate(), down);
+        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -101,23 +109,5 @@ public class Function implements FieldElement<Function> {
         }
         sb.append(")/(").append(down.toString()).append(")");
         return sb.toString();
-    }
-
-    public static void main(String[] args) {
-//        System.out.println(Functions.identity());
-//        System.out.println(Functions.constant(1).mul(Functions.exponent(-2)));
-        System.out.println(Functions.constant(1).add(Functions.constant(0)));
-    }
-
-    public Function differentiate() {
-        if (down.isIdentity()) {
-            return new Function(up.differentiate(), down);
-        }
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Field<Function> getField() {
-        return new Functions();
     }
 }

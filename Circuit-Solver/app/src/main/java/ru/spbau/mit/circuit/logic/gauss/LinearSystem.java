@@ -1,9 +1,8 @@
 package ru.spbau.mit.circuit.logic.gauss;
 
-import org.apache.commons.math3.FieldElement;
-
 import java.util.ArrayList;
 
+import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 import ru.spbau.mit.circuit.logic.gauss.exceptions.IllegalEquationSizeException;
 import ru.spbau.mit.circuit.logic.gauss.exceptions.ZeroDeterminantException;
@@ -15,7 +14,7 @@ import ru.spbau.mit.circuit.logic.gauss.exceptions.ZeroDeterminantException;
  * @param <U> type of left side
  */
 public class LinearSystem<
-        C extends FieldElement<C>,
+        C extends Field<C>,
         T extends Gauss<C, T>,
         U extends Linear<C, U>
         > {
@@ -58,38 +57,36 @@ public class LinearSystem<
     }
 
     private void zeroBottomPart() {
-        FieldElement<C> zero = coefficient(0, 0).getField().getZero();
         for (int i = 0; i < size() - 1; i++) {
             for (int j = i + 1; j < size(); j++) {
-                if (coefficient(j, i).equals(zero)) {
+                if (coefficient(j, i).isZero()) {
                     continue;
                 }
-                if (coefficient(i, i).equals(zero)) {
+                if (coefficient(i, i).isZero()) {
                     swap(i, j);
                     continue;
                 }
                 C k = getMulCoefficient(coefficient(i, i), coefficient(j, i));
-                get(i).mul(k);
+                get(i).multiplyConstant(k);
                 get(j).add(get(i));
             }
         }
     }
 
     private void makeDiagonal() {
-        FieldElement<C> zero = coefficient(0, 0).getField().getZero();
         for (int i = size() - 1; i >= 0; i--) {
-            if (coefficient(i, i).equals(zero)) {
+            if (coefficient(i, i).isZero()) {
                 throw new ZeroDeterminantException();
             }
             for (int j = i - 1; j >= 0; j--) {
-                if (coefficient(j, i).equals(zero)) {
+                if (coefficient(j, i).isZero()) {
                     continue;
                 }
                 C k = getMulCoefficient(coefficient(i, i), coefficient(j, i));
-                get(i).mul(k);
+                get(i).multiplyConstant(k);
                 get(j).add(get(i));
             }
-            get(i).mul(coefficient(i, i).reciprocal());
+            get(i).multiplyConstant(coefficient(i, i).reciprocal());
         }
     }
 

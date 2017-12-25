@@ -1,6 +1,5 @@
 package ru.spbau.mit.circuit.logic.graph;
 
-import org.apache.commons.math3.util.BigReal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +9,7 @@ import java.util.Set;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.gauss.LinearSystem;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
 import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
 import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
@@ -41,9 +41,9 @@ public class ConnectedGraph {
     public void solve() throws CircuitShortingException {
         findCycles();
         LinearSystem<
-                BigReal,
-                Vector<BigReal, Derivative>,
-                Row<BigReal, FunctionVariable, PolyFunction>> system = constructSystem();
+                Numerical,
+                Vector<Numerical, Derivative>,
+                Row<Numerical, FunctionVariable, PolyFunction>> system = constructSystem();
         System.out.println(system);
         Solver.solve(system);
     }
@@ -81,13 +81,13 @@ public class ConnectedGraph {
     }
 
     private LinearSystem<
-            BigReal,
-            Vector<BigReal, Derivative>,
-            Row<BigReal, FunctionVariable, PolyFunction>> constructSystem() {
+            Numerical,
+            Vector<Numerical, Derivative>,
+            Row<Numerical, FunctionVariable, PolyFunction>> constructSystem() {
 
-        LinearSystem<BigReal,
-                Vector<BigReal, Derivative>,
-                Row<BigReal, FunctionVariable, PolyFunction>> system =
+        LinearSystem<Numerical,
+                Vector<Numerical, Derivative>,
+                Row<Numerical, FunctionVariable, PolyFunction>> system =
                 new LinearSystem<>(m);
 
         for (Vertex node : vertices) {

@@ -1,16 +1,15 @@
 package ru.spbau.mit.circuit.logic.gauss.functions1;
 
-
-import org.apache.commons.math3.util.BigReal;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.functions1.exceptions.IllegalDoubleConvertionException;
 
-public class PolyFunction implements Linear<BigReal, PolyFunction> {
+public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, PolyFunction> {
 
     private final Map<PolyExponent, PolyExponent> data = new TreeMap<>();
 
@@ -29,7 +28,7 @@ public class PolyFunction implements Linear<BigReal, PolyFunction> {
 
     @Override
     public PolyFunction add(PolyFunction item) {
-        PolyFunction result = copy();
+        PolyFunction result = new PolyFunction(this);
         for (PolyExponent function : item.data.values()) {
             result.add(function);
         }
@@ -51,15 +50,7 @@ public class PolyFunction implements Linear<BigReal, PolyFunction> {
     }
 
     @Override
-    public PolyFunction mul(BigReal cf) {
-        PolyFunction result = new PolyFunction();
-        for (PolyExponent function : data.values()) {
-            result.add(function.multiply(cf));
-        }
-        return result;
-    }
-
-    public PolyFunction mul(PolyFunction other) {
+    public PolyFunction multiply(PolyFunction other) {
         PolyFunction result = new PolyFunction();
         for (PolyExponent f : data.values()) {
             for (PolyExponent g : other.data.values()) {
@@ -70,27 +61,40 @@ public class PolyFunction implements Linear<BigReal, PolyFunction> {
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (data.values().isEmpty()) {
-            return "0";
-        }
-        Iterator<PolyExponent> iter = data.values().iterator();
-        sb.append(iter.next().toString());
-        while (iter.hasNext()) {
-            sb.append(" ").append(iter.next().toString());
-        }
-        return sb.toString();
+    public PolyFunction negate() {
+        return this.multiplyConstant(Numerical.number(-1));
     }
 
-    public PolyFunction copy() {
-        return new PolyFunction(this);
+    @Override
+    public PolyFunction reciprocal() {
+        throw new UnsupportedOperationException();
     }
 
+    @Override
+    public PolyFunction multiplyConstant(Numerical cf) {
+        PolyFunction result = new PolyFunction();
+        for (PolyExponent function : data.values()) {
+            result.add(function.multiplyConstant(cf));
+        }
+        return result;
+    }
+
+    @Override
+    public PolyFunction getZero() {
+        return PolyFunctions.constant(0);
+    }
+
+    @Override
+    public PolyFunction getIdentity() {
+        return PolyFunctions.identity();
+    }
+
+    @Override
     public boolean isZero() {
         return data.size() == 0;
     }
 
+    @Override
     public boolean isIdentity() {
         if (data.size() != 1) {
             return false;
@@ -138,10 +142,27 @@ public class PolyFunction implements Linear<BigReal, PolyFunction> {
         throw new RuntimeException();
     }
 
-    public static void main(String[] args) {
-        PolyFunction function = PolyFunctions.polyExponent(1, 2, 2);
-        System.out.println(function);
-        System.out.println(function.differentiate());
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (data.values().isEmpty()) {
+            return "0";
+        }
+        Iterator<PolyExponent> iter = data.values().iterator();
+        sb.append(iter.next().toString());
+        while (iter.hasNext()) {
+            sb.append(" ").append(iter.next().toString());
+        }
+        return sb.toString();
     }
 
+    public PolyFunction integrate() {
+        PolyFunction answer = new PolyFunction();
+
+        for (PolyExponent exponent : data.values()) {
+            answer = answer.add(exponent.integrate());
+        }
+
+        return answer;
+    }
 }
