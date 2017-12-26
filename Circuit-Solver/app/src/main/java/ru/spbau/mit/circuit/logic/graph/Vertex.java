@@ -8,14 +8,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import ru.spbau.mit.circuit.logic.gauss.Equation;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
-import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunctions;
-import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
-import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
-import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
-import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
+import ru.spbau.mit.circuit.logic.math.functions.PolyFunctions;
+import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
+import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
+import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
+import ru.spbau.mit.circuit.logic.math.variables.Derivative;
+import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
 
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();

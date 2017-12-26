@@ -1,9 +1,9 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
-import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.variables.Derivative;
+import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
 import ru.spbau.mit.circuit.model.elements.Battery;
 import ru.spbau.mit.circuit.model.elements.Capacitor;
 import ru.spbau.mit.circuit.model.elements.Item;

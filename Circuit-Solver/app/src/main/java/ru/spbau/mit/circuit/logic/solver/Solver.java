@@ -11,21 +11,21 @@ import org.apache.commons.math3.linear.RealVector;
 import java.util.ArrayList;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
-import ru.spbau.mit.circuit.logic.gauss.Equation;
-import ru.spbau.mit.circuit.logic.gauss.LinearSystem;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.gauss.exceptions.ZeroDeterminantException;
-import ru.spbau.mit.circuit.logic.gauss.functions1.Function;
-import ru.spbau.mit.circuit.logic.gauss.functions1.Functions;
-import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
-import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
-import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
-import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
-import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
-import ru.spbau.mit.circuit.logic.gauss.variables.NumericalVariable;
-import ru.spbau.mit.circuit.logic.matrix_exponent.Matrices;
-import ru.spbau.mit.circuit.logic.matrix_exponent.Matrix;
-import ru.spbau.mit.circuit.logic.matrix_exponent.MatrixExponent;
+import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.functions.Function;
+import ru.spbau.mit.circuit.logic.math.functions.Functions;
+import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
+import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
+import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
+import ru.spbau.mit.circuit.logic.math.matrices.Matrices;
+import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
+import ru.spbau.mit.circuit.logic.math.matrices.matrixExponent.MatrixExponent;
+import ru.spbau.mit.circuit.logic.math.variables.Derivative;
+import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.variables.NumericalVariable;
 
 
 /**

@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Set;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
-import ru.spbau.mit.circuit.logic.gauss.LinearSystem;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
-import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
-import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
-import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
-import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
-import ru.spbau.mit.circuit.logic.gauss.variables.Numerator;
+import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
+import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
+import ru.spbau.mit.circuit.logic.math.variables.Derivative;
+import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.variables.Numerator;
 import ru.spbau.mit.circuit.logic.solver.Solver;
 
 public class ConnectedGraph {
