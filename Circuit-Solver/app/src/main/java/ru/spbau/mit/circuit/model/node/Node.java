@@ -16,7 +16,7 @@ import ru.spbau.mit.circuit.model.interfaces.Wireable;
 public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable, Serializable {
 
     protected Collection<Wire> wires = new HashSet<>();
-    private Point point;
+    protected Point point;
 
     public Node(Point point) {
         this.point = point;

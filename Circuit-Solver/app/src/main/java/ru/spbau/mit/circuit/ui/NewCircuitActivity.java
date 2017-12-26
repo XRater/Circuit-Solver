@@ -29,8 +29,9 @@ import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
 
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
+
+    private static DrawableModel drawableModel; // static because after turning the screen onCrate is called.
     public Drawable chosen;
-    private DrawableModel drawableModel;
     private Drawer drawer;
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
@@ -47,9 +48,12 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         SurfaceHolder surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
         drawer = new Drawer(surfaceHolder);
-        drawableModel = new DrawableModel(this, drawer);
-        MainActivity.ui.setDrawableModel(drawableModel);
-
+        if (drawableModel == null) {
+            drawableModel = new DrawableModel(this, drawer);
+            MainActivity.ui.setDrawableModel(drawableModel);
+        } else {
+            drawableModel.setDrawer(drawer);
+        }
         ImageButton newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
             DrawableResistor r = new DrawableResistor(drawableModel.getPossiblePosition());
@@ -153,10 +157,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     drawableModel.setChosen(chosen);
                 } else if (chosen instanceof DrawableNode) {
                     DrawableNode node = (DrawableNode) chosen;
+                    makeButtonsInvisible();
                     if (!node.isRealNode()) { // May be condition about how many wires it has.
                         delete.setVisibility(View.VISIBLE);
-                    } else {
-                        makeButtonsInvisible();
                     }
                 } else {
                     makeButtonsInvisible();
@@ -197,7 +200,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     //Click on Element
                     Point point = getPoint(motionEvent.getX(), motionEvent.getY());
 
-
                     drawableModel.move(chosen, point);
                 } else if (chosen instanceof Node) {
                 } else {
@@ -215,7 +217,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 } else {
                     // WirePoint
                 }
-                //chosen = null;
                 return true;
             }
         }

@@ -1,12 +1,21 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealVector;
+import android.support.annotation.NonNull;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import ru.spbau.mit.circuit.logic.gauss.Equation;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
+import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunctions;
+import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
+import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
+import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
+import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
 
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();
@@ -29,20 +38,32 @@ class Vertex {
         edges.add(e);
     }
 
+    @SuppressWarnings("NullableProblems")
+    @NonNull
     Iterable<Edge> getTreeEdges() {
         return this::treeEdgesIterator;
     }
 
+    @SuppressWarnings("WeakerAccess")
     Iterator<Edge> treeEdgesIterator() {
         return new treeIterator();
     }
 
-    RealVector getEquation(int size) {
-        RealVector equation = new ArrayRealVector(size);
+
+    Equation<
+            Numerical,
+            Vector<Numerical, Derivative>,
+            Row<Numerical, FunctionVariable, PolyFunction>
+            > getEquation(Collection<Derivative> variables) {
+
+        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
+        Row<Numerical, FunctionVariable, PolyFunction> consts =
+                new Row<>(PolyFunctions.zero());
+
         for (Edge edge : edges) {
-            equation.setEntry(edge.index(), edge.getDirection(this));
+            vars.add(edge.current(), Numerical.number(edge.getDirection(this)));
         }
-        return equation;
+        return new Equation<>(vars, consts);
     }
 
     private class treeIterator implements Iterator<Edge> {

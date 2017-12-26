@@ -14,7 +14,7 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class Drawer {
     public static final int CELL_SIZE = 80;
-    public static final int FIELD_SIZE = 30;
+    public static final int FIELD_SIZE = 25;
     public static final int NODE_RADIUS = CELL_SIZE / 7;
 
     public static final Paint ELEMENTS_PAINT = new Paint();
@@ -90,7 +90,7 @@ public class Drawer {
             element.draw(canvas);
             ELEMENTS_PAINT.setColor(ELEMENTS_COLOR);
         }
-        for (DrawableWire wire : drawableModel.wires()) {
+        for (DrawableWire wire : DrawableModel.wires()) {
             wire.draw(canvas);
         }
         for (DrawableNode node : drawableModel.realNodes()) {
@@ -121,7 +121,6 @@ public class Drawer {
             canvas.drawText(current, e.x() - textSize.width() / 2, e.y() -
                     CELL_SIZE / 3 * 2, ELEMENTS_PAINT);
             canvas.restore();
-
         }
     }
 
@@ -135,7 +134,8 @@ public class Drawer {
         @Override
         public void drawLine(float startX, float startY, float stopX, float stopY, @NonNull Paint
                 paint) {
-            canvas.drawLine(startX + Drawer.offsetX, startY + Drawer.offsetY, stopX + Drawer.offsetX,
+            canvas.drawLine(startX + Drawer.offsetX, startY + Drawer.offsetY, stopX + Drawer
+                            .offsetX,
                     stopY + Drawer.offsetY, paint);
         }
 

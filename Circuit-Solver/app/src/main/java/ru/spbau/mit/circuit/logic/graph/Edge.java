@@ -1,11 +1,18 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
+import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
+import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
 import ru.spbau.mit.circuit.model.elements.Battery;
+import ru.spbau.mit.circuit.model.elements.Capacitor;
 import ru.spbau.mit.circuit.model.elements.Item;
 import ru.spbau.mit.circuit.model.elements.Resistor;
 
 class Edge {
+
+    private final FunctionVariable charge = new FunctionVariable();
+    private final Derivative current = new Derivative(charge);
+    private final Derivative inductive = new Derivative(current);
 
     private final Item item;
     private final Vertex from;
@@ -17,11 +24,6 @@ class Edge {
         this.item = item;
         this.from = from;
         this.to = to;
-    }
-
-    @Override
-    public String toString() {
-        return "Edge " + String.valueOf(index) + ": (" + from + ", " + to + ")";
     }
 
     public Vertex from() {
@@ -40,6 +42,18 @@ class Edge {
         this.index = index;
     }
 
+    public FunctionVariable charge() {
+        return charge;
+    }
+
+    public Derivative current() {
+        return current;
+    }
+
+    public Derivative inductive() {
+        return inductive;
+    }
+
     double getVoltage() {
         if (item instanceof Battery) {
             Battery battery = (Battery) item;
@@ -51,13 +65,21 @@ class Edge {
     double getResistance() {
         if (item instanceof Resistor) {
             Resistor resistor = (Resistor) item;
-            return resistor.getResistance();
+            return resistor.getCharacteristicValue();
         }
         return 0;
     }
 
-    void setCurrent(double current) {
-        item.setCurrent(current);
+    double getCapacity() {
+        if (item instanceof Capacitor) {
+            Capacitor resistor = (Capacitor) item;
+            return resistor.getCharacteristicValue();
+        }
+        return 0;
+    }
+
+    public void updateCurrent() {
+        item.setCurrent(current.value());
     }
 
     void addToTree() {
@@ -101,5 +123,11 @@ class Edge {
             throw new IllegalArgumentException();
         }
         return from.equals(vertex) ? to : from;
+    }
+
+    @Override
+    public String toString() {
+        return "Edge " + String.valueOf(index) + ": (" + from + ", " + to + "): "
+                + charge + " : " + current;
     }
 }

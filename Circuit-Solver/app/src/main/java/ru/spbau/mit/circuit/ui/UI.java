@@ -5,6 +5,7 @@ import java.util.List;
 import ru.spbau.mit.circuit.controler.Controller;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.model.Model;
+import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
@@ -51,11 +52,12 @@ public class UI {
         controller.removeAll(chosen);
     }
 
-    public void deleteUnnecessaryNodes(Node unnecessaryNode) {
-        drawableModel.deleteUnnecessaryNodes(unnecessaryNode);
+    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+            throws NodesAreAlreadyConnected {
+        controller.removeThenAdd(toBeDeleted, toBeAdded);
     }
 
-    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded) throws NodesAreAlreadyConnected {
-        controller.removeThenAdd(toBeDeleted, toBeAdded);
+    public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
+        drawableModel.deleteUnnecessaryNode(common, first, second);
     }
 }
