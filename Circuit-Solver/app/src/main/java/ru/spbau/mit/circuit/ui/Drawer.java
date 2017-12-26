@@ -3,6 +3,7 @@ package ru.spbau.mit.circuit.ui;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 
@@ -13,17 +14,17 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class Drawer {
     public static final int CELL_SIZE = 80;
-    public static final int FIELD_SIZE = 30;
+    public static final int FIELD_SIZE = 25;
     public static final int NODE_RADIUS = CELL_SIZE / 7;
 
     public static final Paint ELEMENTS_PAINT = new Paint();
     public static final Paint WIRE_PAINT = new Paint();
-
+    private static final int ELEMENTS_COLOR = Color.rgb(0, 119, 179);
     private static int offsetX = 0;
     private static int offsetY = 0;
 
     static {
-        ELEMENTS_PAINT.setColor(Color.rgb(0, 119, 179));
+        ELEMENTS_PAINT.setColor(ELEMENTS_COLOR);
         ELEMENTS_PAINT.setStrokeWidth(7.5f);
         ELEMENTS_PAINT.setTextSize(50);
 
@@ -83,9 +84,13 @@ public class Drawer {
         canvas = new MyCanvas(simpleCanvas);
         drawBackground();
         for (Drawable element : drawableModel.drawables()) {
+            if (drawableModel.chosen() == element) {
+                ELEMENTS_PAINT.setColor(Color.MAGENTA);
+            }
             element.draw(canvas);
+            ELEMENTS_PAINT.setColor(ELEMENTS_COLOR);
         }
-        for (DrawableWire wire : drawableModel.wires()) {
+        for (DrawableWire wire : DrawableModel.wires()) {
             wire.draw(canvas);
         }
         for (DrawableNode node : drawableModel.realNodes()) {
@@ -106,10 +111,18 @@ public class Drawer {
     private void showCurrents(DrawableModel drawableModel) {
         for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
-            String current = e.getCurrent().toString();
-            canvas.drawText(current + "A", e.x() - CELL_SIZE / 4, e.y() -
-                            CELL_SIZE / 3 * 2,
-                    ELEMENTS_PAINT);
+            String current = e.getCurrent() + "A";
+            Rect textSize = new Rect();
+            ELEMENTS_PAINT.getTextBounds(current, 0, current.length(), textSize);
+            canvas.save();
+            if (e.isVertical()) {
+                canvas.translate(e.x() + Drawer.getOffsetX(), e.y() + Drawer.getOffsetY());
+                canvas.rotate(90);
+                canvas.translate(-e.x() - Drawer.getOffsetX(), -e.y() - Drawer.getOffsetY());
+            }
+            canvas.drawText(current, e.x() - textSize.width() / 2, e.y() -
+                    CELL_SIZE / 3 * 2, ELEMENTS_PAINT);
+            canvas.restore();
         }
     }
 
@@ -141,6 +154,31 @@ public class Drawer {
         @Override
         public void drawText(String text, float x, float y, @NonNull Paint paint) {
             canvas.drawText(text, x + Drawer.offsetX, y + Drawer.offsetY, paint);
+        }
+
+        @Override
+        public int save() {
+            return canvas.save();
+        }
+
+
+        public void rotateOverride(float degrees, float x, float y) {
+            canvas.rotate(degrees, x, y);
+        }
+
+        @Override
+        public void restore() {
+            canvas.restore();
+        }
+
+        @Override
+        public void translate(float dx, float dy) {
+            canvas.translate(dx, dy);
+        }
+
+        @Override
+        public void rotate(float degrees) {
+            canvas.rotate(degrees);
         }
     }
 }

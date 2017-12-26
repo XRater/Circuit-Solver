@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
 import ru.spbau.mit.circuit.model.Model;
+import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
@@ -81,9 +85,11 @@ public class Controller {
         model.clear();
     }
 
-    public void deleteUnnecessaryNodes(Node unnecessaryNode) {
-        ui.deleteUnnecessaryNodes(unnecessaryNode);
+
+    public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
+        ui.deleteUnnecessaryNode(common, first, second);
     }
+
 
     public boolean save(Converter.Mode mode, String filename) {
         try {
@@ -105,6 +111,11 @@ public class Controller {
             e.printStackTrace();
         }
         return null;
+    }
+  
+  public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+            throws NodesAreAlreadyConnected {
+        model.removeThenAdd(toBeDeleted, toBeAdded);
     }
 
     public void load(Converter.Mode mode, String filename) {

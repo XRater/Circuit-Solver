@@ -47,4 +47,8 @@ public class DrawableNode extends Node implements Drawable {
     public void makeSimple() {
         realNode = false;
     }
+
+    public boolean equalPositions(DrawableNode that) {
+        return point.equals(that.point);
+    }
 }

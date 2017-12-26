@@ -21,8 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent=".15" />
-    />
+        app:layout_constraintGuide_percent="0.1" />
 
     <Button
         android:id="@+id/newBattery"
@@ -34,16 +33,15 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <ru.spbau.mit.circuit.ui.MySquareImageButton
         android:id="@+id/newResistor"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/newBattery"
         android:layout_toStartOf="@id/surface"
-        android:contentDescription="TODO"
-        android:src="@drawable/ic_launcher"
-        android:text="Resistor"
+        android:background="@drawable/resistor"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newBattery" />
 
     <Button
@@ -73,6 +71,7 @@
         android:layout_alignBottom="@id/surface"
         android:layout_alignLeft="@id/surface"
         android:text="delete"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
@@ -83,6 +82,7 @@
         android:layout_alignBottom="@id/surface"
         android:layout_toRightOf="@id/delete"
         android:text="value"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/rotate" />
 
@@ -94,6 +94,7 @@
         android:layout_alignBottom="@id/surface"
         android:layout_toRightOf="@id/changeValue"
         android:text="rotate"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/delete" />
 
