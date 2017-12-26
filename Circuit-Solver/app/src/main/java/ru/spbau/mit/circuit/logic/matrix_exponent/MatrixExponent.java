@@ -4,7 +4,6 @@ package ru.spbau.mit.circuit.logic.matrix_exponent;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.math3.complex.Complex;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -15,13 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.functions1.Function;
 import ru.spbau.mit.circuit.logic.gauss.functions1.Functions;
 
+/**
+ * Class to evaluate matrix Exponent.
+ */
 public class MatrixExponent {
 
-    private static final Numerical numericalZero = Numerical.zero();
     private static final Function functionZero = Functions.zero();
 
     public static Matrix<Function> matrixExponent(RealMatrix matrix) {
@@ -46,11 +46,14 @@ public class MatrixExponent {
             }
         }
 
+        // initializes multiply coefficient
         Polynom<Function> coefficient = new Polynom<>(functionZero,
                 Collections.singletonList(Functions.constant(1)));
 
+        // initializes subtractColumn
         SubtractColumn subtractColumn = new SubtractColumn(rootList);
 
+        // updates answer polynom
         for (int i = 0; i < rootList.size(); i++) {
             ans = ans.add(coefficient.multiply(
                     new Polynom<>(functionZero,
@@ -64,6 +67,12 @@ public class MatrixExponent {
         return ans;
     }
 
+    /**
+     * The method valuates matrix eigen values.
+     *
+     * @param matrix matrix to find eigen values
+     * @return map with all complex eigen values with their multiplicity
+     */
     private static Map<Complex, Integer> getEigenValues(RealMatrix matrix) {
         Map<Complex, Integer> ans = new HashMap<>();
         EigenDecomposition eg = new EigenDecomposition(matrix);
@@ -77,25 +86,4 @@ public class MatrixExponent {
         }
         return ans;
     }
-
-    static void print(RealMatrix m) {
-        int sz = m.getColumnDimension();
-        for (int i = 0; i < sz; i++) {
-            for (int j = 0; j < sz; j++) {
-                System.out.print(m.getEntry(i, j) + " ");
-            }
-            System.out.print("\n");
-        }
-        System.out.print("\n");
-    }
-
-    public static void main(String[] args) {
-
-        RealMatrix matrix = new Array2DRowRealMatrix(1, 1);
-        matrix.setEntry(0, 0, 0);
-
-        print(matrix);
-        System.out.println(matrixExponent(matrix));
-    }
-
 }

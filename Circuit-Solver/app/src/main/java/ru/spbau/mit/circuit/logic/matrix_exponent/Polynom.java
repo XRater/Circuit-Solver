@@ -10,6 +10,7 @@ import java.util.List;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T, Polynom<T>> {
 
     private final ArrayList<T> monoms = new ArrayList<>();
@@ -121,7 +122,7 @@ public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T,
 
     @Override
     public Polynom<T> getIdentity() {
-        return new Polynom<T>(zero, Collections.singletonList(zero.getIdentity()));
+        return new Polynom<>(zero, Collections.singletonList(zero.getIdentity()));
     }
 
     @Override

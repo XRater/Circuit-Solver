@@ -27,6 +27,10 @@ import ru.spbau.mit.circuit.logic.matrix_exponent.Matrices;
 import ru.spbau.mit.circuit.logic.matrix_exponent.Matrix;
 import ru.spbau.mit.circuit.logic.matrix_exponent.MatrixExponent;
 
+
+/**
+ * Class to solve system of differential equations.
+ */
 public class Solver {
 
     private static int n;
@@ -35,6 +39,12 @@ public class Solver {
             Vector<Numerical, Derivative>,
             Row<Numerical, FunctionVariable, PolyFunction>> initSystem;
 
+    /**
+     * The method sets values of function variables and derivatives to their exact values.
+     *
+     * @param systemToSolve system to solve
+     * @throws CircuitShortingException if the system expected to has more then one solution
+     */
     public static void solve(LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
@@ -69,9 +79,11 @@ public class Solver {
         Matrix<Function> matrixExponent = MatrixExponent.matrixExponent(A);
 
         // Evaluate particle solution
-        Matrix<Function> Ab = Matrices.multiply(
-                MatrixExponent.matrixExponent(A.scalarMultiply(-1)), constants);
-        Matrix<Function> constPart = matrixExponent.multiply(Matrices.integrate(Ab));
+        Matrix<Function> underIntegralMatrix = MatrixExponent.matrixExponent(A.scalarMultiply(-1))
+                .multiply(Matrices.getFunctionMatrix(constants));
+
+        Matrix<Function> constPart = matrixExponent.multiply(Matrices.integrate
+                (underIntegralMatrix));
 
         // Find constants for initial values
         ArrayList<NumericalVariable> variables = getCoefficients(matrixExponent, constPart);
@@ -94,6 +106,13 @@ public class Solver {
         }
     }
 
+    /**
+     * The method finds coefficients for global solution to match initial values.
+     *
+     * @param matrixExponent global solution of homogeneous system
+     * @param constPart      particle solution of system
+     * @return ordered array list of numerical variables storing coefficients
+     */
     @NonNull
     private static ArrayList<NumericalVariable> getCoefficients(Matrix<Function> matrixExponent,
                                                                 Matrix<Function> constPart) {
@@ -111,7 +130,8 @@ public class Solver {
                 vector.add(variables.get(i), matrixExponent.get(i, j).apply(0));
             }
 
-            Equation<Numerical, Vector<Numerical, NumericalVariable>, Numerical> eq =
+            @SuppressWarnings("unchecked") Equation<Numerical, Vector<Numerical,
+                    NumericalVariable>, Numerical> eq =
                     new Equation(vector,
                             constPart.get(i, 0).apply(0).negate()
                                     .add(initSystem.get(i).coefficients().valueAt(i).parent()
@@ -127,6 +147,12 @@ public class Solver {
         return variables;
     }
 
+    /**
+     * Checks if matrix is zero matrix
+     *
+     * @param a matrix to check
+     * @return true if matrix is zero matrix and false otherwise
+     */
     private static boolean isZeroMatrix(RealMatrix a) {
         for (int i = 0; i < a.getRowDimension(); i++) {
             for (int j = 0; j < a.getRowDimension(); j++) {
@@ -138,6 +164,12 @@ public class Solver {
         return true;
     }
 
+    /**
+     * The method finds right side constants of linear system.
+     *
+     * @param initSystem system to get constants from
+     * @return realVector storing right side system constants
+     */
     private static RealVector getRightSideConstants(
             LinearSystem<
                     Numerical,
@@ -150,6 +182,12 @@ public class Solver {
         return vector;
     }
 
+    /**
+     * The method finds matrix of right side coefficients of the given linear system
+     *
+     * @param system system to get right side coefficients from
+     * @return realMatrix storing coefficients of the right side of the system
+     */
     private static RealMatrix getRightSideMatrix(LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
@@ -164,18 +202,6 @@ public class Solver {
             }
         }
         return matrix;
-    }
-
-
-    static void print(RealMatrix m) {
-        int sz = m.getColumnDimension();
-        for (int i = 0; i < sz; i++) {
-            for (int j = 0; j < sz; j++) {
-                System.out.print(m.getEntry(i, j) + " ");
-            }
-            System.out.print("\n");
-        }
-        System.out.print("\n");
     }
 
 }

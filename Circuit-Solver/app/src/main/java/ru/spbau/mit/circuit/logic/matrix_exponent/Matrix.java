@@ -61,13 +61,13 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
     @Override
     public Matrix<T> getIdentity() {
         if (n != m) {
-            throw new MatrixException();
+            throw new IllegalArgumentException();
         }
-        return Matrices.identity(n, zero);
+        return Matrices.identityMatix(n, zero);
     }
 
     public Matrix<T> getIdentity(int sz) {
-        return Matrices.identity(sz, zero);
+        return Matrices.identityMatix(sz, zero);
     }
 
     @Override
