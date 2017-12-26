@@ -11,26 +11,47 @@ import ru.spbau.mit.circuit.model.elements.Item;
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.node.Node;
 
+/**
+ * Graph representation of model. May contain more then one component.
+ */
 public class Graph {
 
+    // Vertexes of graph. Every vertex knows all adjacent edges.
     private Map<Node, VisitableVertex> vertices = new HashMap<>();
 
+    /**
+     * Constructs graph from the model object. Every element and wire will become edges,
+     * nodes will become vertices.
+     */
     public Graph(Model model) {
-
-        int number = 0; //FOR DEBUG
+        // Store all model nodes.
         for (Node node : model.nodes()) {
-            vertices.put(node, new VisitableVertex(number++));
+            vertices.put(node, new VisitableVertex());
         }
+        // Add edge for every wire.
         for (Wire wire : model.wires()) {
             addNewEdge(vertices.get(wire.from()), vertices.get(wire.to()),
                     wire);
         }
+        // Add edge for every element.
         for (Element element : model.elements()) {
             addNewEdge(vertices.get(element.from()), vertices.get(element.to()),
                     element);
         }
     }
 
+    // Creates new edge for the given item. Updates adjacent edges of its end vertices.
+    private void addNewEdge(Vertex u, Vertex v, Item item) {
+        Edge e = new Edge(item, u, v);
+        u.add(e);
+        v.add(e);
+    }
+
+    /**
+     * The method decomposes the graph.
+     *
+     * @return list of connected subgraphs of the initial graph.
+     */
     public List<ConnectedGraph> decompose() {
         List<ConnectedGraph> graphs = new LinkedList<>();
         for (VisitableVertex node : vertices.values()) {
@@ -43,12 +64,14 @@ public class Graph {
         return graphs;
     }
 
-    private void addNewEdge(Vertex u, Vertex v, Item item) {
-        Edge e = new Edge(item, u, v);
-        u.add(e);
-        v.add(e);
-    }
-
+    /**
+     * Adds all neighbour vertices to the connected graph. This recursive function will build
+     * connected component of the initial vertex.
+     *
+     * @param graph to update
+     * @param node  node to work with
+     * @return updated graph.
+     */
     private ConnectedGraph addAdjacentEdges(ConnectedGraph graph, VisitableVertex node) {
         node.visited = true;
         for (Edge edge : node.getEdges()) {
@@ -66,12 +89,11 @@ public class Graph {
         return graph;
     }
 
+    /**
+     * Class to check if vertex was already visited.
+     */
     private class VisitableVertex extends Vertex {
         private boolean visited;
-
-        private VisitableVertex(int ID) {
-            super(ID);
-        }
     }
 
 }

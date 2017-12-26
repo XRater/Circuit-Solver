@@ -1,9 +1,9 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
-import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.variables.Derivative;
+import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
 import ru.spbau.mit.circuit.model.elements.Battery;
 import ru.spbau.mit.circuit.model.elements.Capacitor;
 import ru.spbau.mit.circuit.model.elements.Item;
@@ -11,15 +11,17 @@ import ru.spbau.mit.circuit.model.elements.Resistor;
 
 class Edge {
 
+    private final Item item;
+
+    private final Vertex from;
+    private final Vertex to;
+
+    private int index = -1; // number of edge in its component.
+    private boolean inTree; // is edge in the tree structure
+
     private final FunctionVariable charge = new FunctionVariable();
     private final Derivative current = new Derivative(charge);
     private final Derivative inductive = new Derivative(current);
-
-    private final Item item;
-    private final Vertex from;
-    private final Vertex to;
-    private int index = -1;
-    private boolean inTree;
 
     Edge(Item item, Vertex from, Vertex to) {
         this.item = item;
@@ -48,14 +50,15 @@ class Edge {
         this.index = index;
     }
 
-    public FunctionVariable charge() {
+    FunctionVariable charge() {
         return charge;
     }
 
-    public Derivative current() {
+    Derivative current() {
         return current;
     }
 
+    @SuppressWarnings("unused")
     public Derivative inductive() {
         return inductive;
     }
@@ -73,6 +76,9 @@ class Edge {
             Resistor resistor = (Resistor) item;
             return resistor.getCharacteristicValue();
         }
+        if (item instanceof Capacitor) {
+            return 0.0001;
+        }
         return 0;
     }
 
@@ -84,7 +90,7 @@ class Edge {
         return 0;
     }
 
-    public void updateCurrent() {
+    void updateCurrent() {
         item.setCurrent(current.value());
     }
 

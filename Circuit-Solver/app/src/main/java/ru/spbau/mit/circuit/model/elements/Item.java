@@ -1,6 +1,6 @@
 package ru.spbau.mit.circuit.model.elements;
 
-import ru.spbau.mit.circuit.logic.gauss.functions1.Function;
+import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 
 abstract public class Item implements CircuitObject {

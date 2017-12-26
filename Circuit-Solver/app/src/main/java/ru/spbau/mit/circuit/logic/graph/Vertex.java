@@ -8,33 +8,23 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import ru.spbau.mit.circuit.logic.gauss.Equation;
-import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunction;
-import ru.spbau.mit.circuit.logic.gauss.functions1.PolyFunctions;
-import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
-import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
-import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
-import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
+import ru.spbau.mit.circuit.logic.math.functions.PolyFunctions;
+import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
+import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
+import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
+import ru.spbau.mit.circuit.logic.math.variables.Derivative;
+import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
 
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();
-    private int ID; //FOR DEBUG
-
-    Vertex(int ID) {
-        this.ID = ID;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(ID);
-    }
 
     List<Edge> getEdges() {
         return edges;
     }
 
-    public void add(Edge e) {
+    void add(Edge e) {
         edges.add(e);
     }
 
@@ -49,26 +39,11 @@ class Vertex {
         return new treeIterator();
     }
 
-
-    Equation<
-            Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>
-            > getEquation(Collection<Derivative> variables) {
-
-        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
-        Row<Numerical, FunctionVariable, PolyFunction> consts =
-                new Row<>(PolyFunctions.zero());
-
-        for (Edge edge : edges) {
-            vars.add(edge.current(), Numerical.number(edge.getDirection(this)));
-        }
-        return new Equation<>(vars, consts);
-    }
-
     private class treeIterator implements Iterator<Edge> {
 
+
         Edge e;
+
         private Iterator<Edge> iterator = edges.iterator();
 
         @Override
@@ -89,5 +64,30 @@ class Vertex {
             }
             return e;
         }
+
+    }
+
+    /**
+     * Makes new equation corresponding to the first Oms law.
+     */
+    Equation<
+            Numerical,
+            Vector<Numerical, Derivative>,
+            Row<Numerical, FunctionVariable, PolyFunction>
+            > getEquation(Collection<Derivative> variables) {
+
+        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
+        Row<Numerical, FunctionVariable, PolyFunction> consts =
+                new Row<>(PolyFunctions.zero());
+
+        for (Edge edge : edges) {
+            vars.add(edge.current(), Numerical.number(edge.getDirection(this)));
+        }
+        return new Equation<>(vars, consts);
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf("Vertex");
     }
 }
