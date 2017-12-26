@@ -27,9 +27,7 @@ public class Logic {
         Graph g = new Graph(model);
         List<ConnectedGraph> components = g.decompose();
         for (ConnectedGraph component : components) {
-            System.out.println(component);
             component.solve();
-            component.setCurrents();
         }
     }
 }
