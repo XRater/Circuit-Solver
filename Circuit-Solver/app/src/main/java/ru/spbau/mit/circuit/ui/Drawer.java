@@ -19,12 +19,12 @@ public class Drawer {
 
     public static final Paint ELEMENTS_PAINT = new Paint();
     public static final Paint WIRE_PAINT = new Paint();
-
+    private static final int ELEMENTS_COLOR = Color.rgb(0, 119, 179);
     private static int offsetX = 0;
     private static int offsetY = 0;
 
     static {
-        ELEMENTS_PAINT.setColor(Color.rgb(0, 119, 179));
+        ELEMENTS_PAINT.setColor(ELEMENTS_COLOR);
         ELEMENTS_PAINT.setStrokeWidth(7.5f);
         ELEMENTS_PAINT.setTextSize(50);
 
@@ -84,7 +84,11 @@ public class Drawer {
         canvas = new MyCanvas(simpleCanvas);
         drawBackground();
         for (Drawable element : drawableModel.drawables()) {
+            if (drawableModel.chosen() == element) {
+                ELEMENTS_PAINT.setColor(Color.MAGENTA);
+            }
             element.draw(canvas);
+            ELEMENTS_PAINT.setColor(ELEMENTS_COLOR);
         }
         for (DrawableWire wire : drawableModel.wires()) {
             wire.draw(canvas);

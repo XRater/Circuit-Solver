@@ -31,6 +31,7 @@ public class DrawableModel {
     private Activity activity;
 
     private DrawableNode holded;
+    private Drawable chosen;
     private boolean showingCurrents;
 
     DrawableModel(Activity activity, Drawer drawer) {
@@ -402,5 +403,14 @@ public class DrawableModel {
         deleteOldWirePosition(wire);
         MainActivity.ui.removeFromModel(wire);
         drawableWires.remove(wire);
+    }
+
+    public Drawable chosen() {
+        return chosen;
+    }
+
+    public void setChosen(Drawable chosen) {
+        this.chosen = chosen;
+        redraw();
     }
 }

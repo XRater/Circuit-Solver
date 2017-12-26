@@ -25,7 +25,7 @@ public class DrawableResistor extends Resistor implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        String r = String.format("%2.f", getResistance()) + "\u03A9";
+        String r = String.format("%.2f", getResistance()) + "\u03A9";
         Rect rSize = new Rect();
         Drawer.ELEMENTS_PAINT.getTextBounds(r, 0, r.length(), rSize);
         if (this.isHorizontal()) {
