@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import ru.spbau.mit.circuit.model.elements.Resistor;
 import ru.spbau.mit.circuit.model.node.Point;
@@ -24,6 +25,9 @@ public class DrawableResistor extends Resistor implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        String r = String.format("%2.f", getResistance()) + "\u03A9";
+        Rect rSize = new Rect();
+        Drawer.ELEMENTS_PAINT.getTextBounds(r, 0, r.length(), rSize);
         if (this.isHorizontal()) {
             //up and down
             canvas.drawLine(x() - CELL_SIZE, y() + CELL_SIZE / 2, x() + CELL_SIZE, y() +
@@ -39,7 +43,7 @@ public class DrawableResistor extends Resistor implements Drawable {
             canvas.drawLine(x() - CELL_SIZE * 2, y(), x() - CELL_SIZE, y(), Drawer.ELEMENTS_PAINT);
             canvas.drawLine(x() + CELL_SIZE * 2, y(), x() + CELL_SIZE, y(), Drawer.ELEMENTS_PAINT);
 
-            canvas.drawText((int) getResistance() + "\u03A9", x() - CELL_SIZE / 4, y() +
+            canvas.drawText(r, x() - rSize.width() / 2, y() +
                     CELL_SIZE / 4, Drawer.ELEMENTS_PAINT);
 
         } else {
@@ -57,8 +61,11 @@ public class DrawableResistor extends Resistor implements Drawable {
             canvas.drawLine(x(), y() - CELL_SIZE * 2, x(), y() - CELL_SIZE, Drawer.ELEMENTS_PAINT);
             canvas.drawLine(x(), y() + CELL_SIZE * 2, x(), y() + CELL_SIZE, Drawer.ELEMENTS_PAINT);
 
-            canvas.drawText((int) getResistance() + "\u03A9", x() - CELL_SIZE / 4, y() +
+            canvas.save();
+            canvas.rotate(90, x(), y());
+            canvas.drawText(r, x() - rSize.width() / 2, y() +
                     CELL_SIZE / 4, Drawer.ELEMENTS_PAINT);
+            canvas.restore();
         }
         canvas.drawCircle(from.x(), from.y(), NODE_RADIUS, WIRE_PAINT);
         canvas.drawCircle(to.x(), to.y(), NODE_RADIUS, WIRE_PAINT);
