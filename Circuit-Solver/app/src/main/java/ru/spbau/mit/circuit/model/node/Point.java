@@ -8,7 +8,6 @@ import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 public class Point implements Centered, WireEnd, Serializable {
     private final int x;
     private final int y;
-
     public Point(int x, int y) {
         this.x = x;
         this.y = y;

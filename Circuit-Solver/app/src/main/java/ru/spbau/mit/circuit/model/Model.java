@@ -3,8 +3,10 @@ package ru.spbau.mit.circuit.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +43,60 @@ public class Model implements Serializable {
         return nodes;
     }
 
+    public void add(CircuitObject object) throws NodesAreAlreadyConnected {
+        addAll(Collections.singletonList(object));
+    }
+
+    public void addAll(List<CircuitObject> objects) throws NodesAreAlreadyConnected {
+        removeThenAdd(Collections.emptyList(), objects);
+    }
+
+    public void remove(CircuitObject object) {
+        removeAll(Collections.singletonList(object));
+    }
+
+    public void removeAll(List<CircuitObject> objects) {
+        try {
+            removeThenAdd(objects, Collections.emptyList());
+        } catch (NodesAreAlreadyConnected nodesAreAlreadyConnected) {
+            throw new RuntimeException(); // Should never happen
+        }
+    }
+
+    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+            throws NodesAreAlreadyConnected {
+        List<CircuitObject> deleted = new LinkedList<>();
+        List<CircuitObject> added = new LinkedList<>();
+        for (CircuitObject object : toBeDeleted) {
+            removeOne(object);
+            deleted.add(object); // collecting changes
+        }
+
+        try {
+            for (CircuitObject object : toBeAdded) {
+                addOne(object);
+                added.add(object); // collecting changes
+            }
+        } catch (NodesAreAlreadyConnected e) {
+            try {
+                Collections.reverse(deleted);
+                Collections.reverse(added);
+                removeThenAdd(added, deleted); // applying changes in the reverse order
+            } catch (NodesAreAlreadyConnected unexpected) {
+                throw new RuntimeException(); // Should never happen
+            }
+            throw e;
+        }
+
+        clearNodes();
+    }
+
+    public void clear() {
+        nodes.clear();
+        elements.clear();
+        wires.clear();
+    }
+
     private void addOne(CircuitObject object) throws NodesAreAlreadyConnected {
         if (object instanceof Node) {
             nodes.add((Node) object);
@@ -66,25 +122,13 @@ public class Model implements Serializable {
         }
     }
 
-    public void add(CircuitObject object) throws NodesAreAlreadyConnected {
-        addOne(object);
-        clearNodes();
-    }
-
-    public void addAll(Collection<CircuitObject> objects) throws NodesAreAlreadyConnected {
-        for (CircuitObject object : objects) {
-            addOne(object);
-        }
-        clearNodes();
-    }
-
     private void removeOne(CircuitObject object) {
         if (object instanceof Node) {
             Node node = (Node) object;
             if (!nodes().contains(node)) {
                 throw new InvalidCircuitObjectDeletion("No such element");
             }
-            if (!verificator.unique(node)) {
+            if (!verificator.isolated(node)) {
                 throw new InvalidCircuitObjectDeletion("Deleted node is the end of the wire.");
             }
             nodes.remove(object);
@@ -103,10 +147,10 @@ public class Model implements Serializable {
             }
             wire.to().deleteWire(wire);
             wire.from().deleteWire(wire);
-            if (verificator.unique(wire.from())) {
+            if (verificator.isolated(wire.from())) {
                 remove(wire.from());
             }
-            if (verificator.unique(wire.to())) {
+            if (verificator.isolated(wire.to())) {
                 remove(wire.to());
             }
             wires.remove(object);
@@ -115,32 +159,28 @@ public class Model implements Serializable {
         }
     }
 
-    public void remove(CircuitObject object) {
-        removeOne(object);
-        clearNodes();
-    }
-
-    public void removeAll(Collection<CircuitObject> objects) {
-        for (CircuitObject object : objects) {
-            removeOne(object);
-        }
-        clearNodes();
-    }
-
-    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded) throws NodesAreAlreadyConnected {
-        for (CircuitObject object : toBeDeleted) {
-            removeOne(object);
-        }
-        for (CircuitObject object : toBeAdded) {
-            addOne(object);
-        }
-        clearNodes();
-    }
-
     private void clearNodes() {
         Node node = verificator.findUnnecessaryNode();
         while (node != null) {
-            controller.deleteUnnecessaryNodes(node);
+
+            Iterator<Wire> iter = node.wires().iterator();
+            Wire first = iter.next();
+            Wire second = iter.next();
+
+            if (iter.hasNext()) {
+                throw new RuntimeException(); // should never happen
+            }
+
+            Node common = Wire.findCommon(first, second);
+            Node from = first.opposite(common);
+            Node to = second.opposite(common);
+
+            first.replace(from, to);
+            removeOne(second);
+            removeOne(common);
+
+            controller.deleteUnnecessaryNode(common, first, second);
+
             node = verificator.findUnnecessaryNode();
         }
     }
@@ -161,12 +201,7 @@ public class Model implements Serializable {
         for (Wire wire : wires) {
             sb.append(wire).append("\n");
         }
-        return sb.toString();
-    }
 
-    public void clear() {
-        nodes.clear();
-        elements.clear();
-        wires.clear();
+        return sb.toString();
     }
 }
