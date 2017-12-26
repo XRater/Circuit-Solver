@@ -3,6 +3,8 @@ package ru.spbau.mit.circuit.logic.math.functions;
 
 import android.support.annotation.NonNull;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Field;
@@ -14,38 +16,17 @@ import ru.spbau.mit.circuit.logic.math.functions.exceptions.IllegalFunctionTrans
 public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponent>,
         Linear<Numerical, PolyExponent> {
 
+    private static final int precision = 2;
+
     private final double cf;
     private final int mPow;
-    private final int scale = 10;
-    //    private BigDecimal ePow = new BigDecimal(0);
     private double ePow;
-    private int precision = 2;
-
-    double cf() {
-        return cf;
-    }
-
-    int mPow() {
-        return mPow;
-    }
-
-    double ePow() {
-        return ePow;
-    }
 
     PolyExponent(double cf, int mPow, double ePow) {
         this.cf = cf;
         this.mPow = mPow;
-//        this.ePow = new BigDecimal(ePow).setScale(scale, RoundingMode.HALF_EVEN);
         this.ePow = ePow;
     }
-
-//    PolyExponent(double cf, int mPow, double ePow) {
-//        this.cf = cf;
-//        this.mPow = mPow;
-//        this.ePow = ePow.setScale(scale, RoundingMode.HALF_EVEN);
-//        this.ePow = ePow;
-//    }
 
     private PolyExponent(PolyExponent f) {
         cf = f.cf;
@@ -115,7 +96,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return new PolyExponent(1, 0, 0);
     }
 
-    public PolyFunction integrate() {
+    PolyFunction integrate() {
         if (isEquals(ePow, 0)) {
             if (mPow != -1) {
                 return PolyFunctions.power(cf / (mPow + 1), mPow + 1);
@@ -138,20 +119,40 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
             }
             return String.valueOf(Math.round(d));
         }
-        String res = Double.toString(d);
-        return res;
-        //        return res.substring(0, res.indexOf('.') + precision);
+        BigDecimal decimal = new BigDecimal(d);
+        decimal = decimal.setScale(precision, RoundingMode.HALF_EVEN);
+        return decimal.toString();
     }
 
     private boolean isEquals(double x, double y) {
         return Math.abs(x - y) < 0.0001;
     }
 
-    public double doubleValue() {
+    double doubleValue() {
         if (!isEquals(ePow, 0) || mPow != 0) {
             throw new IllegalDoubleConvertionException();
         }
         return cf;
+    }
+
+    PolyFunction differentiate() {
+        PolyFunction ans = PolyFunctions.zero();
+        ans = ans.add(PolyFunctions.polyExponent(cf * mPow, mPow - 1, ePow));
+        ans = ans.add(PolyFunctions.polyExponent(cf * ePow, mPow, ePow));
+        return ans;
+    }
+
+    Numerical apply(double x) {
+        if (isEquals(x, 0)) {
+            if (mPow == 0) {
+                return Numerical.number(cf);
+            }
+            if (mPow > 0) {
+                return Numerical.zero();
+            }
+            throw new RuntimeException();
+        }
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -173,25 +174,5 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         res += "e^" + writeNumber(ePow) + "t";
         System.out.println(res);
         return res;
-    }
-
-    public PolyFunction differentiate() {
-        PolyFunction ans = PolyFunctions.zero();
-        ans = ans.add(PolyFunctions.polyExponent(cf() * mPow(), mPow() - 1, ePow()));
-        ans = ans.add(PolyFunctions.polyExponent(cf() * ePow(), mPow(), ePow()));
-        return ans;
-    }
-
-    public Numerical apply(double x) {
-        if (isEquals(x, 0)) {
-            if (mPow == 0) {
-                return Numerical.number(cf);
-            }
-            if (mPow > 0) {
-                return Numerical.zero();
-            }
-            throw new RuntimeException();
-        }
-        throw new UnsupportedOperationException();
     }
 }

@@ -76,6 +76,9 @@ class Edge {
             Resistor resistor = (Resistor) item;
             return resistor.getCharacteristicValue();
         }
+        if (item instanceof Capacitor) {
+            return 0.0001;
+        }
         return 0;
     }
 
