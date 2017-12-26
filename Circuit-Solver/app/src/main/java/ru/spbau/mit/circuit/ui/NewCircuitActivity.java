@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import ru.spbau.mit.circuit.MainActivity;
@@ -17,9 +18,9 @@ import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
-import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableCapacitor;
@@ -29,10 +30,10 @@ import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
 
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
-    private DrawableModel drawableModel;
-    private Drawer drawer;
 
-    private Drawable chosen;
+    private static DrawableModel drawableModel; // static because after turning the screen onCrate is called.
+    public Drawable chosen;
+    private Drawer drawer;
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
     private Button delete;
@@ -48,10 +49,13 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         SurfaceHolder surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
         drawer = new Drawer(surfaceHolder);
-        drawableModel = new DrawableModel(this, drawer);
-        MainActivity.ui.setDrawableModel(drawableModel);
-
-        Button newResistor = findViewById(R.id.newResistor);
+        if (drawableModel == null) {
+            drawableModel = new DrawableModel(this, drawer);
+            MainActivity.ui.setDrawableModel(drawableModel);
+        } else {
+            drawableModel.setDrawer(drawer);
+        }
+        ImageButton newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
             DrawableResistor r = new DrawableResistor(drawableModel.getPossiblePosition());
             drawableModel.addElement(r);
@@ -74,18 +78,25 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             try {
                 MainActivity.ui.calculateCurrents();
                 drawableModel.changeShowingCurrents();
+                drawableModel.redraw();
+                drawableModel.changeShowingCurrents();
             } catch (CircuitShortingException e) {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Battery is shorted.", Toast.LENGTH_SHORT);
                 toast.show();
             }
-            drawableModel.redraw();
-            drawableModel.changeShowingCurrents();
         });
 
         delete = findViewById(R.id.delete);
         delete.setOnClickListener(v -> {
-            drawableModel.removeElement(chosen);
+            if (chosen instanceof Element) {
+                drawableModel.removeElement(chosen);
+            }
+            if (chosen instanceof DrawableNode) {
+                drawableModel.removeWire((DrawableNode) chosen);
+            }
+            makeButtonsInvisible();
+            drawableModel.redraw();
             chosen = null;
         });
 
@@ -117,11 +128,41 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             drawableModel.rotateElement(element);
             drawableModel.redraw();
         });
+
+        Button save = findViewById(R.id.save);
+        save.setOnClickListener(v -> {
+            final EditText taskEditText = new EditText(this);
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Choose where you want to save this circuit.")
+                    .setView(taskEditText)
+                    .setMessage("Name this circuit")
+                    .setPositiveButton("This device", (dialog1, which) -> {
+                        if (!MainActivity.ui.save(Converter.Mode.LOCAL,
+                                String.valueOf(taskEditText.getText()))) {
+                            Toast.makeText(getApplicationContext(),
+                                    "This name already exists, please choose another one.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("Google Drive", (dialog1, which) -> {
+                        if (!MainActivity.ui.save(Converter.Mode.DRIVE,
+                                String.valueOf(taskEditText.getText()))) {
+                            Toast.makeText(getApplicationContext(),
+                                    "This name already exists, please choose another one.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .create();
+            dialog.show();
+        });
         surface.setOnTouchListener(NewCircuitActivity.this);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        if (MainActivity.ui.circuitWasLoaded) {
+            Uploader.load(drawableModel);
+        }
         drawableModel.redraw();
     }
 
@@ -132,7 +173,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-
     }
 
     @Override
@@ -145,17 +185,23 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     delete.setVisibility(View.VISIBLE);
                     changeValue.setVisibility(View.VISIBLE);
                     rotate.setVisibility(View.VISIBLE);
+                    drawableModel.setChosen(chosen);
+                } else if (chosen instanceof DrawableNode) {
+                    DrawableNode node = (DrawableNode) chosen;
+                    makeButtonsInvisible();
+                    if (!node.isRealNode()) { // May be condition about how many wires it has.
+                        delete.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    delete.setVisibility(View.INVISIBLE);
-                    changeValue.setVisibility(View.INVISIBLE);
-                    rotate.setVisibility(View.INVISIBLE);
+                    makeButtonsInvisible();
+                    drawableModel.setChosen(null);
                 }
 
-                if (chosen instanceof WireEnd) {
+                if (chosen instanceof DrawableNode) {
                     if (drawableModel.holding()) {
-                        drawableModel.connect((WireEnd) chosen);
+                        drawableModel.connect((DrawableNode) chosen);
                     } else {
-                        drawableModel.hold((WireEnd) chosen);
+                        drawableModel.hold((DrawableNode) chosen);
                     }
                     //chosen = null;
                     return true;
@@ -173,7 +219,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             }
 
             case MotionEvent.ACTION_MOVE: {
-                System.out.println(motionEvent.getX() + " " + motionEvent.getY());
                 if (chosen == null) {
                     //Move field
                     Drawer.setOffsetX(oldOffsetX + Math.round(motionEvent.getX()) - startX);
@@ -185,7 +230,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 if (chosen instanceof Element) {
                     //Click on Element
                     Point point = getPoint(motionEvent.getX(), motionEvent.getY());
-
 
                     drawableModel.move(chosen, point);
                 } else if (chosen instanceof Node) {
@@ -204,7 +248,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 } else {
                     // WirePoint
                 }
-                //chosen = null;
                 return true;
             }
         }
@@ -215,5 +258,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         return Drawer.round(new Point(Math.round(x), Math.round(y)));
     }
 
-
+    private void makeButtonsInvisible() {
+        delete.setVisibility(View.INVISIBLE);
+        changeValue.setVisibility(View.INVISIBLE);
+        rotate.setVisibility(View.INVISIBLE);
+    }
 }

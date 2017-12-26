@@ -3,12 +3,15 @@ package ru.spbau.mit.circuit.ui.DrawableElements;
 import android.graphics.Canvas;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.elements.IllegalWireException;
 import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableModel;
 import ru.spbau.mit.circuit.ui.DrawableNode;
@@ -20,18 +23,41 @@ import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
 public class DrawableWire extends Wire implements Drawable {
     private static int dist[][] = new int[FIELD_SIZE][FIELD_SIZE];
     private static Point prev[][] = new Point[FIELD_SIZE][FIELD_SIZE];
-    private ArrayList<Point> path = new ArrayList<>();
+    private LinkedHashSet<Point> path = new LinkedHashSet<>();
 
-    public DrawableWire(DrawableNode from, DrawableNode to) throws IllegalWireException {
+    public DrawableWire(DrawableNode from, DrawableNode to) {
         super(from, to);
-        build();
+//        build();
+    }
+
+    public static void mergePath(DrawableWire first, DrawableWire second, Node common) {
+        Point startFirst = first.getPath().iterator().next();
+        Point startSecond = second.getPath().iterator().next();
+
+        if (startFirst.equals(common.position())) {
+            List<Point> list1 = new LinkedList<>(first.getPath());
+            Collections.reverse(list1);
+            first.getPath().clear();
+            first.getPath().addAll(list1);
+        }
+        if (!(startSecond.equals(common.position()))) {
+            List<Point> list2 = new LinkedList<>(second.getPath());
+            Collections.reverse(list2);
+            second.getPath().clear();
+            second.getPath().addAll(list2);
+        }
+        first.getPath().addAll(second.getPath());
     }
 
     @Override
     public void draw(Canvas canvas) {
-        for (int i = 0; i < path.size() - 1; i++) {
-            canvas.drawLine(path.get(i).x(), path.get(i).y(),
-                    path.get(i + 1).x(), path.get(i + 1).y(), WIRE_PAINT);
+        Point prev = null;
+        for (Point nxt : path) {
+            if (prev != null) {
+                canvas.drawLine(prev.x(), prev.y(),
+                        nxt.x(), nxt.y(), WIRE_PAINT);
+            }
+            prev = nxt;
         }
     }
 
@@ -49,32 +75,41 @@ public class DrawableWire extends Wire implements Drawable {
         Point start = new Point(x, y);
         dist[x][y] = 0;
         queue.add(start);
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty() &&
+                dist[to().x() / CELL_SIZE][to().y() / CELL_SIZE] == Integer.MAX_VALUE) {
             Point p = queue.poll();
             x = p.x();
             y = p.y();
-            if (x + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point((x + 1) * CELL_SIZE, y * CELL_SIZE)) instanceof Element)) {
+            Point scaled = new Point(x * CELL_SIZE, y * CELL_SIZE);
+
+            if (x + 1 < FIELD_SIZE && (canGo(new Point((x + 1) * CELL_SIZE, y * CELL_SIZE)))
+                    && areOverlapping(scaled, new Point((x + 1) * CELL_SIZE, y * CELL_SIZE))) {
                 if (dist[x + 1][y] > dist[x][y] + 1) {
                     dist[x + 1][y] = dist[x][y] + 1;
                     prev[x + 1][y] = p;
                     queue.add(new Point(x + 1, y));
                 }
             }
-            if (x - 1 >= 0 && !(DrawableModel.getByPoint(new Point((x - 1) * CELL_SIZE, y * CELL_SIZE)) instanceof Element)) {
+            if (x - 1 >= 0 && (canGo(new Point((x - 1) * CELL_SIZE, y * CELL_SIZE)))
+                    && areOverlapping(scaled, new Point((x - 1) * CELL_SIZE, y * CELL_SIZE))) {
                 if (dist[x - 1][y] > dist[x][y] + 1) {
                     dist[x - 1][y] = dist[x][y] + 1;
                     prev[x - 1][y] = p;
                     queue.add(new Point(x - 1, y));
                 }
             }
-            if (y + 1 < FIELD_SIZE && !(DrawableModel.getByPoint(new Point(x * CELL_SIZE, (y + 1) * CELL_SIZE)) instanceof Element)) {
+            if (y + 1 < FIELD_SIZE && (canGo(new Point(x * CELL_SIZE, (y + 1)
+                    * CELL_SIZE)))
+                    && areOverlapping(scaled, new Point(x * CELL_SIZE, (y + 1) * CELL_SIZE))) {
                 if (dist[x][y + 1] > dist[x][y] + 1) {
                     dist[x][y + 1] = dist[x][y] + 1;
                     prev[x][y + 1] = p;
                     queue.add(new Point(x, y + 1));
                 }
             }
-            if (y - 1 >= 0 && !(DrawableModel.getByPoint(new Point(x * CELL_SIZE, (y - 1) * CELL_SIZE)) instanceof Element)) {
+            if (y - 1 >= 0 && (canGo(new Point(x * CELL_SIZE, (y - 1) *
+                    CELL_SIZE)))
+                    && areOverlapping(scaled, new Point(x * CELL_SIZE, (y - 1) * CELL_SIZE))) {
                 if (dist[x][y - 1] > dist[x][y] + 1) {
                     dist[x][y - 1] = dist[x][y] + 1;
                     prev[x][y - 1] = p;
@@ -83,6 +118,10 @@ public class DrawableWire extends Wire implements Drawable {
             }
         }
         Point p = new Point(to().x() / CELL_SIZE, to().y() / CELL_SIZE);
+        if (prev[p.x()][p.y()] == null) {
+            // FIXME  it must be handled normally
+            return;
+        }
         while (!p.equals(start)) {
             path.add(new Point(p.x() * CELL_SIZE, p.y() * CELL_SIZE));
             p = prev[p.x()][p.y()];
@@ -90,13 +129,39 @@ public class DrawableWire extends Wire implements Drawable {
         path.add(from().position());
     }
 
+    private boolean canGo(Point point) {
+        Drawable drawable = DrawableModel.getByPoint(point);
+        if (drawable instanceof Element)
+            return false;
+        if (drawable instanceof DrawableNode) {
+            DrawableNode node = (DrawableNode) drawable;
+            if (!node.position().equals(to().position()) && node.isRealNode()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean areOverlapping(Point p, Point point) {
+        for (DrawableWire wire : DrawableModel.wires()) {
+            if (wire.path.contains(p) && wire.path.contains(point)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean adjacent(Element element) {
         return to() == element.to() || to() == element.from() ||
                 from() == element.to() || from() == element.from();
     }
 
-    public ArrayList<Point> getPath() {
+    public LinkedHashSet<Point> getPath() {
         return path;
+    }
+
+    public void setPath(LinkedHashSet<Point> path) {
+        this.path = path;
     }
 
     public void clearPath() {

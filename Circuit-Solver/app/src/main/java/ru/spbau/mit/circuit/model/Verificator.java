@@ -43,7 +43,7 @@ public class Verificator {
         return oneWire(wire.from(), wire.to());
     }
 
-    public boolean unique(Node node) {
+    public boolean isolated(Node node) {
         for (Element element : model.elements()) {
             if (element.adjacent(node)) {
                 return false;
@@ -53,6 +53,31 @@ public class Verificator {
             if (wire.adjacent(node)) {
                 return false;
             }
+        }
+        return true;
+    }
+
+    public Node findUnnecessaryNode() {
+        for (Node node : model.nodes()) {
+            if (node.wires().size() != 2) {
+                continue;
+            }
+            boolean elementEnd = false;
+            for (Element element : model.elements()) {
+                if (element.adjacent(node)) {
+                    elementEnd = true;
+                }
+            }
+            if (!elementEnd) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    public boolean verify() {
+        if (findUnnecessaryNode() != null) {
+            return false;
         }
         return true;
     }

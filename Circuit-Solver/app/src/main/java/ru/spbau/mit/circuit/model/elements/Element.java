@@ -1,11 +1,13 @@
 package ru.spbau.mit.circuit.model.elements;
 
 
+import java.io.Serializable;
+
 import ru.spbau.mit.circuit.model.interfaces.Movable;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 
-abstract public class Element extends Item implements Movable {
+abstract public class Element extends Item implements Movable, Serializable {
 
     protected final Node from;
     protected final Node to;
