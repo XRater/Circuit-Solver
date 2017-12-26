@@ -3,17 +3,13 @@ package ru.spbau.mit.circuit.logic.solver;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
+import ru.spbau.mit.circuit.logic.gauss.Equation;
 import ru.spbau.mit.circuit.logic.gauss.LinearSystem;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.exceptions.ZeroDeterminantException;
@@ -24,6 +20,7 @@ import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
 import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
 import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
 import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.gauss.variables.NumberVariable;
 import ru.spbau.mit.circuit.logic.matrix_exponent.Matrices;
 import ru.spbau.mit.circuit.logic.matrix_exponent.Matrix;
 import ru.spbau.mit.circuit.logic.matrix_exponent.MatrixExponent;
@@ -70,18 +67,57 @@ public class Solver {
                 MatrixExponent.matrixExponent(A.scalarMultiply(-1)), constants);
         Matrix<Function> constPart = matrixExponent.multiply(Matrices.integrate(Ab));
 
+
+        ArrayList<NumberVariable> variables = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            variables.add(new NumberVariable("c" + i));
+        }
+        findCoefficients(matrixExponent, constPart, variables);
+        for (int i = 0; i < n; i++) {
+            System.out.println(variables.get(i).value());
+        }
+
         for (int i = 0; i < n; i++) {
             Function ansI = Functions.constant(0);
 
             for (int j = 0; j < n; j++) {
-                ansI = ansI.add(matrixExponent.get(i, j));
+                ansI = ansI.add(matrixExponent.get(i, j).multiplyConstant(variables.get(i).value
+                        ()));
             }
 
             ansI = ansI.add(constPart.get(i, 0));
 
             Derivative d = systemToSolve.get(i).coefficients().valueAt(i);
             d.parent().setValue(ansI);
+            System.out.println(d.parent().value());
             d.setValue();
+        }
+    }
+
+    private static void findCoefficients(
+            Matrix<Function> matrixExponent, Matrix<Function> constPart,
+            ArrayList<NumberVariable> variables) {
+
+        LinearSystem<Numerical,
+                Vector<Numerical, NumberVariable>,
+                Numerical> system = new LinearSystem<>(n);
+
+        for (int i = 0; i < n; i++) {
+            Vector<Numerical, NumberVariable> vector = new Vector<>(variables, Numerical.zero());
+            for (int j = 0; j < n; j++) {
+                vector.add(variables.get(i), matrixExponent.get(i, j).apply(0));
+            }
+
+            Equation<Numerical, Vector<Numerical, NumberVariable>, Numerical> eq =
+                    new Equation(vector, constPart.get(i, 0).apply(0));
+            system.addEquation(eq);
+        }
+
+        system.solve();
+
+        for (int i = 0; i < n; i++) {
+            Numerical constant = system.get(i).constant();
+            system.get(i).coefficients().valueAt(i).setValue(constant);
         }
     }
 
@@ -108,35 +144,6 @@ public class Solver {
         return vector;
     }
 
-    private static Map<Double, List<RealVector>> getVectors(RealMatrix matrix) {
-        EigenDecomposition eg = new EigenDecomposition(matrix);
-        Map<Double, List<RealVector>> map = new HashMap<>();
-        RealMatrix vectors = eg.getV();
-        //TODO complex roots
-        for (int i = 0; i < n; i++) {
-            double root = getRoot(matrix, vectors.getColumnMatrix(i));
-            if (!map.containsKey(root)) {
-                map.put(root, new ArrayList<>());
-            }
-            map.get(root).add(vectors.getColumnVector(i));
-        }
-        return map;
-    }
-
-    private static double getRoot(RealMatrix matrix, RealMatrix columnVector) {
-        RealMatrix prod = matrix.multiply(columnVector);
-        for (int i = 0; i < n; i++) {
-            if (zeroAndMinusZero(columnVector.getEntry(i, 0)) != 0) {
-                return prod.getEntry(i, 0) / columnVector.getEntry(i, 0);
-            }
-        }
-        throw new NoSuchElementException();
-    }
-
-    private static double zeroAndMinusZero(double root) {
-        return root == -0.0 ? 0.0 : root;
-    }
-
     private static RealMatrix getRightSideMatrix(LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
@@ -153,14 +160,7 @@ public class Solver {
         return matrix;
     }
 
-
-    public static void main(String[] args) throws CircuitShortingException {
-        FunctionVariable a = new FunctionVariable("a");
-        FunctionVariable b = new FunctionVariable("b");
-        Derivative da = new Derivative(a);
-        Derivative db = new Derivative(b);
-    }
-
+    
     static void print(RealMatrix m) {
         int sz = m.getColumnDimension();
         for (int i = 0; i < sz; i++) {

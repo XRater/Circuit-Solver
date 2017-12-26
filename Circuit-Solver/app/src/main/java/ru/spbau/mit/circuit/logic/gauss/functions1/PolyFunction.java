@@ -120,11 +120,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
     public PolyFunction differentiate() {
         PolyFunction ans = new PolyFunction();
         for (PolyExponent exponent : data.values()) {
-            ans.add(new PolyExponent(
-                    exponent.cf() * exponent.mPow(), exponent.mPow() - 1, exponent.ePow()));
-            ans.add(new PolyExponent(
-                    exponent.cf() * exponent.ePow().doubleValue(), exponent.mPow(), exponent.ePow
-                    ()));
+            ans = ans.add(exponent.differentiate());
         }
         return ans;
     }
@@ -163,6 +159,14 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
             answer = answer.add(exponent.integrate());
         }
 
+        return answer;
+    }
+
+    public Numerical apply(double x) {
+        Numerical answer = Numerical.zero();
+        for (PolyExponent exponent : data.values()) {
+            answer = answer.add(exponent.apply(x));
+        }
         return answer;
     }
 }

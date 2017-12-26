@@ -1,11 +1,11 @@
 package ru.spbau.mit.circuit.logic.gauss.variables;
 
 
-import org.apache.commons.math3.util.BigReal;
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 
 //import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 
-public class NumberVariable extends Variable<BigReal> {
+public class NumberVariable extends Variable<Numerical> {
 
     public NumberVariable() {
         super();

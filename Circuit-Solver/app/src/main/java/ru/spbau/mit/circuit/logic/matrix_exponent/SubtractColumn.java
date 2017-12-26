@@ -13,6 +13,7 @@ import ru.spbau.mit.circuit.logic.gauss.functions1.Functions;
 class SubtractColumn {
 
     private static final Function functionZero = Functions.constant(0);
+    private static final double precision = 0.0001;
 
     private final ArrayList<Element> elements = new ArrayList<>();
 
@@ -58,7 +59,7 @@ class SubtractColumn {
             begin = first.begin;
             end = second.end;
             size = first.size + 1;
-            if (first.begin == second.end) {
+            if (Complex.equals(first.begin, second.end, precision)) {
                 value = second.value.multiply(Functions.power(1)).divide(Functions.constant(first
                         .size));
             } else {

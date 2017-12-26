@@ -110,4 +110,8 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         sb.append(")/(").append(down.toString()).append(")");
         return sb.toString();
     }
+
+    public Numerical apply(double x) {
+        return up.apply(x).divide(down.apply(x));
+    }
 }
