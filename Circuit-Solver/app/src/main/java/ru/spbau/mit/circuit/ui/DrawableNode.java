@@ -6,6 +6,9 @@ import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 
+import static ru.spbau.mit.circuit.ui.Drawer.ELEMENTS_PAINT;
+import static ru.spbau.mit.circuit.ui.Drawer.NODE_RADIUS;
+
 public class DrawableNode extends Node implements Drawable {
     private boolean realNode = true;
 
@@ -26,7 +29,7 @@ public class DrawableNode extends Node implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-
+        canvas.drawCircle(x(), y(), NODE_RADIUS, ELEMENTS_PAINT);
     }
 
     public boolean isRealNode() {
@@ -35,5 +38,17 @@ public class DrawableNode extends Node implements Drawable {
 
     public boolean hasZeroWires() {
         return wires.size() == 0;
+    }
+
+    public void makeReal() {
+        realNode = true;
+    }
+
+    public void makeSimple() {
+        realNode = false;
+    }
+
+    public boolean equalPositions(DrawableNode that) {
+        return point.equals(that.point);
     }
 }
