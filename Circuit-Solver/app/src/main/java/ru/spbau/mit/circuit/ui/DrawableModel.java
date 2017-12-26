@@ -361,9 +361,11 @@ public class DrawableModel {
     public void clear() {
         drawables.clear();
         drawableWires.clear();
+        realNodes.clear();
         field.clear();
         showingCurrents = false;
         holded = null;
+        chosen = null;
     }
 
     public void removeElement(Drawable chosen) {

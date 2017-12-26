@@ -72,10 +72,12 @@ public class UI {
     }
 
     public void setCircuitWasLoaded() {
+        clearModel();
         circuitWasLoaded = true;
     }
 
     public void setCircuitWasNotLoaded() {
+        clearModel();
         circuitWasLoaded = false;
     }
 
