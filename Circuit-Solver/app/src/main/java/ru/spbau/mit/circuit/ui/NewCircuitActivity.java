@@ -29,10 +29,10 @@ import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
 
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
-    private static DrawableModel drawableModel; // static because after turning the screen onCrate is called.
-    private Drawer drawer;
 
-    private Drawable chosen;
+    private static DrawableModel drawableModel; // static because after turning the screen onCrate is called.
+    public Drawable chosen;
+    private Drawer drawer;
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
     private Button delete;
@@ -154,6 +154,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     delete.setVisibility(View.VISIBLE);
                     changeValue.setVisibility(View.VISIBLE);
                     rotate.setVisibility(View.VISIBLE);
+                    drawableModel.setChosen(chosen);
                 } else if (chosen instanceof DrawableNode) {
                     DrawableNode node = (DrawableNode) chosen;
                     makeButtonsInvisible();
@@ -162,6 +163,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     }
                 } else {
                     makeButtonsInvisible();
+                    drawableModel.setChosen(null);
                 }
 
                 if (chosen instanceof DrawableNode) {

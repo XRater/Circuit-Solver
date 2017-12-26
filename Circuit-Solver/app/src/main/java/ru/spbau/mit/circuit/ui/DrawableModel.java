@@ -29,6 +29,7 @@ public class DrawableModel {
     private Set<Drawable> drawables = new LinkedHashSet<>();
     private Set<DrawableNode> realNodes = new LinkedHashSet<>();
     private DrawableNode holded;
+    private Drawable chosen;
     private boolean showingCurrents;
 
     DrawableModel(Activity activity, Drawer drawer) {
@@ -469,7 +470,17 @@ public class DrawableModel {
         drawableWires.remove(wire);
     }
 
+
     public void setDrawer(Drawer drawer) {
         this.drawer = drawer;
+
+    public Drawable chosen() {
+        return chosen;
+    }
+
+    public void setChosen(Drawable chosen) {
+        this.chosen = chosen;
+        redraw();
+
     }
 }
