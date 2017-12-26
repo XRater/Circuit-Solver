@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.solver;
 
 
+import android.support.annotation.NonNull;
+
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -20,7 +22,7 @@ import ru.spbau.mit.circuit.logic.gauss.linear_containers.Row;
 import ru.spbau.mit.circuit.logic.gauss.linear_containers.Vector;
 import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
 import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
-import ru.spbau.mit.circuit.logic.gauss.variables.NumberVariable;
+import ru.spbau.mit.circuit.logic.gauss.variables.NumericalVariable;
 import ru.spbau.mit.circuit.logic.matrix_exponent.Matrices;
 import ru.spbau.mit.circuit.logic.matrix_exponent.Matrix;
 import ru.spbau.mit.circuit.logic.matrix_exponent.MatrixExponent;
@@ -41,7 +43,7 @@ public class Solver {
         initSystem = systemToSolve;
         n = initSystem.size();
 
-        // Convert to Derivative = Sum of PolyFunctions
+        // Solve initial system
         try {
             initSystem.solve();
         } catch (ZeroDeterminantException e) {
@@ -53,6 +55,7 @@ public class Solver {
         RealMatrix A = getRightSideMatrix(initSystem);
         RealVector constants = getRightSideConstants(initSystem);
 
+        // Set answer if A is zero
         if (isZeroMatrix(A)) {
             for (int i = 0; i < n; i++) {
                 Derivative d = systemToSolve.get(i).coefficients().valueAt(i);
@@ -62,26 +65,24 @@ public class Solver {
             return;
         }
 
+        // Evaluate general solution
         Matrix<Function> matrixExponent = MatrixExponent.matrixExponent(A);
+
+        // Evaluate particle solution
         Matrix<Function> Ab = Matrices.multiply(
                 MatrixExponent.matrixExponent(A.scalarMultiply(-1)), constants);
         Matrix<Function> constPart = matrixExponent.multiply(Matrices.integrate(Ab));
 
+        // Find constants for initial values
+        ArrayList<NumericalVariable> variables = getCoefficients(matrixExponent, constPart);
 
-        ArrayList<NumberVariable> variables = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            variables.add(new NumberVariable("c" + i));
-        }
-        findCoefficients(matrixExponent, constPart, variables);
-        for (int i = 0; i < n; i++) {
-            System.out.println(variables.get(i).value());
-        }
 
+        // Set answer
         for (int i = 0; i < n; i++) {
             Function ansI = Functions.constant(0);
 
             for (int j = 0; j < n; j++) {
-                ansI = ansI.add(matrixExponent.get(i, j).multiplyConstant(variables.get(i).value
+                ansI = ansI.add(matrixExponent.get(i, j).multiplyConstant(variables.get(j).value
                         ()));
             }
 
@@ -89,36 +90,41 @@ public class Solver {
 
             Derivative d = systemToSolve.get(i).coefficients().valueAt(i);
             d.parent().setValue(ansI);
-            System.out.println(d.parent().value());
             d.setValue();
         }
     }
 
-    private static void findCoefficients(
-            Matrix<Function> matrixExponent, Matrix<Function> constPart,
-            ArrayList<NumberVariable> variables) {
-
+    @NonNull
+    private static ArrayList<NumericalVariable> getCoefficients(Matrix<Function> matrixExponent,
+                                                                Matrix<Function> constPart) {
+        ArrayList<NumericalVariable> variables = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            variables.add(new NumericalVariable("c" + i));
+        }
         LinearSystem<Numerical,
-                Vector<Numerical, NumberVariable>,
-                Numerical> system = new LinearSystem<>(n);
+                Vector<Numerical, NumericalVariable>,
+                Numerical> constantsSystem = new LinearSystem<>(n);
 
         for (int i = 0; i < n; i++) {
-            Vector<Numerical, NumberVariable> vector = new Vector<>(variables, Numerical.zero());
+            Vector<Numerical, NumericalVariable> vector = new Vector<>(variables, Numerical.zero());
             for (int j = 0; j < n; j++) {
                 vector.add(variables.get(i), matrixExponent.get(i, j).apply(0));
             }
 
-            Equation<Numerical, Vector<Numerical, NumberVariable>, Numerical> eq =
-                    new Equation(vector, constPart.get(i, 0).apply(0));
-            system.addEquation(eq);
+            Equation<Numerical, Vector<Numerical, NumericalVariable>, Numerical> eq =
+                    new Equation(vector,
+                            constPart.get(i, 0).apply(0).negate()
+                                    .add(initSystem.get(i).coefficients().valueAt(i).parent()
+                                            .initialValue()));
+            constantsSystem.addEquation(eq);
         }
 
-        system.solve();
-
+        constantsSystem.solve();
         for (int i = 0; i < n; i++) {
-            Numerical constant = system.get(i).constant();
-            system.get(i).coefficients().valueAt(i).setValue(constant);
+            Numerical constant = constantsSystem.get(i).constant();
+            constantsSystem.get(i).coefficients().valueAt(i).setValue(constant);
         }
+        return variables;
     }
 
     private static boolean isZeroMatrix(RealMatrix a) {
@@ -160,7 +166,7 @@ public class Solver {
         return matrix;
     }
 
-    
+
     static void print(RealMatrix m) {
         int sz = m.getColumnDimension();
         for (int i = 0; i < sz; i++) {

@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
+import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.variables.Derivative;
 import ru.spbau.mit.circuit.logic.gauss.variables.FunctionVariable;
 import ru.spbau.mit.circuit.model.elements.Battery;
@@ -22,6 +23,11 @@ class Edge {
 
     Edge(Item item, Vertex from, Vertex to) {
         this.item = item;
+        if (item instanceof Capacitor) {
+            charge.setInitialValue(Numerical.number(item.getVoltage()));
+        } else {
+            charge.setInitialValue(Numerical.zero());
+        }
         this.from = from;
         this.to = to;
     }
