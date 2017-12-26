@@ -24,26 +24,25 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        if (isVertical()) {
-            canvas.drawLine(x(), y() + CELL_SIZE * 2, x(), y() + CELL_SIZE / 2,
-                    Drawer.ELEMENTS_PAINT);
-            canvas.drawLine(x(), y() - CELL_SIZE * 2, x(), y() - CELL_SIZE / 2,
-                    Drawer.ELEMENTS_PAINT);
-            canvas.drawLine(x() - Drawer.CELL_SIZE * 3 / 4, y() - Drawer.CELL_SIZE / 2,
-                    x() + Drawer.CELL_SIZE * 3 / 4, y() - Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
-            canvas.drawLine(x() - Drawer.CELL_SIZE * 3 / 4, y() + Drawer.CELL_SIZE / 2,
-                    x() + Drawer.CELL_SIZE * 3 / 4, y() + Drawer.CELL_SIZE / 2, Drawer.ELEMENTS_PAINT);
-        } else {
-            canvas.drawLine(x() - CELL_SIZE * 2, y(), x() - CELL_SIZE / 2, y(),
-                    Drawer.ELEMENTS_PAINT);
-            canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 2, y(),
-                    Drawer.ELEMENTS_PAINT);
-            canvas.drawLine(x() - Drawer.CELL_SIZE / 2, y() - Drawer.CELL_SIZE * 3 / 4, x() - Drawer.CELL_SIZE
-                    / 2, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
-            canvas.drawLine(x() + Drawer.CELL_SIZE / 2, y() - Drawer.CELL_SIZE * 3 / 4, x() + Drawer.CELL_SIZE
-                    / 2, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
-
+        canvas.save();
+        if (!isHorizontal()) {
+            canvas.translate(x() + Drawer.getOffsetX(), y() + Drawer.getOffsetY());
+            canvas.rotate(90);
+            canvas.translate(-x() - Drawer.getOffsetX(), -y() - Drawer.getOffsetY());
         }
+
+
+        canvas.drawLine(x() - CELL_SIZE * 2, y(), x() - CELL_SIZE / 2, y(),
+                Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 2, y(),
+                Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() - Drawer.CELL_SIZE / 2, y() - Drawer.CELL_SIZE * 3 / 4, x() - Drawer.CELL_SIZE
+                / 2, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() + Drawer.CELL_SIZE / 2, y() - Drawer.CELL_SIZE * 3 / 4, x() + Drawer.CELL_SIZE
+                / 2, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+
+
+        canvas.restore();
         canvas.drawCircle(from.x(), from.y(), NODE_RADIUS, WIRE_PAINT);
         canvas.drawCircle(to.x(), to.y(), NODE_RADIUS, WIRE_PAINT);
     }

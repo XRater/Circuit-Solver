@@ -423,13 +423,13 @@ public class DrawableModel {
         int x = element.center().x();
         int y = element.center().y();
         if (element.isHorizontal()) { // If it is horizontal, it is going to become vertical.
-            return y >= 2 * Drawer.CELL_SIZE && y <= Drawer.FIELD_SIZE - 2 * Drawer.CELL_SIZE &&
+            return y >= 2 * Drawer.CELL_SIZE && y <= (Drawer.FIELD_SIZE - 2) * Drawer.CELL_SIZE &&
                     pointIsNotForbidden(new Point(x, y + Drawer.CELL_SIZE)) &&
                     pointIsNotForbidden(new Point(x, y + 2 * Drawer.CELL_SIZE)) &&
                     pointIsNotForbidden(new Point(x, y - Drawer.CELL_SIZE)) &&
-                    pointIsNotForbidden(new Point(x, y + 2 * Drawer.CELL_SIZE));
+                    pointIsNotForbidden(new Point(x, y - 2 * Drawer.CELL_SIZE));
         } else {
-            return x >= 2 * Drawer.CELL_SIZE && x <= Drawer.FIELD_SIZE - 2 * Drawer.CELL_SIZE &&
+            return x >= 2 * Drawer.CELL_SIZE && x <= (Drawer.FIELD_SIZE - 2) * Drawer.CELL_SIZE &&
                     pointIsNotForbidden(new Point(x + Drawer.CELL_SIZE, y)) &&
                     pointIsNotForbidden(new Point(x + 2 * Drawer.CELL_SIZE, y)) &&
                     pointIsNotForbidden(new Point(x - Drawer.CELL_SIZE, y)) &&
@@ -473,6 +473,7 @@ public class DrawableModel {
 
     public void setDrawer(Drawer drawer) {
         this.drawer = drawer;
+    }
 
     public Drawable chosen() {
         return chosen;

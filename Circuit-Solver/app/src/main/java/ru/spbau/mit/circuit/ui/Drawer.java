@@ -111,12 +111,14 @@ public class Drawer {
     private void showCurrents(DrawableModel drawableModel) {
         for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
-            String current = String.format("%.2f", Math.abs(e.getCurrent())) + "A";
+            String current = e.getCurrent() + "A";
             Rect textSize = new Rect();
             ELEMENTS_PAINT.getTextBounds(current, 0, current.length(), textSize);
             canvas.save();
             if (e.isVertical()) {
-                canvas.rotateOverride(90, e.x(), e.y());
+                canvas.translate(e.x() + Drawer.getOffsetX(), e.y() + Drawer.getOffsetY());
+                canvas.rotate(90);
+                canvas.translate(-e.x() - Drawer.getOffsetX(), -e.y() - Drawer.getOffsetY());
             }
             canvas.drawText(current, e.x() - textSize.width() / 2, e.y() -
                     CELL_SIZE / 3 * 2, ELEMENTS_PAINT);
@@ -167,6 +169,16 @@ public class Drawer {
         @Override
         public void restore() {
             canvas.restore();
+        }
+
+        @Override
+        public void translate(float dx, float dy) {
+            canvas.translate(dx, dy);
+        }
+
+        @Override
+        public void rotate(float degrees) {
+            canvas.rotate(degrees);
         }
     }
 }
