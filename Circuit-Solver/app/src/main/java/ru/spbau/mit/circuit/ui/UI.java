@@ -9,17 +9,19 @@ import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
+import ru.spbau.mit.circuit.storage.Converter;
 
 public class UI {
     private final Controller controller;
+    public boolean circuitWasLoaded = false;
     private DrawableModel drawableModel;
 
     public UI(Controller controller) {
         this.controller = controller;
     }
 
-    public void load(Model model) {
-        //TODO
+    public void load(Converter.Mode mode, String name) {
+        controller.load(mode, name);
     }
 
     public void calculateCurrents() throws CircuitShortingException {
@@ -59,5 +61,25 @@ public class UI {
 
     public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
         drawableModel.deleteUnnecessaryNode(common, first, second);
+    }
+
+    public boolean save(Converter.Mode mode, String name) {
+        return controller.save(mode, name);
+    }
+
+    public List<String> getCircuits(Converter.Mode mode) {
+        return controller.getCircuits(mode);
+    }
+
+    public void setCircuitWasLoaded() {
+        circuitWasLoaded = true;
+    }
+
+    public void setCircuitWasNotLoaded() {
+        circuitWasLoaded = false;
+    }
+
+    public Model getModel() {
+        return controller.getModel();
     }
 }

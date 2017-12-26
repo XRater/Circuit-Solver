@@ -185,6 +185,14 @@ public class Model implements Serializable {
         }
     }
 
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public void initializeVerificator() {
+        verificator = new Verificator(this);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

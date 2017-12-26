@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ru.spbau.mit.circuit">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/circ_solver"
@@ -17,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.NewCircuitActivity"></activity>
+        <activity android:name=".LoadActivity" />
     </application>
 
 </manifest>

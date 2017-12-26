@@ -1,19 +1,15 @@
 package ru.spbau.mit.circuit.controler;
 
 import android.app.Activity;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Intent;
+import android.os.AsyncTask;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
@@ -22,20 +18,26 @@ import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
+import ru.spbau.mit.circuit.storage.Converter;
+import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
 
 public class Controller {
 
     private final Logic logic;
     private final UI ui;
-    public DBHelper dbHelper;
+    private final Converter converter;
     private Model model;
+    private Activity activity;
 
     public Controller(Activity activity) {
         logic = new Logic(this);
         ui = new UI(this);
         model = new Model(this);
-        dbHelper = new DBHelper(activity.getApplicationContext());
+        converter = new Converter(activity);
+        this.activity = activity;
+//        localStorage = new Local(activity);
+//        driveStorage = new DriveStorage();
     }
 
     public Logic getLogic() {
@@ -50,9 +52,9 @@ public class Controller {
         return model;
     }
 
-    public void updateView() {
-        ui.load(model);
-    }
+    //public void updateView() {
+    //    ui.load(model);
+    //}
 
     public void calculateCurrents() throws CircuitShortingException {
         logic.calculateCurrents(model);
@@ -74,6 +76,11 @@ public class Controller {
         model.removeAll(objects);
     }
 
+    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+            throws NodesAreAlreadyConnected {
+        model.removeThenAdd(toBeDeleted, toBeAdded);
+    }
+
     public void clearModel() {
         model.clear();
     }
@@ -84,60 +91,99 @@ public class Controller {
     }
 
 
-    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+    public boolean save(Converter.Mode mode, String filename) {
+        try {
+            return (Boolean) new SaveTask(mode, converter, model).execute(filename).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<String> getCircuits(Converter.Mode mode) {
+        try {
+            return (List<String>) new GetCircuitsTask(mode, converter).execute().get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+  
+  public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
             throws NodesAreAlreadyConnected {
         model.removeThenAdd(toBeDeleted, toBeAdded);
     }
 
-    public void saveToLocalDB() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-//        System.out.println(gson.toJson(model));
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = null;
+    public void load(Converter.Mode mode, String filename) {
         try {
-            objectOutputStream = new ObjectOutputStream(out);
-            objectOutputStream.writeObject(model);
-            ByteArrayInputStream in = new ByteArrayInputStream("".getBytes());
-            ObjectInputStream objectInputStream = new ObjectInputStream(in);
-            Model model2 = (Model) objectInputStream.readObject();
-            System.out.println(out.toString());
-        } catch (IOException e) {
+            Model newModel = (Model) new LoadTask(mode, converter).execute(filename).get();
+            newModel.setController(this);
+            newModel.initializeVerificator();
+            this.model = newModel;
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
-        cv.put("name", "name");
-        cv.put("model", "model");
-        db.insert("mytable", null, cv);
-        dbHelper.close();
+        ui.setCircuitWasLoaded();
+        Intent intent = new Intent(activity.getApplicationContext(), NewCircuitActivity.class);
+        activity.startActivity(intent);
     }
 
-    public void loadFromLocalDB() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor c = db.query("mytable", null, null, null, null, null, null);
+    static abstract class AbstractTask extends AsyncTask<String, Void, Object> {
+        protected Converter.Mode mode;
+        protected Converter converter;
 
-        // ставим позицию курсора на первую строку выборки
-        // если в выборке нет строк, вернется false
-        if (c.moveToFirst()) {
-            // определяем номера столбцов по имени в выборке
-            int nameColIndex = c.getColumnIndex("name");
-            int modelColIndex = c.getColumnIndex("model");
-
-            do {
-                // получаем значения по номерам столбцов и пишем все в лог
-                System.out.println(
-                        "name = " + c.getString(nameColIndex) +
-                                ", email = " + c.getString(modelColIndex));
-                // переход на следующую строку
-                // а если следующей нет (текущая - последняя), то false - выходим из цикла
-            } while (c.moveToNext());
+        AbstractTask(Converter.Mode mode, Converter converter) {
+            this.converter = converter;
+            this.mode = mode;
         }
-        dbHelper.close();
+    }
+
+    static class LoadTask extends AbstractTask {
+        LoadTask(Converter.Mode mode, Converter converter) {
+            super(mode, converter);
+        }
+
+        @Override
+        protected Model doInBackground(String... filename) {
+            return converter.load(mode, filename[0]);
+        }
+    }
+
+    static class SaveTask extends AbstractTask {
+        private Model model;
+
+        SaveTask(Converter.Mode mode, Converter converter, Model model) {
+            super(mode, converter);
+            this.model = model;
+        }
+
+        @Override
+        protected Object doInBackground(String... filename) {
+            try {
+                return converter.save(mode, model, filename[0]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    static class GetCircuitsTask extends AbstractTask {
+
+        GetCircuitsTask(Converter.Mode mode, Converter converter) {
+            super(mode, converter);
+        }
+
+        @Override
+        protected Object doInBackground(String... filename) {
+            return converter.getCircuits(mode);
+        }
     }
 }

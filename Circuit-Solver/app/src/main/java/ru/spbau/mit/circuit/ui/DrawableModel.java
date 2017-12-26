@@ -241,6 +241,11 @@ public class DrawableModel {
         }
     }
 
+    public void addWire(DrawableWire drawableWire) {
+        drawableWires.add(drawableWire);
+        addNewWirePosition(drawableWire);
+    }
+
     private void deleteOldWirePosition(DrawableWire wire) {
         LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
@@ -470,6 +475,19 @@ public class DrawableModel {
         drawableWires.remove(wire);
     }
 
+    public void addRealNode(DrawableNode node) {
+        realNodes.add(node);
+    }
+
+    public void loadElement(Drawable element) {
+        drawables.add(element);
+        addNewElementPosition(element);
+    }
+
+    public void loadWire(DrawableWire wire) {
+        drawableWires.add(wire);
+        addNewWirePosition(wire);
+
 
     public void setDrawer(Drawer drawer) {
         this.drawer = drawer;
@@ -482,6 +500,7 @@ public class DrawableModel {
     public void setChosen(Drawable chosen) {
         this.chosen = chosen;
         redraw();
+
 
     }
 }
