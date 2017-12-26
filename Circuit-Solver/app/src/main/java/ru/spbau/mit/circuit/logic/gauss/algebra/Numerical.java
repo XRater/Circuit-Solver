@@ -1,13 +1,20 @@
 package ru.spbau.mit.circuit.logic.gauss.algebra;
 
 
+import org.apache.commons.math3.complex.Complex;
+
 import ru.spbau.mit.circuit.logic.gauss.algebra.exceptions.IllegalInverseException;
 
-public class Numerical implements Field<Numerical> {
+public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical> {
 
-    private final double value;
+    private final Complex value;
+    private final double precision = 0.0001;
 
     public static Numerical number(double value) {
+        return new Numerical(value);
+    }
+
+    public static Numerical number(Complex value) {
         return new Numerical(value);
     }
 
@@ -19,54 +26,78 @@ public class Numerical implements Field<Numerical> {
         return new Numerical(1);
     }
 
-    private Numerical(double value) {
+    private Numerical(Complex value) {
         this.value = value;
     }
 
-    public double value() {
-        return value;
+    private Numerical(double value) {
+        this.value = new Complex(value);
     }
 
-    @Override
-    public Numerical copy() {
-        return new Numerical(value);
+    public double value() {
+        return value.getReal();
     }
 
     @Override
     public Numerical add(Numerical f) {
-        return new Numerical(value + f.value);
+        return new Numerical(value.add(f.value));
     }
 
     @Override
-    public Numerical mul(Numerical f) {
-        return new Numerical(value * f.value);
+    public Numerical multiplyConstant(Numerical cf) {
+        return multiply(cf);
     }
 
     @Override
-    public Numerical inverse() {
+    public Numerical multiply(Numerical f) {
+        return new Numerical(value.multiply(f.value));
+    }
+
+    @Override
+    public Numerical reciprocal() {
         if (!isZero()) {
-            return new Numerical(1 / value);
+            return new Numerical(value.reciprocal());
         }
         throw new IllegalInverseException();
     }
 
     @Override
     public Numerical negate() {
-        return new Numerical(-value);
+        return new Numerical(value.negate());
     }
 
     @Override
     public boolean isZero() {
-        return value == 0;
+        return isEquals(zero());
     }
 
     @Override
     public boolean isIdentity() {
-        return value == 1;
+        return isEquals(identity());
+    }
+
+    @Override
+    public Numerical getZero() {
+        return Numerical.zero();
+    }
+
+    @Override
+    public Numerical getIdentity() {
+        return Numerical.identity();
     }
 
     @Override
     public String toString() {
-        return Double.toString(value);
+        if (value.getImaginary() == 0) {
+            return Double.toString(value.getReal());
+        }
+        if (value.getReal() == 0) {
+            return Double.toString(value.getImaginary()) + "i";
+        }
+        return Double.toString(value.getReal()) + " " + Double.toString(value.getImaginary()) + "i";
+    }
+
+    public boolean isEquals(Numerical num) {
+        return Complex.equals(value, num.value, precision);
     }
 }

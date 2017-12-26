@@ -1,6 +1,5 @@
 package ru.spbau.mit.circuit.logic.gauss;
 
-
 import java.util.ArrayList;
 
 import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
@@ -8,6 +7,12 @@ import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 import ru.spbau.mit.circuit.logic.gauss.exceptions.IllegalEquationSizeException;
 import ru.spbau.mit.circuit.logic.gauss.exceptions.ZeroDeterminantException;
 
+
+/**
+ * @param <C> type of coefficients
+ * @param <T> type of right side
+ * @param <U> type of left side
+ */
 public class LinearSystem<
         C extends Field<C>,
         T extends Gauss<C, T>,
@@ -48,7 +53,7 @@ public class LinearSystem<
 
     public void solve() {
         zeroBottomPart();
-        normalize();
+        makeDiagonal();
     }
 
     private void zeroBottomPart() {
@@ -62,13 +67,13 @@ public class LinearSystem<
                     continue;
                 }
                 C k = getMulCoefficient(coefficient(i, i), coefficient(j, i));
-                get(i).mul(k);
+                get(i).multiplyConstant(k);
                 get(j).add(get(i));
             }
         }
     }
 
-    private void normalize() {
+    private void makeDiagonal() {
         for (int i = size() - 1; i >= 0; i--) {
             if (coefficient(i, i).isZero()) {
                 throw new ZeroDeterminantException();
@@ -78,15 +83,15 @@ public class LinearSystem<
                     continue;
                 }
                 C k = getMulCoefficient(coefficient(i, i), coefficient(j, i));
-                get(i).mul(k);
+                get(i).multiplyConstant(k);
                 get(j).add(get(i));
             }
-            get(i).mul(coefficient(i, i).inverse());
+            get(i).multiplyConstant(coefficient(i, i).reciprocal());
         }
     }
 
     private C getMulCoefficient(C a, C b) {
-        return b.div(a).negate();
+        return b.divide(a).negate();
     }
 
     @Override

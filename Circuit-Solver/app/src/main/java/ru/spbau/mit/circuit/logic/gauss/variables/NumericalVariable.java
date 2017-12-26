@@ -3,13 +3,15 @@ package ru.spbau.mit.circuit.logic.gauss.variables;
 
 import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 
-public class NumberVariable extends Variable<Numerical> {
+//import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 
-    public NumberVariable() {
+public class NumericalVariable extends Variable<Numerical> {
+
+    public NumericalVariable() {
         super();
     }
 
-    public NumberVariable(String name) {
+    public NumericalVariable(String name) {
         super(name);
     }
 

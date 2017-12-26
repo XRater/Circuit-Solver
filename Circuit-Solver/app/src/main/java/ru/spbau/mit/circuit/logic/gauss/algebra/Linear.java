@@ -4,5 +4,5 @@ public interface Linear<C extends Field<C>, T extends Linear<C, T>> {
 
     T add(T item);
 
-    T mul(C cf);
+    T multiplyConstant(C cf);
 }

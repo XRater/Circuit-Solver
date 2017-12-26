@@ -1,5 +1,6 @@
 package ru.spbau.mit.circuit.logic.gauss.linear_containers;
 
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -44,10 +45,10 @@ public class Row<C extends Field<C>, T extends Comparable<? super T>, S extends 
     }
 
     @Override
-    public Row<C, T, S> mul(C d) {
-        constant = constant.mul(d);
+    public Row<C, T, S> multiplyConstant(C d) {
+        constant = constant.multiplyConstant(d);
         for (Map.Entry<T, C> entry : data.entrySet()) {
-            data.put(entry.getKey(), entry.getValue().mul(d));
+            data.put(entry.getKey(), entry.getValue().multiply(d));
         }
         return this;
     }

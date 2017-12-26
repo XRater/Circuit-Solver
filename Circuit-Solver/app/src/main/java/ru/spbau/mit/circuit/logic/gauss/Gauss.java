@@ -1,5 +1,6 @@
 package ru.spbau.mit.circuit.logic.gauss;
 
+
 import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 

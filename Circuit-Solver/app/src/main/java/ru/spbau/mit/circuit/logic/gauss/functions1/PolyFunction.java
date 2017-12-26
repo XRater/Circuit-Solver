@@ -1,15 +1,15 @@
 package ru.spbau.mit.circuit.logic.gauss.functions1;
 
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import ru.spbau.mit.circuit.logic.gauss.algebra.Field;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Linear;
 import ru.spbau.mit.circuit.logic.gauss.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.gauss.functions1.exceptions.IllegalDoubleConvertionException;
 
-public class PolyFunction implements Linear<Numerical, PolyFunction> {
+public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, PolyFunction> {
 
     private final Map<PolyExponent, PolyExponent> data = new TreeMap<>();
 
@@ -28,7 +28,7 @@ public class PolyFunction implements Linear<Numerical, PolyFunction> {
 
     @Override
     public PolyFunction add(PolyFunction item) {
-        PolyFunction result = copy();
+        PolyFunction result = new PolyFunction(this);
         for (PolyExponent function : item.data.values()) {
             result.add(function);
         }
@@ -40,8 +40,6 @@ public class PolyFunction implements Linear<Numerical, PolyFunction> {
             return;
         }
         if (data.containsKey(function)) {
-            PolyExponent exponent = data.get(function);
-            System.out.println(exponent + " " + function);
             data.put(function, data.get(function).add(function));
             if (data.get(function).isZero()) {
                 data.remove(function);
@@ -52,46 +50,51 @@ public class PolyFunction implements Linear<Numerical, PolyFunction> {
     }
 
     @Override
-    public PolyFunction mul(Numerical cf) {
-        PolyFunction result = new PolyFunction();
-        for (PolyExponent function : data.values()) {
-            result.add(function.mul(cf));
-        }
-        return result;
-    }
-
-    public PolyFunction mul(PolyFunction other) {
+    public PolyFunction multiply(PolyFunction other) {
         PolyFunction result = new PolyFunction();
         for (PolyExponent f : data.values()) {
             for (PolyExponent g : other.data.values()) {
-                result.add(f.mul(g));
+                result.add(f.multiply(g));
             }
         }
         return result;
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (data.values().isEmpty()) {
-            return "0";
-        }
-        Iterator<PolyExponent> iter = data.values().iterator();
-        sb.append(iter.next().toString());
-        while (iter.hasNext()) {
-            sb.append(" ").append(iter.next().toString());
-        }
-        return sb.toString();
+    public PolyFunction negate() {
+        return this.multiplyConstant(Numerical.number(-1));
     }
 
-    public PolyFunction copy() {
-        return new PolyFunction(this);
+    @Override
+    public PolyFunction reciprocal() {
+        throw new UnsupportedOperationException();
     }
 
+    @Override
+    public PolyFunction multiplyConstant(Numerical cf) {
+        PolyFunction result = new PolyFunction();
+        for (PolyExponent function : data.values()) {
+            result.add(function.multiplyConstant(cf));
+        }
+        return result;
+    }
+
+    @Override
+    public PolyFunction getZero() {
+        return PolyFunctions.constant(0);
+    }
+
+    @Override
+    public PolyFunction getIdentity() {
+        return PolyFunctions.identity();
+    }
+
+    @Override
     public boolean isZero() {
         return data.size() == 0;
     }
 
+    @Override
     public boolean isIdentity() {
         if (data.size() != 1) {
             return false;
@@ -102,7 +105,7 @@ public class PolyFunction implements Linear<Numerical, PolyFunction> {
     private PolyFunction div(PolyExponent gcd) {
         PolyFunction answer = new PolyFunction();
         for (PolyExponent function : data.values()) {
-            answer.add(function.div(gcd));
+            answer.add(function.divide(gcd));
         }
         return answer;
     }
@@ -117,11 +120,7 @@ public class PolyFunction implements Linear<Numerical, PolyFunction> {
     public PolyFunction differentiate() {
         PolyFunction ans = new PolyFunction();
         for (PolyExponent exponent : data.values()) {
-            ans.add(new PolyExponent(
-                    exponent.cf() * exponent.mPow(), exponent.mPow() - 1, exponent.ePow()));
-            ans.add(new PolyExponent(
-                    exponent.cf() * exponent.ePow().doubleValue(), exponent.mPow(), exponent.ePow
-                    ()));
+            ans = ans.add(exponent.differentiate());
         }
         return ans;
     }
@@ -139,10 +138,35 @@ public class PolyFunction implements Linear<Numerical, PolyFunction> {
         throw new RuntimeException();
     }
 
-    public static void main(String[] args) {
-        PolyFunction function = PolyFunctions.polyExponent(1, 2, 2);
-        System.out.println(function);
-        System.out.println(function.differentiate());
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (data.values().isEmpty()) {
+            return "0";
+        }
+        Iterator<PolyExponent> iter = data.values().iterator();
+        sb.append(iter.next().toString());
+        while (iter.hasNext()) {
+            sb.append(" ").append(iter.next().toString());
+        }
+        return sb.toString();
     }
 
+    public PolyFunction integrate() {
+        PolyFunction answer = new PolyFunction();
+
+        for (PolyExponent exponent : data.values()) {
+            answer = answer.add(exponent.integrate());
+        }
+
+        return answer;
+    }
+
+    public Numerical apply(double x) {
+        Numerical answer = Numerical.zero();
+        for (PolyExponent exponent : data.values()) {
+            answer = answer.add(exponent.apply(x));
+        }
+        return answer;
+    }
 }

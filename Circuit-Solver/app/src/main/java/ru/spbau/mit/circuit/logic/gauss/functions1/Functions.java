@@ -1,6 +1,5 @@
 package ru.spbau.mit.circuit.logic.gauss.functions1;
 
-
 public class Functions {
 
     public static Function zero() {

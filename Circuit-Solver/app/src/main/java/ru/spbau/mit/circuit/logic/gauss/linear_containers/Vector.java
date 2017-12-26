@@ -75,9 +75,9 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
     }
 
     @Override
-    public Vector<C, T> mul(C c) {
+    public Vector<C, T> multiplyConstant(C c) {
         for (int i = 0; i < size; i++) {
-            C newC = cfs.get(i).mul(c);
+            C newC = cfs.get(i).multiply(c);
             cfs.set(i, newC);
         }
         return this;

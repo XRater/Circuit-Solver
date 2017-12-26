@@ -16,9 +16,7 @@ public class Derivative extends FunctionVariable {
     }
 
     public void setValue() {
-//        value = parent.value;
         value = parent.value.differentiate();
-//        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -32,9 +30,5 @@ public class Derivative extends FunctionVariable {
     }
 
     public static void main(String[] args) {
-//        BigDecimal d = new BigDecimal(-21.227446049250313);
-//        BigDecimal f = d.setScale(3, RoundingMode.HALF_EVEN);
-//        f = f.multiply(f).setScale(3.);
-//        System.out.println(f);
     }
 }
