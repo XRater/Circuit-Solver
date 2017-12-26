@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -112,12 +109,7 @@ public class Controller {
         }
         return null;
     }
-  
-  public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
-            throws NodesAreAlreadyConnected {
-        model.removeThenAdd(toBeDeleted, toBeAdded);
-    }
-
+    
     public void load(Converter.Mode mode, String filename) {
         try {
             Model newModel = (Model) new LoadTask(mode, converter).execute(filename).get();

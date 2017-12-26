@@ -481,13 +481,13 @@ public class DrawableModel {
 
     public void loadElement(Drawable element) {
         drawables.add(element);
-        addNewElementPosition(element);
+        addNewObjectPosition(element);
     }
 
     public void loadWire(DrawableWire wire) {
         drawableWires.add(wire);
         addNewWirePosition(wire);
-
+    }
 
     public void setDrawer(Drawer drawer) {
         this.drawer = drawer;
