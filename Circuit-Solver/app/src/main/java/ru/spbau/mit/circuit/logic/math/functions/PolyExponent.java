@@ -120,6 +120,9 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
             if (Math.round(d) == 0 || Math.round(d) == 1) {
                 return "";
             }
+            if (Math.round(d) == -1) {
+                return "-";
+            }
             return String.valueOf(Math.round(d));
         }
         BigDecimal decimal = new BigDecimal(d);

@@ -24,6 +24,10 @@ class Tasks {
         return new SaveTask(mode, converter, model);
     }
 
+    static DeleteTask deleteTask(Converter.Mode mode, Converter converter) {
+        return new DeleteTask(mode, converter);
+    }
+
     static class SaveTask extends AsyncTask<String, Void, Boolean> {
         private final Converter.Mode mode;
         private final Converter converter;

@@ -180,7 +180,6 @@ public class DriveStorage implements Storage {
             throw new LoadingException(e);
         }
         if (driveFile != null) {
-            System.out.println("Deleted" + driveFile.getDriveId().toString());
             mDriveResourceClient.delete(driveFile);
         }
     }
