@@ -53,7 +53,7 @@ public class DrawableBattery extends Battery implements Drawable {
                     Drawer.CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
         }
 
-        canvas.drawText(r, x() - rSize.width() / 2, y() + CELL_SIZE, Drawer.ELEMENTS_PAINT);
+        canvas.drawText(r, x() - rSize.width() / 2, y() + CELL_SIZE / 4 * 5, Drawer.ELEMENTS_PAINT);
 
         canvas.restore();
 
