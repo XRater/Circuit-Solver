@@ -28,7 +28,7 @@ public class LoadActivity extends Activity {
                     .setPositiveButton("Load", (dialog1, which) -> {
                         MainActivity.ui.load(mode, name);
                     })
-                    .setNegativeButton("Delete", null)
+                    .setNegativeButton("Delete", MainActivity.ui.removeFromStorage(mode, name))
                     .create();
             dialog.show();
         });

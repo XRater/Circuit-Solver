@@ -35,6 +35,10 @@ public class Controller {
         this.activity = activity;
     }
 
+    public static void removeFromStrorage(Converter.Mode mode, String name) {
+        Converter
+    }
+
     public Logic getLogic() {
         return logic;
     }
@@ -101,7 +105,7 @@ public class Controller {
         }
         return null;
     }
-    
+
     public void load(Converter.Mode mode, String filename) {
         try {
             Model newModel = (Model) new LoadTask(mode, converter).execute(filename).get();

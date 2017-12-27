@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.ui;
 
+import android.content.DialogInterface;
+
 import java.util.List;
 
 import ru.spbau.mit.circuit.controler.Controller;
@@ -83,5 +85,9 @@ public class UI {
 
     public Model getModel() {
         return controller.getModel();
+    }
+
+    public DialogInterface.OnClickListener removeFromStorage(Converter.Mode mode, String name) {
+        Controller.removeFromStrorage(mode, name);
     }
 }
