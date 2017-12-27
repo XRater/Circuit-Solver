@@ -174,7 +174,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         if (isEquals(ePow, 0)) {
             return res;
         }
-        res += "e^" + writeNumber(ePow) + "t";
+        res += "exp(" + writeNumber(ePow) + "t)";
         return res;
     }
 

@@ -107,14 +107,14 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
     @Override
     public String toString() {
         if (isZero()) {
-            return "(0)";
+            return "0";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("(").append(up.toString());
+        sb.append("").append(up.toString());
         if (down.isIdentity()) {
-            return sb.append(")").toString();
+            return sb.append("").toString();
         }
-        sb.append(")/(").append(down.toString()).append(")");
+        sb.append("/").append(down.toString()).append("");
         return sb.toString();
     }
 
