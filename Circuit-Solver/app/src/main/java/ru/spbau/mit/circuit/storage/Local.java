@@ -66,4 +66,9 @@ public class Local implements Storage {
         return null;
     }
 
+    @Override
+    public void delete(String name) {
+
+    }
+
 }

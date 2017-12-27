@@ -2,9 +2,7 @@ package ru.spbau.mit.circuit.controler;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -86,7 +84,7 @@ public class Controller {
 
     public boolean save(Converter.Mode mode, String filename) {
         try {
-            return (Boolean) new SaveTask(mode, converter, model).execute(filename).get();
+            return Tasks.saveTask(mode, converter, model).execute(filename).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -97,7 +95,7 @@ public class Controller {
 
     public List<String> getCircuits(Converter.Mode mode) {
         try {
-            return (List<String>) new GetCircuitsTask(mode, converter).execute().get();
+            return Tasks.getCircuitsTask(mode, converter).execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -108,7 +106,7 @@ public class Controller {
 
     public void load(Converter.Mode mode, String filename) {
         try {
-            Model newModel = (Model) new LoadTask(mode, converter).execute(filename).get();
+            Model newModel = Tasks.loadTask(mode, converter).execute(filename).get();
             newModel.setController(this);
             newModel.initializeVerificator();
             this.model = newModel;
@@ -123,55 +121,4 @@ public class Controller {
         activity.startActivity(intent);
     }
 
-    static abstract class AbstractTask extends AsyncTask<String, Void, Object> {
-        protected Converter.Mode mode;
-        protected Converter converter;
-
-        AbstractTask(Converter.Mode mode, Converter converter) {
-            this.converter = converter;
-            this.mode = mode;
-        }
-    }
-
-    static class LoadTask extends AbstractTask {
-        LoadTask(Converter.Mode mode, Converter converter) {
-            super(mode, converter);
-        }
-
-        @Override
-        protected Model doInBackground(String... filename) {
-            return converter.load(mode, filename[0]);
-        }
-    }
-
-    static class SaveTask extends AbstractTask {
-        private Model model;
-
-        SaveTask(Converter.Mode mode, Converter converter, Model model) {
-            super(mode, converter);
-            this.model = model;
-        }
-
-        @Override
-        protected Object doInBackground(String... filename) {
-            try {
-                return converter.save(mode, model, filename[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    static class GetCircuitsTask extends AbstractTask {
-
-        GetCircuitsTask(Converter.Mode mode, Converter converter) {
-            super(mode, converter);
-        }
-
-        @Override
-        protected Object doInBackground(String... filename) {
-            return converter.getCircuits(mode);
-        }
-    }
 }

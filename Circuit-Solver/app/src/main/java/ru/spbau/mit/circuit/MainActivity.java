@@ -61,10 +61,6 @@ public class MainActivity extends AppCompatActivity {
     public void onLoadCircuit(View view) {
         Intent intent = new Intent(MainActivity.this, LoadActivity.class);
         startActivity(intent);
-//        System.out.println(Thread.currentThread());
-//        Thread thread = new Thread(() ->
-//                System.out.println(controller.getCircuits(Converter.Mode.DRIVE)));
-//        thread.start();
     }
 
     public void onSettings(View view) {

@@ -18,7 +18,7 @@ public class Converter {
 
     public Converter(Activity activity) {
         storageList.add(new Local(activity));
-        //storageList.add(new DriveStorage(activity));
+        storageList.add(new DriveStorage(activity));
     }
 
     private Storage getStorage(Mode mode) {
@@ -46,17 +46,24 @@ public class Converter {
         return getStorage(mode).getCircuits();
     }
 
-    public Model load(Mode mode, String name) {
+    public Model load(Mode mode, String name) throws LoadingException {
         ByteArrayInputStream in = getStorage(mode).load(name);
-        Model model = null;
+        Model model;
         try (ObjectInputStream objectInputStream = new ObjectInputStream(in)) {
             model = (Model) objectInputStream.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new LoadingException(e);
         }
         return model;
+    }
+
+    public boolean delete(Mode mode, String name) throws LoadingException {
+        try {
+            getStorage(mode).delete(name);
+        } catch (Exception e) {
+            throw new LoadingException(e);
+        }
+        return true;
     }
 
     public enum Mode {
