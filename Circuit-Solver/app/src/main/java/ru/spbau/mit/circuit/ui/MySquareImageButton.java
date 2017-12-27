@@ -19,6 +19,6 @@ public class MySquareImageButton extends AppCompatImageButton {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, widthMeasureSpec);
+        super.onMeasure(widthMeasureSpec, widthMeasureSpec / 3 * 2);
     }
 }
