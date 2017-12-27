@@ -51,6 +51,9 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
 
     @Override
     public PolyFunction multiply(PolyFunction other) {
+        if (other.isZero() || isZero()) {
+            return PolyFunctions.zero();
+        }
         PolyFunction result = new PolyFunction();
         for (PolyExponent f : data.values()) {
             for (PolyExponent g : other.data.values()) {
@@ -72,6 +75,9 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
 
     @Override
     public PolyFunction multiplyConstant(Numerical cf) {
+        if (cf.isZero() || this.isZero()) {
+            return PolyFunctions.zero();
+        }
         PolyFunction result = new PolyFunction();
         for (PolyExponent function : data.values()) {
             result.add(function.multiplyConstant(cf));
