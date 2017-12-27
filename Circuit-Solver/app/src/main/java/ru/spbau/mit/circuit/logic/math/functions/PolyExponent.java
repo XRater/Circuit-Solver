@@ -16,7 +16,7 @@ import ru.spbau.mit.circuit.logic.math.functions.exceptions.IllegalFunctionTrans
 public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponent>,
         Linear<Numerical, PolyExponent> {
 
-    private static final int scale = 20;
+    private static final int scale = 2;
     private static final double precision = 0.0000001;
 
     private final double cf;
