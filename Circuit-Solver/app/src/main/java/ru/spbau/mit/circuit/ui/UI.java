@@ -4,6 +4,7 @@ import java.util.List;
 
 import ru.spbau.mit.circuit.controler.Controller;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
+import ru.spbau.mit.circuit.logic.ToHardException;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
@@ -24,7 +25,7 @@ public class UI {
         controller.load(mode, name);
     }
 
-    public void calculateCurrents() throws CircuitShortingException {
+    public void calculateCurrents() throws CircuitShortingException, ToHardException {
         controller.calculateCurrents();
     }
 
