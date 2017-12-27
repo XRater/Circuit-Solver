@@ -8,6 +8,7 @@ import java.util.List;
 
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.storage.Converter;
+import ru.spbau.mit.circuit.storage.LoadingException;
 
 class Tasks {
 
@@ -66,6 +67,8 @@ class Tasks {
         private final Converter.Mode mode;
         private final Converter converter;
 
+        private Throwable t;
+
         private LoadTask(Converter.Mode mode, Converter converter) {
             this.mode = mode;
             this.converter = converter;
@@ -76,9 +79,41 @@ class Tasks {
             if (filename.length != 1) {
                 throw new IllegalArgumentException();
             }
-            return converter.load(mode, filename[0]);
+            try {
+                return converter.load(mode, filename[0]);
+            } catch (LoadingException e) {
+                t = e;
+            }
+            return null;
         }
     }
 
+    static class DeleteTask extends AsyncTask<String, Void, Boolean> {
+
+        private final Converter.Mode mode;
+        private final Converter converter;
+
+        private Throwable t;
+
+        private DeleteTask(Converter.Mode mode, Converter converter) {
+            this.mode = mode;
+            this.converter = converter;
+        }
+
+        @Override
+        public Boolean doInBackground(String... filename) {
+            try {
+                return converter.delete(mode, filename[0]);
+            } catch (LoadingException e) {
+                t = e;
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
+    }
 
 }

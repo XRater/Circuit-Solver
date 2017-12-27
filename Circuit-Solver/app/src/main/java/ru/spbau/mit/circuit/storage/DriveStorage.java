@@ -159,7 +159,7 @@ public class DriveStorage implements Storage {
     }
 
     @Override
-    public void delete(String filename) {
+    public void delete(String filename) throws LoadingException {
         Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
                 .build();
@@ -176,12 +176,9 @@ public class DriveStorage implements Storage {
                     break;
                 }
             }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new LoadingException(e);
         }
-
         if (driveFile != null) {
             System.out.println("Deleted" + driveFile.getDriveId().toString());
             mDriveResourceClient.delete(driveFile);
