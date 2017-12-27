@@ -140,11 +140,9 @@ public class ConnectedGraph {
                 new LinearSystem<>(m);
 
         for (Vertex node : vertices) {
-            System.out.println(node);
             system.addEquation(node.getEquation(variables));
         }
         for (Cycle cycle : cycles) {
-            System.out.println(cycle);
             system.addEquation(cycle.getEquation(variables));
         }
 

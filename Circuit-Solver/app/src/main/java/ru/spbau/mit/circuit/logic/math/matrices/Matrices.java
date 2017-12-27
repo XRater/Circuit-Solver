@@ -1,12 +1,14 @@
 package ru.spbau.mit.circuit.logic.math.matrices;
 
 
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Field;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.functions.Functions;
+import ru.spbau.mit.circuit.logic.math.linearContainers.Polynom;
 
 /**
  * Class to create different kinds of matrices.
@@ -73,7 +75,7 @@ public class Matrices {
     /**
      * The method takes Function matrix and integrates every cell of it.
      *
-     * @param matrix matrix to intergare.
+     * @param matrix matrix to integrate.
      */
     public static Matrix<Function> integrate(Matrix<Function> matrix) {
         Matrix<Function> answer = new Matrix<>(matrix.n(), matrix.m(), functionZero);
@@ -83,5 +85,24 @@ public class Matrices {
             }
         }
         return answer;
+    }
+
+    public static Matrix<Function> applyInPolynom(RealMatrix matrix, Polynom<Function> polynom) {
+        int n = matrix.getRowDimension();
+        RealMatrix power = new Array2DRowRealMatrix(matrix.getRowDimension(), matrix
+                .getColumnDimension());
+        for (int i = 0; i < n; i++) {
+            power.setEntry(i, i, 1);
+        }
+        Matrix<Function> ans = Matrices.identityMatix(n, functionZero);
+        for (int i = 0; i < polynom.monoms().size(); i++) {
+            double begin = System.currentTimeMillis();
+            ans = ans.add(Matrices.getFunctionMatrix(power).multiplyConstant(polynom.monoms().get
+                    (i)));
+            double end = System.currentTimeMillis();
+            System.out.println("Time: " + (end - begin));
+            power = matrix.multiply(power);
+        }
+        return ans;
     }
 }

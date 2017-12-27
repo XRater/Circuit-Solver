@@ -139,6 +139,7 @@ public class Solver {
             constantsSystem.addEquation(eq);
         }
 
+        System.out.println("SOLVED");
         constantsSystem.solve();
         for (int i = 0; i < n; i++) {
             Numerical constant = constantsSystem.get(i).constant();

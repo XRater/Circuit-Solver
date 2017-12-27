@@ -3,12 +3,15 @@ package ru.spbau.mit.circuit.logic.math.functions;
 
 public class PolyFunctions {
 
+    private static final PolyFunction zero = PolyFunctions.constant(0);
+    private static final PolyFunction identity = PolyFunctions.constant(1);
+
     public static PolyFunction zero() {
-        return new PolyFunction(new PolyExponent(0, 0, 0));
+        return zero;
     }
 
     public static PolyFunction identity() {
-        return new PolyFunction(new PolyExponent(1, 0, 0));
+        return identity;
     }
 
     public static PolyFunction constant(double value) {

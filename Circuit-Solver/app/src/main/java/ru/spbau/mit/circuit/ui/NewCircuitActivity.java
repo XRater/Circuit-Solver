@@ -16,6 +16,7 @@ import android.widget.Toast;
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
+import ru.spbau.mit.circuit.logic.ToHardException;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
@@ -31,7 +32,8 @@ import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
 
-    private static DrawableModel drawableModel; // static because after turning the screen onCrate is called.
+    private static DrawableModel drawableModel; // static because after turning the screen
+    // onCrate is called.
     public Drawable chosen;
     private Drawer drawer;
     private int startX, startY;
@@ -83,6 +85,10 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
             } catch (CircuitShortingException e) {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Battery is shorted.", Toast.LENGTH_SHORT);
+                toast.show();
+            } catch (ToHardException e) {
+                Toast toast = Toast.makeText(getApplicationContext(),
+                        "Unsupported circuit.", Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
