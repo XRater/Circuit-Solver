@@ -4,6 +4,7 @@ package ru.spbau.mit.circuit.logic.math.matrices.matrixExponent;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.functions.Functions;
 import ru.spbau.mit.circuit.logic.math.linearContainers.Polynom;
@@ -28,9 +30,22 @@ public class MatrixExponent {
     private static final Function functionZero = Functions.zero();
 
     public static Matrix<Function> matrixExponent(RealMatrix matrix) {
+        System.out.println("Matrix:");
+        print(matrix);
         Map<Complex, Integer> roots = getEigenValues(matrix);
+
+        double begin = System.currentTimeMillis();
+        System.out.println("Making Polynom");
         Polynom<Function> polynom = buildVariablePolynom(roots);
-        return polynom.evaluate(Matrices.getFunctionMatrix(matrix));
+        System.out.println(polynom);
+        double end = System.currentTimeMillis();
+        System.out.println((end - begin) + "Applying to matrix");
+        begin = System.currentTimeMillis();
+//        Matrix<Function> matrix1 = Matrices.applyInPolynom(matrix, polynom);
+        Matrix<Function> matrix1 = polynom.evaluate(Matrices.getFunctionMatrix(matrix));
+        end = System.currentTimeMillis();
+        System.out.println(end - begin);
+        return matrix1;
     }
 
     @NonNull
@@ -89,4 +104,33 @@ public class MatrixExponent {
         }
         return ans;
     }
+
+
+    static void print(RealMatrix matrix) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < matrix.getRowDimension(); i++) {
+            for (int j = 0; j < matrix.getColumnDimension(); j++) {
+                sb.append(matrix.getEntry(i, j)).append(' ');
+            }
+            sb.append('\n');
+        }
+        System.out.println(sb.toString());
+    }
+
+    public static void main(String[] args) {
+
+        RealMatrix m = new Array2DRowRealMatrix(1000, 1000);
+        double begin = System.currentTimeMillis();
+        m.multiply(m);
+        double end = System.currentTimeMillis();
+        System.out.println(end - begin);
+
+        Matrix<Numerical> matrix = new Matrix<>(1000, 1000, Numerical.zero());
+        begin = System.currentTimeMillis();
+        matrix.multiply(matrix);
+        end = System.currentTimeMillis();
+
+        System.out.println(end - begin);
+    }
+
 }

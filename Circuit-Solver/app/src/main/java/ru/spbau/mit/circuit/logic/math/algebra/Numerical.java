@@ -7,8 +7,11 @@ import ru.spbau.mit.circuit.logic.math.algebra.exceptions.IllegalInverseExceptio
 
 public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical> {
 
+    private static final Numerical zero = Numerical.number(0);
+    private static final Numerical identity = Numerical.number(1);
+
     private final Complex value;
-    private final double precision = 0.000001;
+    private final double precision = 0.00000000001;
 
     public static Numerical number(double value) {
         return new Numerical(value);
@@ -19,11 +22,11 @@ public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical>
     }
 
     public static Numerical zero() {
-        return new Numerical(0);
+        return zero;
     }
 
     public static Numerical identity() {
-        return new Numerical(1);
+        return identity;
     }
 
     private Numerical(Complex value) {

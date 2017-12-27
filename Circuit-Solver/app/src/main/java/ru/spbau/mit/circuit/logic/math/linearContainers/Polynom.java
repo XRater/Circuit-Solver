@@ -147,7 +147,10 @@ public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T,
         Matrix<T> power = matrix.getIdentity(matrix.size());
         for (int i = 0; i < monoms.size(); i++) {
             ans = ans.add(power.multiplyConstant(monoms.get(i)));
-            power = power.multiply(matrix);
+            double begin = System.currentTimeMillis();
+            power = matrix.multiply(power);
+            double end = System.currentTimeMillis();
+            System.out.println("Time: " + (end - begin));
         }
         return ans;
     }
@@ -159,5 +162,9 @@ public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T,
             sb.append(' ').append(monoms.get(i)).append("x^").append(i);
         }
         return sb.toString();
+    }
+
+    public ArrayList<T> monoms() {
+        return monoms;
     }
 }

@@ -2,12 +2,15 @@ package ru.spbau.mit.circuit.logic.math.functions;
 
 public class Functions {
 
+    private static Function zero = Functions.constant(0);
+    private static Function identity = Functions.constant(1);
+
     public static Function zero() {
-        return new Function(PolyFunctions.zero());
+        return zero;
     }
 
     public static Function identity() {
-        return new Function(PolyFunctions.identity());
+        return identity;
     }
 
     public static Function constant(double value) {

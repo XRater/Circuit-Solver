@@ -36,13 +36,20 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
 
     @Override
     public Function add(Function other) {
-        return new Function(up.multiply(other.down).add(other.up.multiply(down)), down.multiply
-                (other.down));
+        PolyFunction nUp = up.multiply(other.down).add(other.up.multiply(down));
+        if (nUp.isZero()) {
+            return Functions.zero();
+        }
+        return new Function(nUp, down.multiply(other.down));
     }
 
     @Override
     public Function multiply(Function other) {
-        return new Function(up.multiply(other.up), down.multiply(other.down));
+        PolyFunction nUp = up.multiply(other.up);
+        if (up.isZero()) {
+            return Functions.zero();
+        }
+        return new Function(nUp, down.multiply(other.down));
     }
 
     @Override

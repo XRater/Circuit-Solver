@@ -16,11 +16,14 @@ import ru.spbau.mit.circuit.logic.math.functions.exceptions.IllegalFunctionTrans
 public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponent>,
         Linear<Numerical, PolyExponent> {
 
-    private static final int precision = 2;
+    private static final int scale = 20;
+    private static final double precision = 0.0000001;
 
     private final double cf;
     private final int mPow;
-    private double ePow;
+    private final double ePow;
+
+    private int hashCode;
 
     PolyExponent(double cf, int mPow, double ePow) {
         this.cf = cf;
@@ -120,12 +123,12 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
             return String.valueOf(Math.round(d));
         }
         BigDecimal decimal = new BigDecimal(d);
-        decimal = decimal.setScale(precision, RoundingMode.HALF_EVEN);
+        decimal = decimal.setScale(scale, RoundingMode.HALF_EVEN);
         return decimal.toString();
     }
 
     private boolean isEquals(double x, double y) {
-        return Math.abs(x - y) < 0.0001;
+        return Math.abs(x - y) < precision;
     }
 
     double doubleValue() {
@@ -172,7 +175,31 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
             return res;
         }
         res += "e^" + writeNumber(ePow) + "t";
-        System.out.println(res);
         return res;
+    }
+
+    @Override
+    public int hashCode() {
+        if (hashCode == -1) {
+            hashCode = getHashCode();
+        }
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof PolyExponent) {
+            PolyExponent exponent = (PolyExponent) obj;
+            return exponent.mPow == mPow &&
+                    isEquals(ePow, exponent.ePow) && isEquals(cf, exponent.cf);
+        }
+        return false;
+    }
+
+    public int getHashCode() {
+        // Speedable
+        return mPow +
+                new BigDecimal(ePow).setScale(10, BigDecimal.ROUND_HALF_DOWN).hashCode() +
+                new BigDecimal(cf).setScale(10, BigDecimal.ROUND_HALF_DOWN).hashCode();
     }
 }

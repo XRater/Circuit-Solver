@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
+import ru.spbau.mit.circuit.logic.ToHardException;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.elements.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
@@ -54,7 +55,7 @@ public class Controller {
         return model;
     }
 
-    public void calculateCurrents() throws CircuitShortingException {
+    public void calculateCurrents() throws CircuitShortingException, ToHardException {
         logic.calculateCurrents(model);
     }
 
