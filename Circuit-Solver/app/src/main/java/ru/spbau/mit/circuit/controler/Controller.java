@@ -14,6 +14,7 @@ import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.storage.Converter;
+import ru.spbau.mit.circuit.storage.LoadingException;
 import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
 
@@ -33,8 +34,12 @@ public class Controller {
         this.activity = activity;
     }
 
-    public static void removeFromStrorage(Converter.Mode mode, String name) {
-        Converter
+    public void removeFromStorage(Converter.Mode mode, String name) {
+        try {
+            converter.delete(mode, name);
+        } catch (LoadingException e) {
+            e.printStackTrace(); // I dont understand what it means.
+        }
     }
 
     public Logic getLogic() {
@@ -120,5 +125,4 @@ public class Controller {
         Intent intent = new Intent(activity.getApplicationContext(), NewCircuitActivity.class);
         activity.startActivity(intent);
     }
-
 }

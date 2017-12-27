@@ -54,7 +54,6 @@ public class Local implements Storage {
         if (c.moveToFirst()) {
             int nameColIndex = c.getColumnIndex("name");
             int modelColIndex = c.getColumnIndex("model");
-
             do {
                 if (c.getString(nameColIndex).equals(name)) {
                     return new ByteArrayInputStream(c.getBlob(modelColIndex));
@@ -68,7 +67,8 @@ public class Local implements Storage {
 
     @Override
     public void delete(String name) {
-
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //db.delete("mytable", name, null);
+        db.execSQL("DELETE FROM " + "mytable" + " WHERE " + "name" + "='" + name + "'");
     }
-
 }
