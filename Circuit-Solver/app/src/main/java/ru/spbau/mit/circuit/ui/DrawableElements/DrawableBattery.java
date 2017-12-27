@@ -1,12 +1,14 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import ru.spbau.mit.circuit.model.elements.Battery;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableNode;
 import ru.spbau.mit.circuit.ui.Drawer;
 
+import static ru.spbau.mit.circuit.ui.Drawer.CELL_SIZE;
 import static ru.spbau.mit.circuit.ui.Drawer.NODE_RADIUS;
 import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
 
@@ -24,6 +26,10 @@ public class DrawableBattery extends Battery implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        String r = String.format("%.2f", getCharacteristicValue()) + "V";
+        Rect rSize = new Rect();
+        Drawer.ELEMENTS_PAINT.getTextBounds(r, 0, r.length(), rSize);
+
         canvas.save();
         if (!isHorizontal()) {
             canvas.translate(x() + Drawer.getOffsetX(), y() + Drawer.getOffsetY());
@@ -47,10 +53,11 @@ public class DrawableBattery extends Battery implements Drawable {
                     Drawer.CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
         }
 
+        canvas.drawText(r, x() - rSize.width() / 2, y() + CELL_SIZE, Drawer.ELEMENTS_PAINT);
+
         canvas.restore();
 
         canvas.drawCircle(from.x(), from.y(), NODE_RADIUS, WIRE_PAINT);
         canvas.drawCircle(to.x(), to.y(), NODE_RADIUS, WIRE_PAINT);
     }
 }
-

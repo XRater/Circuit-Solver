@@ -33,8 +33,6 @@ public class Controller {
         model = new Model(this);
         converter = new Converter(activity);
         this.activity = activity;
-//        localStorage = new Local(activity);
-//        driveStorage = new DriveStorage();
     }
 
     public Logic getLogic() {
@@ -48,10 +46,6 @@ public class Controller {
     public Model getModel() {
         return model;
     }
-
-    //public void updateView() {
-    //    ui.load(model);
-    //}
 
     public void calculateCurrents() throws CircuitShortingException {
         logic.calculateCurrents(model);
@@ -82,11 +76,9 @@ public class Controller {
         model.clear();
     }
 
-
     public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
         ui.deleteUnnecessaryNode(common, first, second);
     }
-
 
     public boolean save(Converter.Mode mode, String filename) {
         try {

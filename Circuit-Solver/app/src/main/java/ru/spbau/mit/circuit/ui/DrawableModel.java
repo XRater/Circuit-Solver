@@ -479,6 +479,7 @@ public class DrawableModel {
 
     public void addRealNode(DrawableNode node) {
         realNodes.add(node);
+        addNewObjectPosition(node);
     }
 
     public void loadElement(Drawable element) {
@@ -502,7 +503,5 @@ public class DrawableModel {
     public void setChosen(Drawable chosen) {
         this.chosen = chosen;
         redraw();
-
-
     }
 }

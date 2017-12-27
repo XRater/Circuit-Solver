@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import ru.spbau.mit.circuit.model.elements.Capacitor;
 import ru.spbau.mit.circuit.model.node.Point;
@@ -24,6 +25,10 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
+        String r = String.format("%.2f", getCharacteristicValue()) + "F";
+        Rect rSize = new Rect();
+        Drawer.ELEMENTS_PAINT.getTextBounds(r, 0, r.length(), rSize);
+
         canvas.save();
         if (!isHorizontal()) {
             canvas.translate(x() + Drawer.getOffsetX(), y() + Drawer.getOffsetY());
@@ -32,14 +37,16 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
         }
 
 
-        canvas.drawLine(x() - CELL_SIZE * 2, y(), x() - CELL_SIZE / 2, y(),
+        canvas.drawLine(x() - CELL_SIZE * 2, y(), x() - CELL_SIZE / 4, y(),
                 Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 2, y(),
+        canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 4, y(),
                 Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() - Drawer.CELL_SIZE / 2, y() - Drawer.CELL_SIZE * 3 / 4, x() - Drawer.CELL_SIZE
-                / 2, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() + Drawer.CELL_SIZE / 2, y() - Drawer.CELL_SIZE * 3 / 4, x() + Drawer.CELL_SIZE
-                / 2, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() - Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() - Drawer.CELL_SIZE
+                / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() + Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() + Drawer.CELL_SIZE
+                / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+
+        canvas.drawText(r, x() - rSize.width() / 2, y() + CELL_SIZE, Drawer.ELEMENTS_PAINT);
 
 
         canvas.restore();
