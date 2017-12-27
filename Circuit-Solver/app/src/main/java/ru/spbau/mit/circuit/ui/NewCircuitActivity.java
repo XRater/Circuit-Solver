@@ -11,12 +11,15 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.ToHardException;
+import ru.spbau.mit.circuit.model.elements.Capacitor;
 import ru.spbau.mit.circuit.model.elements.Element;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
@@ -110,22 +113,63 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         changeValue.setOnClickListener(v -> {
             Element element = (Element) chosen;
             final EditText taskEditText = new EditText(this);
+            final EditText taskEditVoltage = new EditText(this);
             taskEditText.setText(String.valueOf(element.getCharacteristicValue()));
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("Change " + element.getCharacteristicName())
-                    .setView(taskEditText)
-                    .setPositiveButton("Set new value", (dialog1, which) -> {
-                        String value = String.valueOf(taskEditText.getText());
-                        try {
-                            element.setCharacteristicValue(Double.parseDouble(value));
-                        } catch (NumberFormatException | NullPointerException e2) {
-                            // No info
-                        }
-                        drawableModel.redraw();
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .create();
-            dialog.show();
+
+            if (element instanceof Capacitor) {
+                LinearLayout layout = new LinearLayout(this);
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                final EditText cpField = new EditText(this);
+                final TextView cpName = new TextView(this);
+                cpName.setText("Capacity");
+
+                layout.addView(cpName);
+                cpField.setText(String.valueOf(element.getCharacteristicValue()));
+                layout.addView(cpField);
+
+                final TextView voltageName = new TextView(this);
+                voltageName.setText("Voltage");
+                layout.addView(voltageName);
+
+                final EditText voltageField = new EditText(this);
+                voltageField.setText(String.valueOf(element.getVoltage()));
+                layout.addView(voltageField);
+
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle("Change capacity and voltage")
+                        .setView(layout)
+                        .setPositiveButton("Set new values", (dialog1, which) -> {
+                            String cp = String.valueOf(cpField.getText());
+                            String voltage = String.valueOf(voltageField.getText());
+                            try {
+                                element.setCharacteristicValue(Double.parseDouble(cp));
+                                element.setVoltage(Double.parseDouble(voltage));
+                            } catch (NumberFormatException | NullPointerException e2) {
+                                // No info
+                            }
+                            drawableModel.redraw();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle("Change " + element.getCharacteristicName())
+                        .setView(taskEditText)
+                        .setPositiveButton("Set new value", (dialog1, which) -> {
+                            String value = String.valueOf(taskEditText.getText());
+                            try {
+                                element.setCharacteristicValue(Double.parseDouble(value));
+                            } catch (NumberFormatException | NullPointerException e2) {
+                                // No info
+                            }
+                            drawableModel.redraw();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .create();
+                dialog.show();
+            }
         });
 
         rotate = findViewById(R.id.rotate);
