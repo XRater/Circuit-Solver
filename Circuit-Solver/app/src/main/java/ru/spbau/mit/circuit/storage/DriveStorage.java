@@ -157,4 +157,34 @@ public class DriveStorage implements Storage {
 
         return stream;
     }
+
+    @Override
+    public void delete(String filename) {
+        Query query = new Query.Builder()
+                .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
+                .build();
+
+        Task<MetadataBuffer> queryTask = mDriveResourceClient.query(query);
+
+        DriveFile driveFile = null;
+        try {
+            Tasks.await(queryTask);
+            for (Metadata metadata : queryTask.getResult()) {
+                if (metadata.getTitle().equals(filename)) {
+                    DriveId driveId = metadata.getDriveId();
+                    driveFile = driveId.asDriveFile();
+                    break;
+                }
+            }
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if (driveFile != null) {
+            System.out.println("Deleted" + driveFile.getDriveId().toString());
+            mDriveResourceClient.delete(driveFile);
+        }
+    }
 }

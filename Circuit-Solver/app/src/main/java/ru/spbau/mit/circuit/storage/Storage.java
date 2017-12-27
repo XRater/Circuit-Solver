@@ -13,4 +13,6 @@ public interface Storage {
 
     ByteArrayInputStream load(String name);
 
+    void delete(String name);
+
 }
