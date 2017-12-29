@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
 
+@SuppressWarnings("WeakerAccess")
 public class PolyFunctions {
 
     private static final PolyFunction zero = PolyFunctions.constant(0);
