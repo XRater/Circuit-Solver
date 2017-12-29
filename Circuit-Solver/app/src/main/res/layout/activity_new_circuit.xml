@@ -20,7 +20,7 @@
         android:layout_marginTop="3dp"
         android:background="@drawable/battery" />
 
-    <ru.spbau.mit.circuit.ui.MySquareImageButton
+    <Button
         android:id="@+id/newResistor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

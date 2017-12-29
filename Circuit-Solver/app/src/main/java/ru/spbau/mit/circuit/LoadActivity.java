@@ -42,20 +42,18 @@ public class LoadActivity extends Activity {
             dialog.show();
         });
 
-
         local.setOnClickListener(v -> {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_activated_1, MainActivity.ui.getCircuits(Converter
-                    .Mode.LOCAL));
+                    android.R.layout.simple_list_item_activated_1, MainActivity.ui.getCircuits(
+                    Converter.Mode.LOCAL));
             names.setAdapter(adapter);
             mode = Converter.Mode.LOCAL;
         });
 
-
         drive.setOnClickListener(v -> {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_activated_1, MainActivity.ui.getCircuits(Converter
-                    .Mode.DRIVE));
+                    android.R.layout.simple_list_item_activated_1, MainActivity.ui.getCircuits(
+                    Converter.Mode.DRIVE));
             names.setAdapter(adapter);
             mode = Converter.Mode.DRIVE;
         });

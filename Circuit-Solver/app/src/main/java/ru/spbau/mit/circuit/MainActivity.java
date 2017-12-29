@@ -37,11 +37,18 @@ import ru.spbau.mit.circuit.ui.UI;
 
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_SIGN_IN = 0;
-
+    /**
+     * Request code for the Drive picker
+     */
+    protected static final int REQUEST_CODE_OPEN_ITEM = 1;
+    private static final String TAG = "BaseDriveActivity";
     public static UI ui;
     private static Controller controller;
-
     private DriveStorage driverStorage;
+    /**
+     * Tracks completion of the drive picker
+     */
+    private TaskCompletionSource<DriveId> mOpenItemTaskSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +70,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void onSettings(View view) {
-//        Toast toast = Toast.makeText(getApplicationContext(),
-//                "Settings", Toast.LENGTH_SHORT);
-//        toast.show();
-
-    }
+//--------------------------------------------------------------------------------------------
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -119,20 +121,6 @@ public class MainActivity extends AppCompatActivity {
         this.driverStorage = storage;
         signInForDrive();
     }
-
-//--------------------------------------------------------------------------------------------
-
-    private static final String TAG = "BaseDriveActivity";
-
-    /**
-     * Request code for the Drive picker
-     */
-    protected static final int REQUEST_CODE_OPEN_ITEM = 1;
-
-    /**
-     * Tracks completion of the drive picker
-     */
-    private TaskCompletionSource<DriveId> mOpenItemTaskSource;
 
     protected Task<DriveId> pickTextFile() {
         OpenFileActivityOptions openOptions =

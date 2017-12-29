@@ -23,11 +23,11 @@ import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
 public class DrawableWire extends Wire implements Drawable {
     private static int dist[][] = new int[FIELD_SIZE][FIELD_SIZE];
     private static Point prev[][] = new Point[FIELD_SIZE][FIELD_SIZE];
+
     private LinkedHashSet<Point> path = new LinkedHashSet<>();
 
     public DrawableWire(DrawableNode from, DrawableNode to) {
         super(from, to);
-//        build();
     }
 
     public static void mergePath(DrawableWire first, DrawableWire second, Node common) {
@@ -54,8 +54,7 @@ public class DrawableWire extends Wire implements Drawable {
         Point prev = null;
         for (Point nxt : path) {
             if (prev != null) {
-                canvas.drawLine(prev.x(), prev.y(),
-                        nxt.x(), nxt.y(), WIRE_PAINT);
+                canvas.drawLine(prev.x(), prev.y(), nxt.x(), nxt.y(), WIRE_PAINT);
             }
             prev = nxt;
         }
@@ -119,7 +118,8 @@ public class DrawableWire extends Wire implements Drawable {
         }
         Point p = new Point(to().x() / CELL_SIZE, to().y() / CELL_SIZE);
         if (prev[p.x()][p.y()] == null) {
-            // FIXME  it must be handled normally
+            // FIXME it must be handled normally
+            // i still dont know how
             return;
         }
         while (!p.equals(start)) {
@@ -158,10 +158,6 @@ public class DrawableWire extends Wire implements Drawable {
 
     public LinkedHashSet<Point> getPath() {
         return path;
-    }
-
-    public void setPath(LinkedHashSet<Point> path) {
-        this.path = path;
     }
 
     public void clearPath() {

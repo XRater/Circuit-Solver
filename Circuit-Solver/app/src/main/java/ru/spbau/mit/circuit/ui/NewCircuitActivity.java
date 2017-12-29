@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +20,6 @@ import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.ToHardException;
 import ru.spbau.mit.circuit.model.elements.Capacitor;
 import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.storage.Converter;
@@ -38,9 +36,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     private static DrawableModel drawableModel; // static because after turning the screen
     // onCrate is called.
     public Drawable chosen;
-    private Drawer drawer;
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
+
     private Button delete;
     private Button changeValue;
     private Button rotate;
@@ -53,14 +51,14 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         final SurfaceView surface = findViewById(R.id.surface);
         SurfaceHolder surfaceHolder = surface.getHolder();
         surfaceHolder.addCallback(this);
-        drawer = new Drawer(surfaceHolder);
+        Drawer drawer = new Drawer(surfaceHolder);
         if (drawableModel == null) {
             drawableModel = new DrawableModel(this, drawer);
             MainActivity.ui.setDrawableModel(drawableModel);
         } else {
             drawableModel.setDrawer(drawer);
         }
-        ImageButton newResistor = findViewById(R.id.newResistor);
+        Button newResistor = findViewById(R.id.newResistor);
         newResistor.setOnClickListener(view -> {
             DrawableResistor r = new DrawableResistor(drawableModel.getPossiblePosition());
             drawableModel.addElement(r);
@@ -113,20 +111,17 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         changeValue.setOnClickListener(v -> {
             Element element = (Element) chosen;
             final EditText taskEditText = new EditText(this);
-            final EditText taskEditVoltage = new EditText(this);
             taskEditText.setText(String.valueOf(element.getCharacteristicValue()));
 
             if (element instanceof Capacitor) {
                 LinearLayout layout = new LinearLayout(this);
                 layout.setOrientation(LinearLayout.VERTICAL);
 
-                final EditText cpField = new EditText(this);
                 final TextView cpName = new TextView(this);
                 cpName.setText("Capacity");
 
                 layout.addView(cpName);
-                cpField.setText(String.valueOf(element.getCharacteristicValue()));
-                layout.addView(cpField);
+                layout.addView(taskEditText);
 
                 final TextView voltageName = new TextView(this);
                 voltageName.setText("Voltage");
@@ -140,7 +135,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                         .setTitle("Change capacity and voltage")
                         .setView(layout)
                         .setPositiveButton("Set new values", (dialog1, which) -> {
-                            String cp = String.valueOf(cpField.getText());
+                            String cp = String.valueOf(taskEditText.getText());
                             String voltage = String.valueOf(voltageField.getText());
                             try {
                                 element.setCharacteristicValue(Double.parseDouble(cp));
@@ -253,7 +248,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     } else {
                         drawableModel.hold((DrawableNode) chosen);
                     }
-                    //chosen = null;
                     return true;
                 }
 
@@ -276,27 +270,12 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     drawableModel.redraw();
                     return true;
                 }
-                // ??? Node moving
-                if (chosen instanceof Element) {
-                    //Click on Element
-                    Point point = getPoint(motionEvent.getX(), motionEvent.getY());
 
+                if (chosen instanceof Element) {
+                    Point point = getPoint(motionEvent.getX(), motionEvent.getY());
                     drawableModel.move(chosen, point);
                 } else if (chosen instanceof Node) {
-                } else {
-                    //Click on WirePoint
-                }
-                return true;
-            }
-
-            case MotionEvent.ACTION_UP: {
-                if (chosen == null) {
-                    // Move field
-                }
-                if (chosen instanceof CircuitObject) {
-                    // Seems like do nothing
-                } else {
-                    // WirePoint
+                    // May be we should do something.
                 }
                 return true;
             }

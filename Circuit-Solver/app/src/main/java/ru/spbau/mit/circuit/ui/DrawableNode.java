@@ -12,8 +12,6 @@ import static ru.spbau.mit.circuit.ui.Drawer.NODE_RADIUS;
 public class DrawableNode extends Node implements Drawable {
     private boolean realNode = true;
 
-    //private List<DrawableWire> wires = new ArrayList<>();
-
     public DrawableNode(Point point) {
         super(point);
     }
@@ -36,15 +34,11 @@ public class DrawableNode extends Node implements Drawable {
         return realNode;
     }
 
-    public boolean hasZeroWires() {
-        return wires.size() == 0;
-    }
-
-    public void makeReal() {
+    void makeReal() {
         realNode = true;
     }
 
-    public void makeSimple() {
+    void makeSimple() {
         realNode = false;
     }
 
