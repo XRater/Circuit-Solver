@@ -1,6 +1,6 @@
-package ru.spbau.mit.circuit.model.elements;
+package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
-import ru.spbau.mit.circuit.model.node.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 
 public abstract class Capacitor extends Element {
     private double capacity = 1;

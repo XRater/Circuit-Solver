@@ -1,13 +1,15 @@
-package ru.spbau.mit.circuit.model.node;
+package ru.spbau.mit.circuit.model.circuitObjects.nodes;
 
 import java.io.Serializable;
 
+import ru.spbau.mit.circuit.model.circuitObjects.exceptions.InvalidPointException;
 import ru.spbau.mit.circuit.model.interfaces.Centered;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 
 public class Point implements Centered, WireEnd, Serializable {
     private final int x;
     private final int y;
+
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
@@ -28,10 +30,6 @@ public class Point implements Centered, WireEnd, Serializable {
     @Override
     public int y() {
         return y;
-    }
-
-    public boolean isInSquare(float x, float y, float dist) {
-        return Math.abs(this.x - x) < dist && Math.abs(this.y - y) < dist;
     }
 
     @Override

@@ -3,8 +3,8 @@ package ru.spbau.mit.circuit.ui.DrawableElements;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import ru.spbau.mit.circuit.model.elements.Capacitor;
-import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableNode;
 import ru.spbau.mit.circuit.ui.Drawer;
 
@@ -41,9 +41,11 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
                 Drawer.ELEMENTS_PAINT);
         canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 4, y(),
                 Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() - Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() - Drawer.CELL_SIZE
+        canvas.drawLine(x() - Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() - Drawer
+                .CELL_SIZE
                 / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() + Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() + Drawer.CELL_SIZE
+        canvas.drawLine(x() + Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() + Drawer
+                .CELL_SIZE
                 / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
 
         canvas.drawText(r, x() - rSize.width() / 2, y() + CELL_SIZE / 4 * 5, Drawer.ELEMENTS_PAINT);

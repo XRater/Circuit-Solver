@@ -2,8 +2,8 @@ package ru.spbau.mit.circuit.ui;
 
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
+import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 

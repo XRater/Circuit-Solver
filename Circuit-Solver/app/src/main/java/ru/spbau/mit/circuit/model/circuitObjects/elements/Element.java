@@ -1,13 +1,22 @@
-package ru.spbau.mit.circuit.model.elements;
+package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
 
 import java.io.Serializable;
 
+import ru.spbau.mit.circuit.model.circuitObjects.Item;
+import ru.spbau.mit.circuit.model.circuitObjects.exceptions.InvalidElementException;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.model.interfaces.Movable;
-import ru.spbau.mit.circuit.model.node.Node;
-import ru.spbau.mit.circuit.model.node.Point;
 
-abstract public class Element extends Item implements Movable, Serializable {
+/**
+ * Base class for all elements. Has two nodes on the ends. End nodes cannot be changed.
+ * <p>
+ * Element may be easily replaced.
+ * <p>
+ * All elements must be abstract, therefore there is no way to create element inside model package.
+ */
+public abstract class Element extends Item implements Movable, Serializable {
 
     protected final Node from;
     protected final Node to;
@@ -29,6 +38,12 @@ abstract public class Element extends Item implements Movable, Serializable {
         return center;
     }
 
+    abstract public String getCharacteristicName();
+
+    abstract public double getCharacteristicValue();
+
+    abstract public void setCharacteristicValue(double value);
+
     @Override
     public int x() {
         return center.x();
@@ -46,6 +61,7 @@ abstract public class Element extends Item implements Movable, Serializable {
         center = getCenter();
     }
 
+    // some getters
     public Node from() {
         return from;
     }
@@ -54,16 +70,8 @@ abstract public class Element extends Item implements Movable, Serializable {
         return to;
     }
 
-    public void rotate() {
-        from.replace(new Point(center.x() + (center.y() - from.y()),
-                center.y() + (from.x() - center.x())));
-        to.replace(new Point(center.x() + (center.y() - to.y()),
-                center.y() + (to.x() - center.x())));
-        //TODO
-    }
-
-    public void flip() {
-        //TODO
+    private Point getCenter() {
+        return Point.getCenter(from.position(), to.position());
     }
 
     public final boolean isVertical() {
@@ -74,6 +82,9 @@ abstract public class Element extends Item implements Movable, Serializable {
         return from.y() == to.y();
     }
 
+    /**
+     * Checks if node is adjacent to the element.
+     */
     public boolean adjacent(Node node) {
         return node == from || node == to;
     }
@@ -82,14 +93,4 @@ abstract public class Element extends Item implements Movable, Serializable {
     public String toString() {
         return "Element:" + from.toString() + ":" + to.toString();
     }
-
-    private Point getCenter() {
-        return Point.getCenter(from.position(), to.position());
-    }
-
-    abstract public String getCharacteristicName();
-
-    abstract public double getCharacteristicValue();
-
-    abstract public void setCharacteristicValue(double value);
 }

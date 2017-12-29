@@ -4,10 +4,10 @@ package ru.spbau.mit.circuit.logic.graph;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.variables.Derivative;
 import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
-import ru.spbau.mit.circuit.model.elements.Battery;
-import ru.spbau.mit.circuit.model.elements.Capacitor;
-import ru.spbau.mit.circuit.model.elements.Item;
-import ru.spbau.mit.circuit.model.elements.Resistor;
+import ru.spbau.mit.circuit.model.circuitObjects.Item;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Battery;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Resistor;
 
 class Edge {
 

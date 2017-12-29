@@ -3,8 +3,8 @@ package ru.spbau.mit.circuit.ui.DrawableElements;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import ru.spbau.mit.circuit.model.elements.Resistor;
-import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Resistor;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableNode;
 import ru.spbau.mit.circuit.ui.Drawer;
 
