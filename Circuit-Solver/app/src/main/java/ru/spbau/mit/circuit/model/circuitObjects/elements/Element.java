@@ -93,4 +93,11 @@ public abstract class Element extends Item implements Movable, Serializable {
     public String toString() {
         return "Element:" + from.toString() + ":" + to.toString();
     }
+
+    public void rotate() {
+        from.replace(new Point(center.x() + (center.y() - from.y()),
+                center.y() + (from.x() - center.x())));
+        to.replace(new Point(center.x() + (center.y() - to.y()),
+                center.y() + (to.x() - center.x())));
+    }
 }
