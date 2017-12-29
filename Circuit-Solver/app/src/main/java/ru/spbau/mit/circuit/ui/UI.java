@@ -6,10 +6,10 @@ import ru.spbau.mit.circuit.controler.Controller;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.ToHardException;
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
-import ru.spbau.mit.circuit.model.node.Node;
 import ru.spbau.mit.circuit.storage.Converter;
 
 public class UI {

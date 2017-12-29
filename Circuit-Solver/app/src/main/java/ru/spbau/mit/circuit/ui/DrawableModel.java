@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.Set;
 
 import ru.spbau.mit.circuit.MainActivity;
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
+import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
-import ru.spbau.mit.circuit.model.node.Node;
-import ru.spbau.mit.circuit.model.node.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 

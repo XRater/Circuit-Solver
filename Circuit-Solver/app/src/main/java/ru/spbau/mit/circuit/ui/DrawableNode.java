@@ -2,8 +2,8 @@ package ru.spbau.mit.circuit.ui;
 
 import android.graphics.Canvas;
 
-import ru.spbau.mit.circuit.model.node.Node;
-import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 
 import static ru.spbau.mit.circuit.ui.Drawer.ELEMENTS_PAINT;

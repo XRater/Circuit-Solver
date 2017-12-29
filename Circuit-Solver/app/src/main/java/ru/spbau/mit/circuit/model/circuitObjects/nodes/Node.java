@@ -1,21 +1,26 @@
-package ru.spbau.mit.circuit.model.node;
+package ru.spbau.mit.circuit.model.circuitObjects.nodes;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
-import ru.spbau.mit.circuit.model.elements.Wire;
+import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.model.interfaces.Movable;
 import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 import ru.spbau.mit.circuit.model.interfaces.Wireable;
 
 //ATTENTION you may have two different nodes in one point. Do not override hash/equals.
-
 // In fact, in release version all nodes might be different. But right now they are not.
+
+/**
+ * This class represents a point, to which wires are connected.
+ * <p>
+ * It's position may be changed in opposite for point.
+ */
 public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable, Serializable {
 
-    protected Collection<Wire> wires = new HashSet<>();
+    protected Collection<Wire> wires = new LinkedHashSet<>();  // adjacent wires
     protected Point point;
 
     public Node(Point point) {
@@ -27,9 +32,7 @@ public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable,
     }
 
     /**
-     * You may use this in UI/Logic
-     *
-     * @return Collection of adjacent to the node wires.
+     * Returns collection of adjacent to the node wires.
      */
     @Override
     public Collection<Wire> wires() {
@@ -61,6 +64,9 @@ public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable,
     }
 
     // Do not use outside of the package
+    //
+    // There was no way to obey using this method in UI, but allow to us in Model.
+    // Or at least we hadnot found any logical solution
     public void deleteWire(Wire wire) {
         wires.remove(wire);
     }

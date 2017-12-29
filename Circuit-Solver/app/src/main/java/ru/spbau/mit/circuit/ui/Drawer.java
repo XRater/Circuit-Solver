@@ -7,8 +7,8 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 

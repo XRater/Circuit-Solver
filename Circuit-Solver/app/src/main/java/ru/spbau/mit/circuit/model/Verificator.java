@@ -6,18 +6,65 @@ import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
 
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.elements.Wire;
-import ru.spbau.mit.circuit.model.node.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 
-public class Verificator {
-    private Model model;
+
+/**
+ * This class is used to verify model invariants, such as "no more the one wire between two nodes"
+ * and "every node degree must be at least 3".
+ */
+class Verificator {
+
+    private Model model; // model to verify
 
     Verificator(Model model) {
         this.model = model;
     }
 
-    public boolean oneWire(Node from, Node to) {
+    /**
+     * @param wire checks if wire connects two nodes, which are already connected.
+     * @return true if end-nodes are already connected and false otherwise.
+     */
+    boolean wireExists(Wire wire) {
+        return oneWire(wire.from(), wire.to());
+    }
+
+    /**
+     * The method checks if node has no adjacent to it wires and elements, thus it can be deleted.
+     *
+     * @param node node to check
+     * @return true if node is isolated and false otherwise.
+     */
+    boolean isIsolated(Node node) {
+        return node.wires().size() == 0;
+    }
+
+    /**
+     * The method finds node with wire degree less then three.
+     *
+     * @return node with wire degree equals to two and null if there was not any.
+     */
+    Node findUnnecessaryNode() {
+        for (Node node : model.nodes()) {
+            if (node.wires().size() != 2) {
+                continue;
+            }
+            boolean elementEnd = false;
+            for (Element element : model.elements()) {
+                if (element.adjacent(node)) {
+                    elementEnd = true;
+                }
+            }
+            if (!elementEnd) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    private boolean oneWire(Node from, Node to) {
         Queue<Node> queue = new ArrayDeque<>();
         queue.add(from);
         Set<Node> visited = new HashSet<>();
@@ -37,48 +84,5 @@ public class Verificator {
             }
         }
         return false;
-    }
-
-    public boolean wireExists(Wire wire) {
-        return oneWire(wire.from(), wire.to());
-    }
-
-    public boolean isolated(Node node) {
-        for (Element element : model.elements()) {
-            if (element.adjacent(node)) {
-                return false;
-            }
-        }
-        for (Wire wire : model.wires()) {
-            if (wire.adjacent(node)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public Node findUnnecessaryNode() {
-        for (Node node : model.nodes()) {
-            if (node.wires().size() != 2) {
-                continue;
-            }
-            boolean elementEnd = false;
-            for (Element element : model.elements()) {
-                if (element.adjacent(node)) {
-                    elementEnd = true;
-                }
-            }
-            if (!elementEnd) {
-                return node;
-            }
-        }
-        return null;
-    }
-
-    public boolean verify() {
-        if (findUnnecessaryNode() != null) {
-            return false;
-        }
-        return true;
     }
 }

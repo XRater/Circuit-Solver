@@ -10,20 +10,50 @@ import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.storage.LoadingException;
 
+/**
+ * This class stores some tasks to work with converter. Every task is AsyncTask which will be called
+ * in another thread, therefore MainActivity thread will not be paused.
+ * <p>
+ * Class has number of inner tasks and and static fabric methods to create them.
+ * <p>
+ * Every task requires converter and mode to work with.
+ */
 class Tasks {
 
-    static LoadTask loadTask(Converter.Mode mode, Converter converter) {
-        return new LoadTask(mode, converter);
-    }
+    //FIXME handle exceptions!
 
-    static GetCircuitsTask getCircuitsTask(Converter.Mode mode, Converter converter) {
-        return new GetCircuitsTask(mode, converter);
-    }
-
+    /**
+     * The method takes model as an argument.
+     * <p>
+     * Returned task saves circuit, represented by model, to the storage.
+     * <p>
+     * Requires target file name to execute.
+     */
     static SaveTask saveTask(Converter.Mode mode, Converter converter, Model model) {
         return new SaveTask(mode, converter, model);
     }
 
+    /**
+     * Returned task returns all saved circuits from the storage.
+     */
+    static GetCircuitsTask getCircuitsTask(Converter.Mode mode, Converter converter) {
+        return new GetCircuitsTask(mode, converter);
+    }
+
+    /**
+     * Returned task loads circuit from the storage.
+     * <p>
+     * Requires target file name to execute.
+     */
+    static LoadTask loadTask(Converter.Mode mode, Converter converter) {
+        return new LoadTask(mode, converter);
+    }
+
+    /**
+     * Returned task deletes circuit from the storage.
+     * <p>
+     * Requires target filename to execute.
+     */
     static DeleteTask deleteTask(Converter.Mode mode, Converter converter) {
         return new DeleteTask(mode, converter);
     }

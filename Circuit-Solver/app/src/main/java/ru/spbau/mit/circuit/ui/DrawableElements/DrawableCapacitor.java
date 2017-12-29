@@ -3,8 +3,8 @@ package ru.spbau.mit.circuit.ui.DrawableElements;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import ru.spbau.mit.circuit.model.elements.Capacitor;
-import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableNode;
 import ru.spbau.mit.circuit.ui.Drawer;
 
@@ -35,7 +35,6 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
             canvas.rotate(90);
             canvas.translate(-x() - Drawer.getOffsetX(), -y() - Drawer.getOffsetY());
         }
-
 
         canvas.drawLine(x() - CELL_SIZE * 2, y(), x() - CELL_SIZE / 4, y(),
                 Drawer.ELEMENTS_PAINT);

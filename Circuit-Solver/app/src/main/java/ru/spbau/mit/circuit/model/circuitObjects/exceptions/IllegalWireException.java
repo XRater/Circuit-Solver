@@ -1,7 +1,8 @@
-package ru.spbau.mit.circuit.model.elements;
+package ru.spbau.mit.circuit.model.circuitObjects.exceptions;
 
 
 public class IllegalWireException extends RuntimeException {
+    @SuppressWarnings("unused")
     public IllegalWireException() {
         super();
     }

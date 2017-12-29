@@ -9,10 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.elements.Wire;
-import ru.spbau.mit.circuit.model.node.Node;
-import ru.spbau.mit.circuit.model.node.Point;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
+import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 import ru.spbau.mit.circuit.ui.DrawableModel;
 import ru.spbau.mit.circuit.ui.DrawableNode;
 
@@ -131,8 +131,9 @@ public class DrawableWire extends Wire implements Drawable {
 
     private boolean canGo(Point point) {
         Drawable drawable = DrawableModel.getByPoint(point);
-        if (drawable instanceof Element)
+        if (drawable instanceof Element) {
             return false;
+        }
         if (drawable instanceof DrawableNode) {
             DrawableNode node = (DrawableNode) drawable;
             if (!node.position().equals(to().position()) && node.isRealNode()) {

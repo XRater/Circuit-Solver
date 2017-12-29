@@ -1,6 +1,6 @@
-package ru.spbau.mit.circuit.model.elements;
+package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
-import ru.spbau.mit.circuit.model.node.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 
 public abstract class Resistor extends Element {
     private double resistance = 1;
@@ -9,6 +9,7 @@ public abstract class Resistor extends Element {
         super(from, to);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public double getResistance() {
         return resistance;
     }

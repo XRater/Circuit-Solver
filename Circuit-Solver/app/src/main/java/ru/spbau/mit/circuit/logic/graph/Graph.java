@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.elements.Item;
-import ru.spbau.mit.circuit.model.elements.Wire;
-import ru.spbau.mit.circuit.model.node.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.Item;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 
 /**
  * Graph representation of model. May contain more then one component.
