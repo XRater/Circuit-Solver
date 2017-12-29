@@ -3,6 +3,11 @@ package ru.spbau.mit.circuit.logic.math.variables;
 
 import android.support.annotation.NonNull;
 
+/**
+ * Class to work with variables.
+ *
+ * @param <T> type of variable value.
+ */
 abstract public class Variable<T> implements Comparable<Variable<T>> {
 
     protected final int id;
@@ -13,11 +18,13 @@ abstract public class Variable<T> implements Comparable<Variable<T>> {
         this.id = Numerator.nextId();
     }
 
-    public Variable() {
+    @SuppressWarnings("WeakerAccess")
+    protected Variable() {
         name = "";
     }
 
-    public Variable(String name) {
+    @SuppressWarnings("WeakerAccess")
+    protected Variable(String name) {
         this.name = name;
     }
 
@@ -41,5 +48,13 @@ abstract public class Variable<T> implements Comparable<Variable<T>> {
     @Override
     public int compareTo(@NonNull Variable o) {
         return id - o.id;
+    }
+
+    @Override
+    public String toString() {
+        if (name.equals("")) {
+            return "x" + id;
+        }
+        return name;
     }
 }

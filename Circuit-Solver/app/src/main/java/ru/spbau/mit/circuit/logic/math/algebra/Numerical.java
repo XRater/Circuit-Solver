@@ -5,12 +5,14 @@ import org.apache.commons.math3.complex.Complex;
 
 import ru.spbau.mit.circuit.logic.math.algebra.exceptions.IllegalInverseException;
 
+@SuppressWarnings("WeakerAccess")
 public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical> {
 
     private static final Numerical zero = Numerical.number(0);
     private static final Numerical identity = Numerical.number(1);
 
     private final Complex value;
+    @SuppressWarnings("FieldCanBeLocal")
     private final double precision = 0.00000000001;
 
     public static Numerical number(double value) {

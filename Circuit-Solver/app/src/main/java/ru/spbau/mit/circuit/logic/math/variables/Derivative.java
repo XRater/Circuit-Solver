@@ -15,10 +15,16 @@ public class Derivative extends FunctionVariable {
         return parent;
     }
 
+    /**
+     * Sets values as a result of differentiation of the parent function.
+     */
     public void setValue() {
         value = parent.value.differentiate();
     }
 
+    /**
+     * You may not set derivative value by yourself. Use setValue() method instead.
+     */
     @Override
     public void setValue(Function f) {
         throw new UnsupportedOperationException();

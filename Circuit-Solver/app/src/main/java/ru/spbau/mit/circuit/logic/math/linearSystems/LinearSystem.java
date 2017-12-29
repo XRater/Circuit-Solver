@@ -9,9 +9,11 @@ import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantE
 
 
 /**
+ * Linear system. Has one public method, which represents Gauss algorithm.
+ *
  * @param <C> type of coefficients
- * @param <T> type of right side
- * @param <U> type of left side
+ * @param <T> type of the left side of equation
+ * @param <U> type of the right side of the equation
  */
 public class LinearSystem<
         C extends Field<C>,
@@ -41,19 +43,27 @@ public class LinearSystem<
         return equations.get(index);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public C coefficient(int row, int col) {
         return equations.get(row).coefficientAt(col);
     }
 
-    public void swap(int i, int j) {
+    /**
+     * This method decomposes left side matrix to the diagonal view.
+     * <p>
+     * This method may change initial system (works in place).
+     *
+     * @throws ZeroDeterminantException if matrix was singular.
+     */
+    public void solve() throws ZeroDeterminantException {
+        zeroBottomPart();
+        makeDiagonal();
+    }
+
+    private void swap(int i, int j) {
         Equation<C, T, U> tmp = get(i);
         equations.set(i, get(j));
         equations.set(j, tmp);
-    }
-
-    public void solve() {
-        zeroBottomPart();
-        makeDiagonal();
     }
 
     private void zeroBottomPart() {
@@ -73,7 +83,7 @@ public class LinearSystem<
         }
     }
 
-    private void makeDiagonal() {
+    private void makeDiagonal() throws ZeroDeterminantException {
         for (int i = size() - 1; i >= 0; i--) {
             if (coefficient(i, i).isZero()) {
                 throw new ZeroDeterminantException();

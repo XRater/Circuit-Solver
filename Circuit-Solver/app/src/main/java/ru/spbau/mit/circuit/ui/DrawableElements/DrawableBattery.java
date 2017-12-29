@@ -26,9 +26,9 @@ public class DrawableBattery extends Battery implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        String r = String.format("%.2f", getCharacteristicValue()) + "V";
-        Rect rSize = new Rect();
-        Drawer.ELEMENTS_PAINT.getTextBounds(r, 0, r.length(), rSize);
+        String voltage = String.format("%.2f", getCharacteristicValue()) + "V";
+        Rect voltageSize = new Rect();
+        Drawer.ELEMENTS_PAINT.getTextBounds(voltage, 0, voltage.length(), voltageSize);
 
         canvas.save();
         if (!isHorizontal()) {
@@ -42,18 +42,18 @@ public class DrawableBattery extends Battery implements Drawable {
         canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 3, y(),
                 Drawer.ELEMENTS_PAINT);
         if (from().x() < to.x()) {
-            canvas.drawLine(x() - Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 7, x() - Drawer
-                    .CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 7, Drawer.ELEMENTS_PAINT);
-            canvas.drawLine(x() + Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 4, x() +
-                    Drawer.CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x() - Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 7, x() - Drawer
+                    .CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 7, Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x() + Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() +
+                    Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
         } else {
-            canvas.drawLine(x() + Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 7, x() + Drawer
-                    .CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 7, Drawer.ELEMENTS_PAINT);
-            canvas.drawLine(x() - Drawer.CELL_SIZE / 3, y() - Drawer.CELL_SIZE * 3 / 4, x() -
-                    Drawer.CELL_SIZE / 3, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x() + Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 7,
+                    x() + Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 7, Drawer.ELEMENTS_PAINT);
+            canvas.drawLine(x() - Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() -
+                    Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
         }
 
-        canvas.drawText(r, x() - rSize.width() / 2, y() + CELL_SIZE / 4 * 5, Drawer.ELEMENTS_PAINT);
+        canvas.drawText(voltage, x() - voltageSize.width() / 2, y() + CELL_SIZE / 4 * 5, Drawer.ELEMENTS_PAINT);
 
         canvas.restore();
 
