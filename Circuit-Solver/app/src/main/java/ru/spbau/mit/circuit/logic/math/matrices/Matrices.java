@@ -27,7 +27,7 @@ public class Matrices {
      * @return new identityMatix matrix
      */
     public static <T extends Field<T>> Matrix<T> identityMatix(int size, T zero) {
-        Matrix<T> ans = new Matrix<T>(size, zero);
+        Matrix<T> ans = new Matrix<>(size, zero);
         for (int i = 0; i < size; i++) {
             ans.set(i, i, zero.getIdentity());
         }
@@ -87,6 +87,10 @@ public class Matrices {
         return answer;
     }
 
+    /**
+     * This method was created to speed up apply method of polynom, but it did not work well yet.
+     */
+    @Deprecated
     public static Matrix<Function> applyInPolynom(RealMatrix matrix, Polynom<Function> polynom) {
         int n = matrix.getRowDimension();
         RealMatrix power = new Array2DRowRealMatrix(matrix.getRowDimension(), matrix
@@ -96,11 +100,8 @@ public class Matrices {
         }
         Matrix<Function> ans = Matrices.identityMatix(n, functionZero);
         for (int i = 0; i < polynom.monoms().size(); i++) {
-            double begin = System.currentTimeMillis();
             ans = ans.add(Matrices.getFunctionMatrix(power).multiplyConstant(polynom.monoms().get
                     (i)));
-            double end = System.currentTimeMillis();
-            System.out.println("Time: " + (end - begin));
             power = matrix.multiply(power);
         }
         return ans;

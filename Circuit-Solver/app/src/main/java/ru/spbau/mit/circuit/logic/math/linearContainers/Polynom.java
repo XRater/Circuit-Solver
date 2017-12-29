@@ -11,33 +11,38 @@ import ru.spbau.mit.circuit.logic.math.algebra.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.Linear;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
 
+/**
+ * Polynom class. May use any field class as coefficients.
+ *
+ * @param <C> type of polynom coefficient.
+ */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T, Polynom<T>> {
+public class Polynom<C extends Field<C>> implements Field<Polynom<C>>, Linear<C, Polynom<C>> {
 
-    private final ArrayList<T> monoms = new ArrayList<>();
-    private final T zero;
+    private final ArrayList<C> monoms = new ArrayList<>();
+    private final C zero;
 
-    public Polynom(T zero) {
+    public Polynom(C zero) {
         this.zero = zero;
     }
 
-    public Polynom(T zero, List<T> cfs) {
+    public Polynom(C zero, List<C> cfs) {
         this.zero = zero;
         for (int i = 0; i < cfs.size(); i++) {
             addMonom(i, cfs.get(i));
         }
     }
 
-    public Polynom(Polynom<T> p) {
+    public Polynom(Polynom<C> p) {
         zero = p.zero;
         int index = 0;
-        for (T t : p.monoms) {
-            addMonom(index, t);
+        for (C c : p.monoms) {
+            addMonom(index, c);
             index++;
         }
     }
 
-    private void addMonom(int index, T value) {
+    private void addMonom(int index, C value) {
         while (index >= monoms.size()) {
             monoms.add(zero.getZero());
         }
@@ -45,30 +50,30 @@ public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T,
     }
 
     @Override
-    public Polynom<T> add(Polynom<T> p) {
-        Polynom<T> ans = new Polynom<>(this);
+    public Polynom<C> add(Polynom<C> p) {
+        Polynom<C> ans = new Polynom<>(this);
         int index = 0;
-        for (T t : p.monoms) {
-            ans.addMonom(index, t);
+        for (C c : p.monoms) {
+            ans.addMonom(index, c);
             index++;
         }
         return ans;
     }
 
     @Override
-    public Polynom<T> subtract(Polynom<T> p) {
-        Polynom<T> ans = new Polynom<>(this);
+    public Polynom<C> subtract(Polynom<C> p) {
+        Polynom<C> ans = new Polynom<>(this);
         int index = 0;
-        for (T t : p.monoms) {
-            ans.addMonom(index, t.negate());
+        for (C c : p.monoms) {
+            ans.addMonom(index, c.negate());
             index++;
         }
         return ans;
     }
 
     @Override
-    public Polynom<T> multiply(Polynom<T> p) {
-        Polynom<T> ans = new Polynom<>(zero);
+    public Polynom<C> multiply(Polynom<C> p) {
+        Polynom<C> ans = new Polynom<>(zero);
         for (int i = 0; i < monoms.size(); i++) {
             for (int j = 0; j < p.monoms.size(); j++) {
                 ans.addMonom(i + j, monoms.get(i).multiply(p.monoms.get(j)));
@@ -78,16 +83,16 @@ public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T,
     }
 
     @Override
-    public Polynom<T> negate() {
+    public Polynom<C> negate() {
         return this.multiplyConstant(zero.getIdentity().negate());
     }
 
     @Override
-    public Polynom<T> multiplyConstant(T cf) {
-        Polynom<T> ans = new Polynom<>(this);
+    public Polynom<C> multiplyConstant(C cf) {
+        Polynom<C> ans = new Polynom<>(this);
         int index = 0;
-        for (T t : monoms) {
-            ans.addMonom(index, t.multiply(cf));
+        for (C c : monoms) {
+            ans.addMonom(index, c.multiply(cf));
             index++;
         }
         return ans;
@@ -117,34 +122,34 @@ public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T,
     }
 
     @Override
-    public Polynom<T> getZero() {
+    public Polynom<C> getZero() {
         return new Polynom<>(zero.getZero());
     }
 
     @Override
-    public Polynom<T> getIdentity() {
+    public Polynom<C> getIdentity() {
         return new Polynom<>(zero, Collections.singletonList(zero.getIdentity()));
     }
 
     @Override
-    public Polynom<T> reciprocal() {
+    public Polynom<C> reciprocal() {
         throw new UnsupportedOperationException();
     }
 
-    public T evaluate(T t) {
-        T ans = zero.getZero();
-        T power = zero.getIdentity();
+    public C evaluate(C c) {
+        C ans = zero.getZero();
+        C power = zero.getIdentity();
         for (int i = 0; i < monoms.size(); i++) {
             ans = ans.add(power.multiply(monoms.get(i)));
-            power = power.multiply(t);
+            power = power.multiply(c);
         }
         return ans;
     }
 
     @NonNull
-    public Matrix<T> evaluate(Matrix<T> matrix) {
-        Matrix<T> ans = matrix.getZero(matrix.size());
-        Matrix<T> power = matrix.getIdentity(matrix.size());
+    public Matrix<C> evaluate(Matrix<C> matrix) {
+        Matrix<C> ans = matrix.getZero(matrix.size());
+        Matrix<C> power = matrix.getIdentity(matrix.size());
         for (int i = 0; i < monoms.size(); i++) {
             ans = ans.add(power.multiplyConstant(monoms.get(i)));
             double begin = System.currentTimeMillis();
@@ -164,7 +169,7 @@ public class Polynom<T extends Field<T>> implements Field<Polynom<T>>, Linear<T,
         return sb.toString();
     }
 
-    public ArrayList<T> monoms() {
+    public ArrayList<C> monoms() {
         return monoms;
     }
 }

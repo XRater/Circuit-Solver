@@ -1,5 +1,6 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class Functions {
 
     private static Function zero = Functions.constant(0);
@@ -17,6 +18,7 @@ public class Functions {
         return new Function(PolyFunctions.constant(value));
     }
 
+    @SuppressWarnings("SameParameterValue")
     public static Function power(int mPow) {
         return new Function(PolyFunctions.power(mPow));
     }

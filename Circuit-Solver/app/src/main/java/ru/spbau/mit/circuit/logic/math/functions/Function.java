@@ -10,14 +10,9 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
     private PolyFunction up;
     private PolyFunction down;
 
-    public Function(PolyFunction f) {
+    Function(PolyFunction f) {
         up = f;
         down = PolyFunctions.constant(1);
-    }
-
-    private Function(Function f) {
-        up = f.up;
-        down = f.down;
     }
 
     private Function(PolyFunction up, PolyFunction down) {
@@ -118,6 +113,14 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         return sb.toString();
     }
 
+
+    /**
+     * Evaluates function in point
+     *
+     * @param x point to evaluate in.
+     * @return result, represented as Numerical object
+     */
+    @SuppressWarnings("SameParameterValue")
     public Numerical apply(double x) {
         return up.apply(x).divide(down.apply(x));
     }

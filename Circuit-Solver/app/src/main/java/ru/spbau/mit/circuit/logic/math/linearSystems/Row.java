@@ -7,6 +7,16 @@ import java.util.TreeMap;
 import ru.spbau.mit.circuit.logic.math.algebra.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.Linear;
 
+/**
+ * Linear container that may store any number of elements with their coefficients in the right
+ * order.
+ * <p>
+ * In addition may store one constant value of another linear type.
+ *
+ * @param <C> type of coefficients
+ * @param <T> type of stored data
+ * @param <S> type of constant
+ */
 public class Row<C extends Field<C>, T extends Comparable<? super T>, S extends Linear<C, S>>
         implements Linear<C, Row<C, T, S>> {
 
