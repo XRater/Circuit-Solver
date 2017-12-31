@@ -2,6 +2,8 @@ package ru.spbau.mit.circuit.controler;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -22,13 +24,16 @@ public class Controller {
 
     // FIXME handle exceptions
 
+    @NonNull
     private final Logic logic;
+    @NonNull
     private final UI ui;
+    @NonNull
     private final Converter converter;
     private Model model;
     private Activity activity;
 
-    public Controller(Activity activity) {
+    public Controller(@NonNull Activity activity) {
         logic = new Logic(this);
         ui = new UI(this);
         model = new Model(this);
@@ -36,10 +41,12 @@ public class Controller {
         this.activity = activity;
     }
 
+    @NonNull
     public Logic getLogic() {
         return logic;
     }
 
+    @NonNull
     public UI getUi() {
         return ui;
     }
@@ -56,7 +63,7 @@ public class Controller {
         model.add(object);
     }
 
-    public void addAll(List<CircuitObject> objects) throws NodesAreAlreadyConnected {
+    public void addAll(@NonNull List<CircuitObject> objects) throws NodesAreAlreadyConnected {
         model.addAll(objects);
     }
 
@@ -64,11 +71,11 @@ public class Controller {
         model.remove(object);
     }
 
-    public void removeAll(List<CircuitObject> objects) {
+    public void removeAll(@NonNull List<CircuitObject> objects) {
         model.removeAll(objects);
     }
 
-    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+    public void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject> toBeAdded)
             throws NodesAreAlreadyConnected {
         model.removeThenAdd(toBeDeleted, toBeAdded);
     }
@@ -92,6 +99,7 @@ public class Controller {
         return false;
     }
 
+    @Nullable
     public List<String> getCircuits(Converter.Mode mode) {
         try {
             return Tasks.getCircuitsTask(mode, converter).execute().get();

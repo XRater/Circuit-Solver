@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.model.interfaces;
 
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 
 /**
@@ -15,7 +17,7 @@ public interface Movable extends Centered {
      *
      * @param p new center position
      */
-    default void replace(Point p) {
+    default void replace(@NonNull Point p) {
         move(p.x() - x(), p.y() - y());
     }
 }

@@ -1,6 +1,9 @@
 package ru.spbau.mit.circuit.model;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Queue;
@@ -24,10 +27,11 @@ class Verificator {
     }
 
     /**
-     * @param wire checks if wire connects two nodes, which are already connected.
+     * Checking if wire connects two nodes, which are already connected.
+     * @param wire a wire to check.
      * @return true if end-nodes are already connected and false otherwise.
      */
-    boolean wireExists(Wire wire) {
+    boolean wireExists(@NonNull Wire wire) {
         return oneWire(wire.from(), wire.to());
     }
 
@@ -37,7 +41,7 @@ class Verificator {
      * @param node node to check
      * @return true if node is isolated and false otherwise.
      */
-    boolean isIsolated(Node node) {
+    boolean isIsolated(@NonNull Node node) {
         return node.wires().size() == 0;
     }
 
@@ -46,6 +50,7 @@ class Verificator {
      *
      * @return node with wire degree equals to two and null if there was not any.
      */
+    @Nullable
     Node findUnnecessaryNode() {
         for (Node node : model.nodes()) {
             if (node.wires().size() != 2) {

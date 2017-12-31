@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.algebra;
 
 
+import android.support.annotation.NonNull;
+
 import org.apache.commons.math3.complex.Complex;
 
 import ru.spbau.mit.circuit.logic.math.algebra.exceptions.IllegalInverseException;
@@ -15,22 +17,6 @@ public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical>
     @SuppressWarnings("FieldCanBeLocal")
     private final double precision = 0.00000000001;
 
-    public static Numerical number(double value) {
-        return new Numerical(value);
-    }
-
-    public static Numerical number(Complex value) {
-        return new Numerical(value);
-    }
-
-    public static Numerical zero() {
-        return zero;
-    }
-
-    public static Numerical identity() {
-        return identity;
-    }
-
     private Numerical(Complex value) {
         this.value = value;
     }
@@ -39,25 +25,47 @@ public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical>
         this.value = new Complex(value);
     }
 
+    public static Numerical number(double value) {
+        return new Numerical(value);
+    }
+
+    public static Numerical number(Complex value) {
+        return new Numerical(value);
+    }
+
+    @NonNull
+    public static Numerical zero() {
+        return zero;
+    }
+
+    @NonNull
+    public static Numerical identity() {
+        return identity;
+    }
+
     public double value() {
         return value.getReal();
     }
 
+    @NonNull
     @Override
-    public Numerical add(Numerical f) {
+    public Numerical add(@NonNull Numerical f) {
         return new Numerical(value.add(f.value));
     }
 
+    @NonNull
     @Override
-    public Numerical multiplyConstant(Numerical cf) {
+    public Numerical multiplyConstant(@NonNull Numerical cf) {
         return multiply(cf);
     }
 
+    @NonNull
     @Override
-    public Numerical multiply(Numerical f) {
+    public Numerical multiply(@NonNull Numerical f) {
         return new Numerical(value.multiply(f.value));
     }
 
+    @NonNull
     @Override
     public Numerical reciprocal() {
         if (!isZero()) {
@@ -66,6 +74,7 @@ public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical>
         throw new IllegalInverseException();
     }
 
+    @NonNull
     @Override
     public Numerical negate() {
         return new Numerical(value.negate());
@@ -81,11 +90,13 @@ public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical>
         return isEquals(identity());
     }
 
+    @NonNull
     @Override
     public Numerical getZero() {
         return Numerical.zero();
     }
 
+    @NonNull
     @Override
     public Numerical getIdentity() {
         return Numerical.identity();
@@ -102,7 +113,7 @@ public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical>
         return Double.toString(value.getReal()) + " " + Double.toString(value.getImaginary()) + "i";
     }
 
-    public boolean isEquals(Numerical num) {
+    public boolean isEquals(@NonNull Numerical num) {
         return Complex.equals(value, num.value, precision);
     }
 }

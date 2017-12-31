@@ -1,6 +1,9 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.variables.Derivative;
 import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
@@ -15,13 +18,11 @@ class Edge {
 
     private final Vertex from;
     private final Vertex to;
-
-    private int index = -1; // number of edge in its component.
-    private boolean inTree; // is edge in the tree structure
-
     private final FunctionVariable charge = new FunctionVariable();
     private final Derivative current = new Derivative(charge);
     private final Derivative inductive = new Derivative(current);
+    private int index = -1; // number of edge in its component.
+    private boolean inTree; // is edge in the tree structure
 
     Edge(Item item, Vertex from, Vertex to) {
         this.item = item;
@@ -50,14 +51,17 @@ class Edge {
         this.index = index;
     }
 
+    @NonNull
     FunctionVariable charge() {
         return charge;
     }
 
+    @NonNull
     Derivative current() {
         return current;
     }
 
+    @NonNull
     @SuppressWarnings("unused")
     public Derivative inductive() {
         return inductive;
@@ -116,7 +120,8 @@ class Edge {
         return 0;
     }
 
-    Vertex getAdjacent(Edge e) {
+    @Nullable
+    Vertex getAdjacent(@NonNull Edge e) {
         if (to.equals(e.to) || to.equals(e.from)) {
             return to;
         }
@@ -126,7 +131,7 @@ class Edge {
         return null;
     }
 
-    boolean adjacent(Edge e) {
+    boolean adjacent(@NonNull Edge e) {
         return getAdjacent(e) != null;
     }
 
@@ -137,6 +142,7 @@ class Edge {
         return from.equals(vertex) ? to : from;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Edge " + String.valueOf(index) + ": (" + from + ", " + to + "): "

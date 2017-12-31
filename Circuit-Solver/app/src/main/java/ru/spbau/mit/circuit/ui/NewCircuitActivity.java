@@ -3,6 +3,8 @@ package ru.spbau.mit.circuit.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -22,7 +24,6 @@ import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
-import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
@@ -34,9 +35,9 @@ import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
 
-    private static DrawableModel drawableModel; // static because after turning the screen
-    // onCrate is called.
-    public Drawable chosen;
+    private static DrawableModel drawableModel; // static because after turning the screen onCreate is called.
+    @Nullable
+    private Drawable chosen;
     private int startX, startY;
     private int oldOffsetX = 0, oldOffsetY = 0;
 
@@ -109,64 +110,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         });
 
         changeValue = findViewById(R.id.changeValue);
-        changeValue.setOnClickListener(v -> {
-            Element element = (Element) chosen;
-            final EditText taskEditText = new EditText(this);
-            taskEditText.setText(String.valueOf(element.getCharacteristicValue()));
-
-            if (element instanceof Capacitor) {
-                LinearLayout layout = new LinearLayout(this);
-                layout.setOrientation(LinearLayout.VERTICAL);
-
-                final TextView cpName = new TextView(this);
-                cpName.setText("Capacity");
-
-                layout.addView(cpName);
-                layout.addView(taskEditText);
-
-                final TextView voltageName = new TextView(this);
-                voltageName.setText("Voltage");
-                layout.addView(voltageName);
-
-                final EditText voltageField = new EditText(this);
-                voltageField.setText(String.valueOf(element.getVoltage()));
-                layout.addView(voltageField);
-
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("Change capacity and voltage")
-                        .setView(layout)
-                        .setPositiveButton("Set new values", (dialog1, which) -> {
-                            String cp = String.valueOf(taskEditText.getText());
-                            String voltage = String.valueOf(voltageField.getText());
-                            try {
-                                element.setCharacteristicValue(Double.parseDouble(cp));
-                                element.setVoltage(Double.parseDouble(voltage));
-                            } catch (NumberFormatException | NullPointerException e2) {
-                                // No info
-                            }
-                            drawableModel.redraw();
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .create();
-                dialog.show();
-            } else {
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle("Change " + element.getCharacteristicName())
-                        .setView(taskEditText)
-                        .setPositiveButton("Set new value", (dialog1, which) -> {
-                            String value = String.valueOf(taskEditText.getText());
-                            try {
-                                element.setCharacteristicValue(Double.parseDouble(value));
-                            } catch (NumberFormatException | NullPointerException e2) {
-                                // No info
-                            }
-                            drawableModel.redraw();
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .create();
-                dialog.show();
-            }
-        });
+        changeValue.setOnClickListener(v -> onChangeValueClicked());
 
         rotate = findViewById(R.id.rotate);
         rotate.setOnClickListener(v -> {
@@ -206,7 +150,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        if (MainActivity.ui.circuitWasLoaded) {
+        if (MainActivity.ui.circuitWasLoaded()) {
             Uploader.load(drawableModel);
         }
         drawableModel.redraw();
@@ -222,7 +166,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     }
 
     @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
+    public boolean onTouch(View view, @NonNull MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 Point point = getPoint(motionEvent.getX(), motionEvent.getY());
@@ -292,5 +236,64 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         delete.setVisibility(View.INVISIBLE);
         changeValue.setVisibility(View.INVISIBLE);
         rotate.setVisibility(View.INVISIBLE);
+    }
+
+    private void onChangeValueClicked() {
+        Element element = (Element) chosen;
+        final EditText taskEditText = new EditText(this);
+        taskEditText.setText(String.valueOf(element.getCharacteristicValue()));
+
+        if (element instanceof Capacitor) {
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            final TextView cpName = new TextView(this);
+            cpName.setText("Capacity");
+
+            layout.addView(cpName);
+            layout.addView(taskEditText);
+
+            final TextView voltageName = new TextView(this);
+            voltageName.setText("Voltage");
+            layout.addView(voltageName);
+
+            final EditText voltageField = new EditText(this);
+            voltageField.setText(String.valueOf(element.getVoltage()));
+            layout.addView(voltageField);
+
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Change capacity and voltage")
+                    .setView(layout)
+                    .setPositiveButton("Set new values", (dialog1, which) -> {
+                        String cp = String.valueOf(taskEditText.getText());
+                        String voltage = String.valueOf(voltageField.getText());
+                        try {
+                            element.setCharacteristicValue(Double.parseDouble(cp));
+                            element.setVoltage(Double.parseDouble(voltage));
+                        } catch (@NonNull NumberFormatException | NullPointerException e2) {
+                            // No info
+                        }
+                        drawableModel.redraw();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create();
+            dialog.show();
+        } else {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Change " + element.getCharacteristicName())
+                    .setView(taskEditText)
+                    .setPositiveButton("Set new value", (dialog1, which) -> {
+                        String value = String.valueOf(taskEditText.getText());
+                        try {
+                            element.setCharacteristicValue(Double.parseDouble(value));
+                        } catch (@NonNull NumberFormatException | NullPointerException e2) {
+                            // No info
+                        }
+                        drawableModel.redraw();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .create();
+            dialog.show();
+        }
     }
 }

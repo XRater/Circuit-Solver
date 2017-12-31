@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.matrices;
 
 
+import android.support.annotation.NonNull;
+
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
@@ -26,7 +28,8 @@ public class Matrices {
      * @param <T>  type of elements stored in matrix
      * @return new identityMatix matrix
      */
-    public static <T extends Field<T>> Matrix<T> identityMatix(int size, T zero) {
+    @NonNull
+    public static <T extends Field<T>> Matrix<T> identityMatix(int size, @NonNull T zero) {
         Matrix<T> ans = new Matrix<>(size, zero);
         for (int i = 0; i < size; i++) {
             ans.set(i, i, zero.getIdentity());
@@ -41,7 +44,8 @@ public class Matrices {
      * @param matrix matrix to convert
      * @return function matrix representation of the given matrix
      */
-    public static Matrix<Function> getFunctionMatrix(RealMatrix matrix) {
+    @NonNull
+    public static Matrix<Function> getFunctionMatrix(@NonNull RealMatrix matrix) {
         Matrix<Function> ans =
                 new Matrix<>(matrix.getRowDimension(), matrix.getColumnDimension(), functionZero);
 
@@ -63,7 +67,8 @@ public class Matrices {
      * @param vector matrix to convert
      * @return function matrix representation of the given matrix
      */
-    public static Matrix<Function> getFunctionMatrix(RealVector vector) {
+    @NonNull
+    public static Matrix<Function> getFunctionMatrix(@NonNull RealVector vector) {
         Matrix<Function> answer = new Matrix<>(vector.getDimension(), 1, functionZero);
         for (int i = 0; i < vector.getDimension(); i++) {
             answer.set(i, 0, Functions.constant(vector.getEntry(i)));
@@ -77,7 +82,8 @@ public class Matrices {
      *
      * @param matrix matrix to integrate.
      */
-    public static Matrix<Function> integrate(Matrix<Function> matrix) {
+    @NonNull
+    public static Matrix<Function> integrate(@NonNull Matrix<Function> matrix) {
         Matrix<Function> answer = new Matrix<>(matrix.n(), matrix.m(), functionZero);
         for (int i = 0; i < matrix.n(); i++) {
             for (int j = 0; j < matrix.m(); j++) {
@@ -90,8 +96,9 @@ public class Matrices {
     /**
      * This method was created to speed up apply method of polynom, but it did not work well yet.
      */
+    @NonNull
     @Deprecated
-    public static Matrix<Function> applyInPolynom(RealMatrix matrix, Polynom<Function> polynom) {
+    public static Matrix<Function> applyInPolynom(@NonNull RealMatrix matrix, @NonNull Polynom<Function> polynom) {
         int n = matrix.getRowDimension();
         RealMatrix power = new Array2DRowRealMatrix(matrix.getRowDimension(), matrix
                 .getColumnDimension());

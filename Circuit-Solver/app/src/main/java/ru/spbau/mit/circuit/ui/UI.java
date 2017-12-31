@@ -14,7 +14,7 @@ import ru.spbau.mit.circuit.storage.Converter;
 
 public class UI {
     private final Controller controller;
-    boolean circuitWasLoaded = false;
+    private boolean circuitWasLoaded = false;
     private DrawableModel drawableModel;
 
     public UI(Controller controller) {
@@ -84,5 +84,9 @@ public class UI {
 
     public void removeFromStorage(Converter.Mode mode, String name) {
         controller.removeFromStorage(mode, name);
+    }
+
+    public boolean circuitWasLoaded() {
+        return circuitWasLoaded;
     }
 }

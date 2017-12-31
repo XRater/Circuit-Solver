@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.graph;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,13 +19,14 @@ import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 public class Graph {
 
     // Vertexes of graph. Every vertex knows all adjacent edges.
+    @NonNull
     private Map<Node, VisitableVertex> vertices = new HashMap<>();
 
     /**
      * Constructs graph from the model object. Every element and wire will become edges,
      * nodes will become vertices.
      */
-    public Graph(Model model) {
+    public Graph(@NonNull Model model) {
         // Store all model nodes.
         for (Node node : model.nodes()) {
             vertices.put(node, new VisitableVertex());
@@ -41,7 +44,7 @@ public class Graph {
     }
 
     // Creates new edge for the given item. Updates adjacent edges of its end vertices.
-    private void addNewEdge(Vertex u, Vertex v, Item item) {
+    private void addNewEdge(@NonNull Vertex u, @NonNull Vertex v, Item item) {
         Edge e = new Edge(item, u, v);
         u.add(e);
         v.add(e);
@@ -52,6 +55,7 @@ public class Graph {
      *
      * @return list of connected subgraphs of the initial graph.
      */
+    @NonNull
     public List<ConnectedGraph> decompose() {
         List<ConnectedGraph> graphs = new LinkedList<>();
         for (VisitableVertex node : vertices.values()) {
@@ -72,7 +76,8 @@ public class Graph {
      * @param node  node to work with
      * @return updated graph.
      */
-    private ConnectedGraph addAdjacentEdges(ConnectedGraph graph, VisitableVertex node) {
+    @NonNull
+    private ConnectedGraph addAdjacentEdges(@NonNull ConnectedGraph graph, @NonNull VisitableVertex node) {
         node.visited = true;
         for (Edge edge : node.getEdges()) {
             VisitableVertex u = (VisitableVertex) edge.to();

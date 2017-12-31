@@ -1,11 +1,13 @@
 package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 
 public abstract class Capacitor extends Element {
     private double capacity = 1;
 
-    protected Capacitor(Node from, Node to) {
+    protected Capacitor(@NonNull Node from, @NonNull Node to) {
         super(from, to);
     }
 
@@ -19,6 +21,7 @@ public abstract class Capacitor extends Element {
         this.capacity = capacity;
     }
 
+    @NonNull
     @Override
     public String getCharacteristicName() {
         return "capacity";

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.sql.SQLException;
@@ -14,7 +16,7 @@ import java.util.List;
 public class Local implements Storage {
     private DBHelper dbHelper;
 
-    public Local(Activity activity) {
+    public Local(@NonNull Activity activity) {
         dbHelper = new DBHelper(activity.getApplicationContext());
     }
 
@@ -30,6 +32,7 @@ public class Local implements Storage {
         dbHelper.close();
     }
 
+    @NonNull
     @Override
     public List<String> getCircuits() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -46,6 +49,7 @@ public class Local implements Storage {
         return names;
     }
 
+    @Nullable
     @Override
     public ByteArrayInputStream load(String name) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -68,7 +72,6 @@ public class Local implements Storage {
     @Override
     public void delete(String name) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //db.delete("mytable", name, null);
         db.execSQL("DELETE FROM " + "mytable" + " WHERE " + "name" + "='" + name + "'");
     }
 }

@@ -2,6 +2,8 @@ package ru.spbau.mit.circuit.storage;
 
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.Drive;
@@ -34,10 +36,16 @@ import ru.spbau.mit.circuit.MainActivity;
 public class DriveStorage implements Storage {
 
     private static final int BUFFER_SIZE = 1024;
+    @NonNull
     private final MainActivity activity;
 
     private DriveClient mDriveClient;
     private DriveResourceClient mDriveResourceClient;
+
+    public DriveStorage(Activity mainActivity) {
+        this.activity = (MainActivity) mainActivity;
+        activity.initDrive(this);
+    }
 
     public DriveClient getDriveClient() {
         return mDriveClient;
@@ -47,19 +55,14 @@ public class DriveStorage implements Storage {
         return mDriveResourceClient;
     }
 
-    public DriveStorage(Activity mainActivity) {
-        this.activity = (MainActivity) mainActivity;
-        activity.initDrive(this);
-    }
-
-    public void initializeDriveClient(GoogleSignInAccount signInAccount) {
+    public void initializeDriveClient(@NonNull GoogleSignInAccount signInAccount) {
         mDriveClient = Drive.getDriveClient(activity.getApplicationContext(), signInAccount);
         mDriveResourceClient = Drive.getDriveResourceClient(activity.getApplicationContext(),
                 signInAccount);
     }
 
     @Override
-    public void save(byte[] bytes, String filename) {
+    public void save(@NonNull byte[] bytes, @NonNull String filename) {
         final Task<DriveFolder> rootFolderTask = mDriveResourceClient.getAppFolder();
         final Task<DriveContents> createContentsTask = mDriveResourceClient.createContents();
         Tasks.whenAll(rootFolderTask, createContentsTask)
@@ -80,6 +83,7 @@ public class DriveStorage implements Storage {
         System.out.println("done " + filename);
     }
 
+    @NonNull
     @Override
     public List<String> getCircuits() {
         Query query = new Query.Builder()
@@ -105,6 +109,7 @@ public class DriveStorage implements Storage {
         return circuitsNames;
     }
 
+    @Nullable
     @Override
     public ByteArrayInputStream load(String filename) {
         Query query = new Query.Builder()
@@ -176,7 +181,7 @@ public class DriveStorage implements Storage {
                     break;
                 }
             }
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (@NonNull InterruptedException | ExecutionException e) {
             throw new LoadingException(e);
         }
         if (driveFile != null) {

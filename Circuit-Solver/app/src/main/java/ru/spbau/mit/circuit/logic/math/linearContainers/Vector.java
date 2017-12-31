@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.linearContainers;
 
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +29,7 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
 
     private final int size;
 
-    public Vector(Collection<T> c, C initial) {
+    public Vector(@NonNull Collection<T> c, C initial) {
         data.addAll(c);
         Collections.sort(data);
         size = data.size();
@@ -37,15 +39,16 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
     }
 
     @SuppressWarnings("unused")
-    public void setCoefficients(List<C> coefficients) {
+    public void setCoefficients(@NonNull List<C> coefficients) {
         int index = 0;
         for (C c : coefficients) {
             cfs.set(index++, c);
         }
     }
 
+    @NonNull
     @Override
-    public Vector<C, T> add(Vector<C, T> item) {
+    public Vector<C, T> add(@NonNull Vector<C, T> item) {
         if (size != item.size()) {
             throw new IllegalAdditionException();
         }
@@ -66,7 +69,7 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
         return this;
     }
 
-    public void add(T t, C cf) {
+    public void add(@NonNull T t, C cf) {
         int index = 0;
         for (T t1 : data) {
             if (t1.compareTo(t) == 0) {
@@ -79,6 +82,7 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
         throw new IllegalAdditionException();
     }
 
+    @NonNull
     @Override
     public Vector<C, T> multiplyConstant(C c) {
         for (int i = 0; i < size; i++) {
@@ -102,6 +106,7 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
         return size;
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

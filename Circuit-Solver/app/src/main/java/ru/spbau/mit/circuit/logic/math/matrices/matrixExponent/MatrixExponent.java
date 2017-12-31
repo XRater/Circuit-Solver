@@ -29,7 +29,8 @@ public class MatrixExponent {
 
     private static final Function functionZero = Functions.zero();
 
-    public static Matrix<Function> matrixExponent(RealMatrix matrix) {
+    @NonNull
+    public static Matrix<Function> matrixExponent(@NonNull RealMatrix matrix) {
         System.out.println("Matrix:");
         print(matrix);
         Map<Complex, Integer> roots = getEigenValues(matrix);
@@ -49,7 +50,7 @@ public class MatrixExponent {
     }
 
     @NonNull
-    private static Polynom<Function> buildVariablePolynom(Map<Complex, Integer> roots) {
+    private static Polynom<Function> buildVariablePolynom(@NonNull Map<Complex, Integer> roots) {
         Polynom<Function> ans = new Polynom<>(functionZero);
 
         // Make list of roots with duplicates
@@ -91,7 +92,8 @@ public class MatrixExponent {
      * @param matrix matrix to find eigen values
      * @return map with all complex eigen values with their multiplicity
      */
-    private static Map<Complex, Integer> getEigenValues(RealMatrix matrix) {
+    @NonNull
+    private static Map<Complex, Integer> getEigenValues(@NonNull RealMatrix matrix) {
         Map<Complex, Integer> ans = new HashMap<>();
         EigenDecomposition eg = new EigenDecomposition(matrix);
         for (int i = 0; i < matrix.getRowDimension(); i++) {
@@ -106,7 +108,7 @@ public class MatrixExponent {
     }
 
 
-    static void print(RealMatrix matrix) {
+    static void print(@NonNull RealMatrix matrix) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             for (int j = 0; j < matrix.getColumnDimension(); j++) {

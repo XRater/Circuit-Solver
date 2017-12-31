@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.model.circuitObjects.nodes;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
 import ru.spbau.mit.circuit.model.circuitObjects.exceptions.InvalidPointException;
@@ -15,7 +17,7 @@ public class Point implements Centered, WireEnd, Serializable {
         this.y = y;
     }
 
-    public static Point getCenter(Point a, Point b) {
+    public static Point getCenter(@NonNull Point a, @NonNull Point b) {
         if ((a.x + b.x) % 2 != 0 || (a.y + b.y) % 2 != 0) {
             throw new InvalidPointException("Float coordinate value");
         }
@@ -40,6 +42,7 @@ public class Point implements Centered, WireEnd, Serializable {
         return hash;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "(" + x + ", " + y + ")";

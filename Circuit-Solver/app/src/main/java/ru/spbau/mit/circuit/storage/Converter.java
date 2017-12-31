@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.storage;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +17,7 @@ public class Converter {
 
     private final List<Storage> storageList = new ArrayList<>();
 
-    public Converter(Activity activity) {
+    public Converter(@NonNull Activity activity) {
         storageList.add(new Local(activity));
         //storageList.add(new DriveStorage(activity));
     }
@@ -51,7 +52,7 @@ public class Converter {
         Model model;
         try (ObjectInputStream objectInputStream = new ObjectInputStream(in)) {
             model = (Model) objectInputStream.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (@NonNull IOException | ClassNotFoundException e) {
             throw new LoadingException(e);
         }
         return model;
