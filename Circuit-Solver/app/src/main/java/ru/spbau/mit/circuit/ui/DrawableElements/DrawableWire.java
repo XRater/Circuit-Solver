@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
@@ -21,16 +23,22 @@ import static ru.spbau.mit.circuit.ui.Drawer.FIELD_SIZE;
 import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
 
 public class DrawableWire extends Wire implements Drawable {
+    @NonNull
     private static int dist[][] = new int[FIELD_SIZE][FIELD_SIZE];
+    @NonNull
     private static Point prev[][] = new Point[FIELD_SIZE][FIELD_SIZE];
 
+    private Set<DrawableWire> wires;
+
+    @NonNull
     private LinkedHashSet<Point> path = new LinkedHashSet<>();
 
-    public DrawableWire(DrawableNode from, DrawableNode to) {
+    public DrawableWire(DrawableNode from, DrawableNode to, Set<DrawableWire> wires) {
         super(from, to);
+        this.wires = wires;
     }
 
-    public static void mergePath(DrawableWire first, DrawableWire second, Node common) {
+    public static void mergePath(@NonNull DrawableWire first, @NonNull DrawableWire second, @NonNull Node common) {
         Point startFirst = first.getPath().iterator().next();
         Point startSecond = second.getPath().iterator().next();
 
@@ -50,7 +58,7 @@ public class DrawableWire extends Wire implements Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         Point prev = null;
         for (Point nxt : path) {
             if (prev != null) {
@@ -144,7 +152,7 @@ public class DrawableWire extends Wire implements Drawable {
     }
 
     private boolean areOverlapping(Point p, Point point) {
-        for (DrawableWire wire : DrawableModel.wires()) {
+        for (DrawableWire wire : wires) {
             if (wire.path.contains(p) && wire.path.contains(point)) {
                 return false;
             }
@@ -152,11 +160,12 @@ public class DrawableWire extends Wire implements Drawable {
         return true;
     }
 
-    public boolean adjacent(Element element) {
+    public boolean adjacent(@NonNull Element element) {
         return to() == element.to() || to() == element.from() ||
                 from() == element.to() || from() == element.from();
     }
 
+    @NonNull
     public LinkedHashSet<Point> getPath() {
         return path;
     }

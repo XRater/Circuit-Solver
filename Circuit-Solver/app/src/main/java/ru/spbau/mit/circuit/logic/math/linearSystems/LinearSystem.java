@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.linearSystems;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Field;
@@ -32,7 +34,7 @@ public class LinearSystem<
         return equations.size();
     }
 
-    public void addEquation(Equation<C, T, U> eq) {
+    public void addEquation(@NonNull Equation<C, T, U> eq) {
         if (eqSize != eq.size()) {
             throw new IllegalEquationSizeException();
         }
@@ -100,10 +102,11 @@ public class LinearSystem<
         }
     }
 
-    private C getMulCoefficient(C a, C b) {
+    private C getMulCoefficient(@NonNull C a, @NonNull C b) {
         return b.divide(a).negate();
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

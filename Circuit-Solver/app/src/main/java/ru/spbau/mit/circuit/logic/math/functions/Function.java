@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.logic.math.algebra.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.Linear;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
@@ -15,7 +17,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         down = PolyFunctions.constant(1);
     }
 
-    private Function(PolyFunction up, PolyFunction down) {
+    private Function(PolyFunction up, @NonNull PolyFunction down) {
         if (down.isZero()) {
             throw new IllegalArgumentException();
         }
@@ -30,7 +32,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
     }
 
     @Override
-    public Function add(Function other) {
+    public Function add(@NonNull Function other) {
         PolyFunction nUp = up.multiply(other.down).add(other.up.multiply(down));
         if (nUp.isZero()) {
             return Functions.zero();
@@ -39,7 +41,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
     }
 
     @Override
-    public Function multiply(Function other) {
+    public Function multiply(@NonNull Function other) {
         PolyFunction nUp = up.multiply(other.up);
         if (up.isZero()) {
             return Functions.zero();
@@ -47,11 +49,13 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         return new Function(nUp, down.multiply(other.down));
     }
 
+    @NonNull
     @Override
     public Function multiplyConstant(Numerical d) {
         return new Function(up.multiplyConstant(d), down);
     }
 
+    @NonNull
     @Override
     public Function reciprocal() {
         if (up.isZero()) {
@@ -60,6 +64,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         return new Function(down, up);
     }
 
+    @NonNull
     @Override
     public Function negate() {
         return new Function(up.multiplyConstant(Numerical.number(-1)), down);
@@ -75,6 +80,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         return up.isIdentity() && down.isIdentity();
     }
 
+    @NonNull
     @Override
     public Function getZero() {
         return Functions.constant(0);
@@ -85,6 +91,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         return Functions.identity();
     }
 
+    @NonNull
     public Function integrate() {
         if (!down.isIdentity()) {
             throw new IllegalArgumentException();
@@ -92,6 +99,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         return new Function(up.integrate(), down);
     }
 
+    @NonNull
     public Function differentiate() {
         if (down.isIdentity()) {
             return new Function(up.differentiate(), down);
@@ -99,6 +107,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         throw new UnsupportedOperationException();
     }
 
+    @NonNull
     @Override
     public String toString() {
         if (isZero()) {

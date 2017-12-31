@@ -1,10 +1,15 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
+import android.support.annotation.NonNull;
+
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Functions {
 
+    @NonNull
     private static Function zero = Functions.constant(0);
+    @NonNull
     private static Function identity = Functions.constant(1);
+
 
     private Functions() {
     }
@@ -13,6 +18,7 @@ public class Functions {
         return zero;
     }
 
+    @NonNull
     public static Function identity() {
         return identity;
     }

@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.matrices;
 
+import android.support.annotation.NonNull;
+
 import java.lang.reflect.Array;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Field;
@@ -12,17 +14,19 @@ import ru.spbau.mit.circuit.logic.math.algebra.Linear;
  */
 public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, Matrix<T>> {
 
+    @NonNull
     private final T[][] data;
     private final int n;
     private final int m;
+    @NonNull
     private final T zero;
 
     @SuppressWarnings("WeakerAccess")
-    public Matrix(int n, T zero) {
+    public Matrix(int n, @NonNull T zero) {
         this(n, n, zero);
     }
 
-    public Matrix(int n, int m, T zero) {
+    public Matrix(int n, int m, @NonNull T zero) {
         this.zero = zero;
         this.n = n;
         this.m = m;
@@ -60,11 +64,13 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return data[i][j];
     }
 
+    @NonNull
     @Override
     public Matrix<T> getZero() {
         return new Matrix<>(n, m, zero);
     }
 
+    @NonNull
     public Matrix<T> getZero(int sz) {
         return new Matrix<>(sz, zero);
     }
@@ -81,8 +87,9 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return Matrices.identityMatix(sz, zero);
     }
 
+    @NonNull
     @Override
-    public Matrix<T> add(Matrix<T> matrix) {
+    public Matrix<T> add(@NonNull Matrix<T> matrix) {
         if (n != matrix.n || m != matrix.m) {
             throw new IllegalArgumentException();
         }
@@ -95,8 +102,9 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return ans;
     }
 
+    @NonNull
     @Override
-    public Matrix<T> multiply(Matrix<T> matrix) {
+    public Matrix<T> multiply(@NonNull Matrix<T> matrix) {
         if (m != matrix.n) {
             throw new IllegalArgumentException();
         }
@@ -112,11 +120,13 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return ans;
     }
 
+    @NonNull
     @Override
     public Matrix<T> negate() {
         return this.multiplyConstant(zero.getIdentity().negate());
     }
 
+    @NonNull
     @Override
     public Matrix<T> reciprocal() {
         throw new UnsupportedOperationException();
@@ -155,6 +165,7 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return true;
     }
 
+    @NonNull
     @Override
     public Matrix<T> multiplyConstant(T t) {
         Matrix<T> ans = new Matrix<>(this.n, this.zero);
@@ -166,6 +177,7 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return ans;
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -20,6 +20,7 @@ import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();
 
+    @NonNull
     List<Edge> getEdges() {
         return edges;
     }
@@ -34,9 +35,35 @@ class Vertex {
         return this::treeEdgesIterator;
     }
 
+    @NonNull
     @SuppressWarnings("WeakerAccess")
     Iterator<Edge> treeEdgesIterator() {
         return new treeIterator();
+    }
+
+    /**
+     * Makes new equation corresponding to the first Kirchhoff's law.
+     */
+    @NonNull
+    Equation<
+            Numerical,
+            Vector<Numerical, Derivative>,
+            Row<Numerical, FunctionVariable, PolyFunction>
+            > getEquation(@NonNull Collection<Derivative> variables) {
+
+        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
+        Row<Numerical, FunctionVariable, PolyFunction> consts =
+                new Row<>(PolyFunctions.zero());
+
+        for (Edge edge : edges) {
+            vars.add(edge.current(), Numerical.number(edge.getDirection(this)));
+        }
+        return new Equation<>(vars, consts);
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf("Vertex");
     }
 
     private class treeIterator implements Iterator<Edge> {
@@ -44,6 +71,7 @@ class Vertex {
 
         Edge e;
 
+        @NonNull
         private Iterator<Edge> iterator = edges.iterator();
 
         @Override
@@ -65,29 +93,5 @@ class Vertex {
             return e;
         }
 
-    }
-
-    /**
-     * Makes new equation corresponding to the first Kirchhoff's law.
-     */
-    Equation<
-            Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>
-            > getEquation(Collection<Derivative> variables) {
-
-        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
-        Row<Numerical, FunctionVariable, PolyFunction> consts =
-                new Row<>(PolyFunctions.zero());
-
-        for (Edge edge : edges) {
-            vars.add(edge.current(), Numerical.number(edge.getDirection(this)));
-        }
-        return new Equation<>(vars, consts);
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf("Vertex");
     }
 }

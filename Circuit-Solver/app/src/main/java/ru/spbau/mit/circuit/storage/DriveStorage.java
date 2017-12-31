@@ -39,6 +39,7 @@ public class DriveStorage implements Storage {
     @NonNull
     private final MainActivity activity;
 
+
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private DriveClient driveClient;
     private DriveResourceClient driveResourceClient;
@@ -51,11 +52,13 @@ public class DriveStorage implements Storage {
     public void initializeDriveClient(@NonNull GoogleSignInAccount signInAccount) {
         driveClient = Drive.getDriveClient(activity.getApplicationContext(), signInAccount);
         driveResourceClient = Drive.getDriveResourceClient(activity.getApplicationContext(),
+
                 signInAccount);
     }
 
     @Override
     public void save(@NonNull byte[] bytes, @NonNull String filename) {
+
         final Task<DriveFolder> rootFolderTask = driveResourceClient.getAppFolder();
         final Task<DriveContents> createContentsTask = driveResourceClient.createContents();
         Tasks.whenAll(rootFolderTask, createContentsTask)

@@ -2,6 +2,8 @@ package ru.spbau.mit.circuit.controler;
 
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.io.IOException;
 import java.util.List;
@@ -108,8 +110,9 @@ class Tasks {
             this.converter = converter;
         }
 
+        @Nullable
         @Override
-        public Model doInBackground(String... filename) {
+        public Model doInBackground(@NonNull String... filename) {
             if (filename.length != 1) {
                 throw new IllegalArgumentException();
             }

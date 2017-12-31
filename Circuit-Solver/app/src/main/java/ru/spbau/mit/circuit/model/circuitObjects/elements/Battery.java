@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 
 public abstract class Battery extends Element {
@@ -25,6 +27,7 @@ public abstract class Battery extends Element {
         this.voltage = voltage;
     }
 
+    @NonNull
     @Override
     public String getCharacteristicName() {
         return "voltage";

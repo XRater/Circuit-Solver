@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -24,17 +26,17 @@ public class ConnectedGraph {
 
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final Vertex root; // root of the graph
-
+    private final Collection<Derivative> variables = new ArrayList<>();
     @SuppressWarnings("unused")
+    @NonNull
     private int verticesNumber = 0; // number of vertices
     private int edgesNumber = 0; // number of edges
 
     private LinkedHashSet<Vertex> vertices = new LinkedHashSet<>();
+    @NonNull
     private List<Edge> edges = new ArrayList<>();
-
+    @NonNull
     private List<Cycle> cycles = new ArrayList<>(); // Base system of cycles
-
-    private final Collection<Derivative> variables = new ArrayList<>();
 
     /**
      * Creates connected graph from the root. Graph will contain only one vertex and zero edges.
@@ -52,7 +54,7 @@ public class ConnectedGraph {
      * @param u    new vertex
      * @param edge new edge
      */
-    void add(Vertex u, Edge edge) {
+    void add(Vertex u, @NonNull Edge edge) {
         vertices.add(u);
         edge.addToTree();
         addEdge(edge);
@@ -81,7 +83,7 @@ public class ConnectedGraph {
      *
      * @param edge edge to add.
      */
-    private void addEdge(Edge edge) {
+    private void addEdge(@NonNull Edge edge) {
         if (edge.index() != -1) {
             throw new IllegalArgumentException();
         }
@@ -129,6 +131,7 @@ public class ConnectedGraph {
      *
      * @return constructed linear system.
      */
+    @NonNull
     private LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
@@ -154,7 +157,7 @@ public class ConnectedGraph {
      *
      * @param edge edge to find cycle through.
      */
-    private Cycle getCycle(Edge edge) {
+    private Cycle getCycle(@NonNull Edge edge) {
         if (edge.isInTree()) {
             throw new IllegalArgumentException();
         }
@@ -170,7 +173,7 @@ public class ConnectedGraph {
      *
      * @return true if path was found and false otherwise.
      */
-    private boolean findPath(Path path, Vertex from, Vertex to) {
+    private boolean findPath(@NonNull Path path, @NonNull Vertex from, Vertex to) {
         if (from.equals(to)) {
             return true;
         }
@@ -186,6 +189,7 @@ public class ConnectedGraph {
         return false;
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

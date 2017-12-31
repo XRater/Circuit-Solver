@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 import ru.spbau.mit.circuit.controler.Controller;
@@ -23,7 +25,8 @@ public class Logic {
      * @param model model to calculates currents for
      * @throws CircuitShortingException if there was any kind of shorting
      */
-    public void calculateCurrents(Model model) throws CircuitShortingException,
+
+    public void calculateCurrents(@NonNull Model model) throws CircuitShortingException,
             NotImplementedYetException {
         Graph g = new Graph(model);
         List<ConnectedGraph> components = g.decompose();

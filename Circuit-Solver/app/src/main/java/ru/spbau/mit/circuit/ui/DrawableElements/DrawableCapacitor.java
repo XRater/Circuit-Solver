@@ -2,6 +2,7 @@ package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
@@ -18,13 +19,13 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
         super(from, to);
     }
 
-    public DrawableCapacitor(Point center) {
+    public DrawableCapacitor(@NonNull Point center) {
         super(new DrawableNode(center.x() - 2 * Drawer.CELL_SIZE, center.y()),
                 new DrawableNode(center.x() + 2 * Drawer.CELL_SIZE, center.y()));
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         String capacity = String.format("%.2f", getCharacteristicValue()) + "F";
         Rect capacitySize = new Rect();
         Drawer.ELEMENTS_PAINT.getTextBounds(capacity, 0, capacity.length(), capacitySize);

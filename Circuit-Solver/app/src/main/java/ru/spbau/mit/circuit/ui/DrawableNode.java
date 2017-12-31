@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.ui;
 
 import android.graphics.Canvas;
+import android.support.annotation.NonNull;
 
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
@@ -26,7 +27,7 @@ public class DrawableNode extends Node implements Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         canvas.drawCircle(x(), y(), NODE_RADIUS, ELEMENTS_PAINT);
     }
 
@@ -42,7 +43,7 @@ public class DrawableNode extends Node implements Drawable {
         realNode = false;
     }
 
-    public boolean equalPositions(DrawableNode that) {
+    public boolean equalPositions(@NonNull DrawableNode that) {
         return point.equals(that.point);
     }
 }

@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.model.circuitObjects.wires;
 
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
 import ru.spbau.mit.circuit.model.circuitObjects.Item;
@@ -19,6 +21,16 @@ public abstract class Wire extends Item implements Serializable {
         this.to = to;
     }
 
+    public static Node findCommon(@NonNull Wire first, @NonNull Wire second) {
+        if (second.adjacent(first.to)) {
+            return first.to;
+        }
+        if (second.adjacent(first.from)) {
+            return first.from;
+        }
+        return null;
+    }
+
     // some getters
     public Node from() {
         return from;
@@ -35,16 +47,6 @@ public abstract class Wire extends Item implements Serializable {
 
     public boolean adjacent(Node node) {
         return node == from || node == to;
-    }
-
-    public static Node findCommon(Wire first, Wire second) {
-        if (second.adjacent(first.to)) {
-            return first.to;
-        }
-        if (second.adjacent(first.from)) {
-            return first.from;
-        }
-        return null;
     }
 
     /**
@@ -81,6 +83,7 @@ public abstract class Wire extends Item implements Serializable {
         throw new IllegalArgumentException();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Wire: " + this.from + ":" + this.to;

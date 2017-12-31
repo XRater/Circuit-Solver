@@ -28,13 +28,14 @@ public class MatrixExponent {
     private static final Function functionZero = Functions.zero();
 
     public static Matrix<Function> matrixExponent(RealMatrix matrix) {
+
         Map<Complex, Integer> roots = getEigenValues(matrix);
         Polynom<Function> polynom = buildVariablePolynom(roots);
         return polynom.evaluate(Matrices.getFunctionMatrix(matrix));
     }
 
     @NonNull
-    private static Polynom<Function> buildVariablePolynom(Map<Complex, Integer> roots) {
+    private static Polynom<Function> buildVariablePolynom(@NonNull Map<Complex, Integer> roots) {
         Polynom<Function> ans = new Polynom<>(functionZero);
 
         // Make list of roots with duplicates
@@ -76,7 +77,8 @@ public class MatrixExponent {
      * @param matrix matrix to find eigen values
      * @return map with all complex eigen values with their multiplicity
      */
-    private static Map<Complex, Integer> getEigenValues(RealMatrix matrix) {
+    @NonNull
+    private static Map<Complex, Integer> getEigenValues(@NonNull RealMatrix matrix) {
         Map<Complex, Integer> ans = new HashMap<>();
         EigenDecomposition eg = new EigenDecomposition(matrix);
         for (int i = 0; i < matrix.getRowDimension(); i++) {

@@ -2,6 +2,7 @@ package ru.spbau.mit.circuit.logic.math.functions;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -39,8 +40,9 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return mPow - o.mPow;
     }
 
+    @NonNull
     @Override
-    public PolyExponent add(PolyExponent f) {
+    public PolyExponent add(@Nullable PolyExponent f) {
         if (f != null) {
             if (f.mPow != mPow || !isEquals(ePow, f.ePow)) {
                 throw new IllegalFunctionTransformationException();
@@ -50,26 +52,30 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         throw new IllegalFunctionTransformationException();
     }
 
+    @NonNull
     @Override
-    public PolyExponent multiply(PolyExponent f) {
+    public PolyExponent multiply(@Nullable PolyExponent f) {
         if (f != null) {
             return new PolyExponent(cf * f.cf, mPow + f.mPow, ePow + f.ePow);
         }
         throw new IllegalFunctionTransformationException();
     }
 
+    @NonNull
     @Override
     public PolyExponent reciprocal() {
         return new PolyExponent(1 / cf, -mPow, -ePow);
     }
 
+    @NonNull
     @Override
     public PolyExponent negate() {
         return new PolyExponent(-cf, mPow, ePow);
     }
 
+    @NonNull
     @Override
-    public PolyExponent multiplyConstant(Numerical num) {
+    public PolyExponent multiplyConstant(@NonNull Numerical num) {
         return new PolyExponent(cf * num.value(), mPow, ePow);
     }
 
@@ -83,16 +89,19 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return isEquals(cf, 1) && mPow == 0 && isEquals(ePow, 0);
     }
 
+    @NonNull
     @Override
     public PolyExponent getZero() {
         return new PolyExponent(0, 0, 0);
     }
 
+    @NonNull
     @Override
     public PolyExponent getIdentity() {
         return new PolyExponent(1, 0, 0);
     }
 
+    @NonNull
     PolyFunction integrate() {
         if (isEquals(ePow, 0)) {
             if (mPow != -1) {
@@ -142,6 +151,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return ans;
     }
 
+    @NonNull
     Numerical apply(double x) {
         if (isEquals(x, 0)) {
             if (mPow == 0) {

@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
 import ru.spbau.mit.circuit.model.circuitObjects.Item;
@@ -18,11 +20,13 @@ import ru.spbau.mit.circuit.model.interfaces.Movable;
  */
 public abstract class Element extends Item implements Movable, Serializable {
 
+    @NonNull
     protected final Node from;
+    @NonNull
     protected final Node to;
     private Point center;
 
-    public Element(Node from, Node to) {
+    public Element(@NonNull Node from, @NonNull Node to) {
         if (from.position().equals(to.position())) {
             throw new InvalidElementException("End points are equal");
         }
@@ -62,10 +66,12 @@ public abstract class Element extends Item implements Movable, Serializable {
     }
 
     // some getters
+    @NonNull
     public Node from() {
         return from;
     }
 
+    @NonNull
     public Node to() {
         return to;
     }
@@ -89,6 +95,7 @@ public abstract class Element extends Item implements Movable, Serializable {
         return node == from || node == to;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Element:" + from.toString() + ":" + to.toString();

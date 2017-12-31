@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.graph;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -17,7 +19,7 @@ class Cycle {
 
     private final ArrayList<Edge> edges = new ArrayList<>();
 
-    Cycle(Path path, Edge e) {
+    Cycle(@NonNull Path path, @NonNull Edge e) {
         Deque<Edge> pathEdges = path.edges();
         if (!pathEdges.getLast().adjacent(e) ||
                 !pathEdges.getFirst().adjacent(e)) {
@@ -29,11 +31,12 @@ class Cycle {
     }
 
 
+    @NonNull
     Equation<
             Numerical,
             Vector<Numerical, Derivative>,
             Row<Numerical, FunctionVariable, PolyFunction>
-            > getEquation(Collection<Derivative> variables) {
+            > getEquation(@NonNull Collection<Derivative> variables) {
 
         Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
         Row<Numerical, FunctionVariable, PolyFunction> consts =
@@ -57,6 +60,7 @@ class Cycle {
         return new Equation<>(vars, consts);
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

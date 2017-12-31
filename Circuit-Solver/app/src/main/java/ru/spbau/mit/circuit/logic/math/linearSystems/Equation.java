@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.linearSystems;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.logic.math.algebra.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.Linear;
 
@@ -22,13 +24,15 @@ public class Equation<C extends Field<C>, T extends Gauss<C, T>, U extends Linea
         this.constant = constant;
     }
 
+    @NonNull
     @Override
-    public Equation<C, T, U> add(Equation<C, T, U> item) {
+    public Equation<C, T, U> add(@NonNull Equation<C, T, U> item) {
         coefficients = coefficients.add(item.coefficients);
         constant = constant.add(item.constant);
         return this;
     }
 
+    @NonNull
     @Override
     public Equation<C, T, U> multiplyConstant(C c) {
         coefficients = coefficients.multiplyConstant(c);
@@ -53,7 +57,7 @@ public class Equation<C extends Field<C>, T extends Gauss<C, T>, U extends Linea
     public U constant() {
         return constant;
     }
-    
+
     @Override
     public String toString() {
         return coefficients.toString() + " = " + constant.toString();
