@@ -25,3 +25,4 @@ android:
     - sys-img-armeabi-v7a-android-17
   script:
     - cd Circuit-Solver
+    - ./gradlew build

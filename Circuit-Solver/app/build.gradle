@@ -27,18 +27,18 @@ android {
 }
 
 dependencies {
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:26.+'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
-    compile group: 'org.ejml', name: 'ejml-all', version: '0.32'
+    implementation group: 'org.ejml', name: 'ejml-all', version: '0.32'
 
-    compile 'com.google.android.gms:play-services-auth:11.6.2'
-    compile 'com.google.android.gms:play-services-drive:11.6.2'
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation 'com.google.android.gms:play-services-drive:11.8.0'
 }

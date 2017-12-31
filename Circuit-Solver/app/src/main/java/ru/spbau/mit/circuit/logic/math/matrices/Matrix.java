@@ -22,6 +22,7 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         this(n, n, zero);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public Matrix(int n, int m, T zero) {
         this.zero = zero;
         this.n = n;
