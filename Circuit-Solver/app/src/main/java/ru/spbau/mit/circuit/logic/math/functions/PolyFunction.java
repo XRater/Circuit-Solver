@@ -9,6 +9,7 @@ import ru.spbau.mit.circuit.logic.math.algebra.Linear;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.functions.exceptions.IllegalDoubleConvertionException;
 
+@SuppressWarnings("WeakerAccess")
 public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, PolyFunction> {
 
     private final Map<PolyExponent, PolyExponent> data = new TreeMap<>();
@@ -20,7 +21,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         add(f);
     }
 
-    public PolyFunction(PolyFunction function) {
+    private PolyFunction(PolyFunction function) {
         for (PolyExponent f : function.data.values()) {
             add(f);
         }
@@ -102,10 +103,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
 
     @Override
     public boolean isIdentity() {
-        if (data.size() != 1) {
-            return false;
-        }
-        return data.values().iterator().next().isIdentity();
+        return data.size() == 1 && data.values().iterator().next().isIdentity();
     }
 
     private PolyFunction div(PolyExponent gcd) {
@@ -131,33 +129,6 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return ans;
     }
 
-    public double doubleValue() {
-        if (data.size() == 0) {
-            return 0;
-        }
-        if (data.size() != 1) {
-            throw new IllegalDoubleConvertionException();
-        }
-        for (PolyExponent exponent : data.values()) {
-            return exponent.doubleValue();
-        }
-        throw new RuntimeException();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (data.values().isEmpty()) {
-            return "0";
-        }
-        Iterator<PolyExponent> iter = data.values().iterator();
-        sb.append(iter.next().toString());
-        while (iter.hasNext()) {
-            sb.append(" ").append(iter.next().toString());
-        }
-        return sb.toString();
-    }
-
     public PolyFunction integrate() {
         PolyFunction answer = new PolyFunction();
 
@@ -174,5 +145,29 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
             answer = answer.add(exponent.apply(x));
         }
         return answer;
+    }
+
+    public double doubleValue() {
+        if (data.size() == 0) {
+            return 0;
+        }
+        if (data.size() != 1) {
+            throw new IllegalDoubleConvertionException();
+        }
+        return data.values().iterator().next().doubleValue();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (data.values().isEmpty()) {
+            return "0";
+        }
+        Iterator<PolyExponent> iter = data.values().iterator();
+        sb.append(iter.next().toString());
+        while (iter.hasNext()) {
+            sb.append(" ").append(iter.next().toString());
+        }
+        return sb.toString();
     }
 }

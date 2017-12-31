@@ -31,12 +31,6 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         this.ePow = ePow;
     }
 
-    private PolyExponent(PolyExponent f) {
-        cf = f.cf;
-        ePow = f.ePow;
-        mPow = f.mPow;
-    }
-
     @Override
     public int compareTo(@NonNull PolyExponent o) {
         if (!Objects.equals(ePow, o.ePow)) {
@@ -199,7 +193,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return false;
     }
 
-    public int getHashCode() {
+    private int getHashCode() {
         // Speedable
         return mPow +
                 new BigDecimal(ePow).setScale(10, BigDecimal.ROUND_HALF_DOWN).hashCode() +

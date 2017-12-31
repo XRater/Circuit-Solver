@@ -4,8 +4,12 @@ import java.lang.reflect.Array;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.Linear;
-import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 
+/**
+ * Base matrix class. May store any values, which implements field interface.
+ *
+ * @param <T> stored type.
+ */
 public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, Matrix<T>> {
 
     private final T[][] data;
@@ -13,6 +17,7 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
     private final int m;
     private final T zero;
 
+    @SuppressWarnings("WeakerAccess")
     public Matrix(int n, T zero) {
         this(n, n, zero);
     }
@@ -21,6 +26,7 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         this.zero = zero;
         this.n = n;
         this.m = m;
+        //noinspection unchecked
         data = (T[][]) (Array.newInstance(zero.getClass(), n, m));
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
@@ -29,16 +35,21 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         }
     }
 
-    public Matrix(Matrix<T> matrix) {
-        this.zero = matrix.zero;
-        this.n = matrix.n;
-        this.m = matrix.m;
-        data = (T[][]) (Array.newInstance(zero.getClass(), n, m));
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                data[i][j] = matrix.data[i][j];
-            }
+    @SuppressWarnings("WeakerAccess")
+    public int n() {
+        return n;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public int m() {
+        return m;
+    }
+
+    public int size() {
+        if (n != m) {
+            throw new IllegalArgumentException();
         }
+        return n;
     }
 
     public void set(int i, int j, T t) {
@@ -168,30 +179,5 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
             sb.append('\n');
         }
         return sb.toString();
-    }
-
-    public static void main(String[] args) {
-        Matrix<Numerical> A = new Matrix<>(2, Numerical.zero());
-        A.set(0, 0, Numerical.number(1));
-        A.set(0, 1, Numerical.number(1));
-        A.set(1, 0, Numerical.number(1));
-        A.set(1, 1, Numerical.number(1));
-        System.out.println(A.multiply(A));
-        //        Matrix<BigReal> B = new Matrix<BigReal>(2, BigReal.ZERO.getField());
-    }
-
-    public int size() {
-        if (n != m) {
-            throw new IllegalArgumentException();
-        }
-        return n;
-    }
-
-    public int n() {
-        return n;
-    }
-
-    public int m() {
-        return m;
     }
 }

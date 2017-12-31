@@ -35,7 +35,7 @@ public class Drawer {
     private SurfaceHolder surfaceHolder;
     private MyCanvas canvas;
 
-    public Drawer(SurfaceHolder surfaceHolder) {
+    Drawer(SurfaceHolder surfaceHolder) {
         this.surfaceHolder = surfaceHolder;
     }
 
@@ -43,7 +43,7 @@ public class Drawer {
         return offsetX;
     }
 
-    public static void setOffsetX(int offsetX) {
+    static void setOffsetX(int offsetX) {
         Drawer.offsetX = offsetX;
     }
 
@@ -51,7 +51,7 @@ public class Drawer {
         return offsetY;
     }
 
-    public static void setOffsetY(int offsetY) {
+    static void setOffsetY(int offsetY) {
         Drawer.offsetY = offsetY;
     }
 
@@ -62,7 +62,7 @@ public class Drawer {
         return offset < (Drawer.CELL_SIZE / 2) ? x : x + Drawer.CELL_SIZE;
     }
 
-    public static Point round(Point p) {
+    static Point round(Point p) {
         return new Point(round(p.x() - offsetX), round(p.y() - offsetY));
     }
 
@@ -79,7 +79,7 @@ public class Drawer {
         }
     }
 
-    public void drawModel(DrawableModel drawableModel) {
+    void drawModel(DrawableModel drawableModel) {
         Canvas simpleCanvas = surfaceHolder.lockCanvas();
         canvas = new MyCanvas(simpleCanvas);
         drawBackground();
@@ -153,7 +153,7 @@ public class Drawer {
         }
 
         @Override
-        public void drawText(String text, float x, float y, @NonNull Paint paint) {
+        public void drawText(@NonNull String text, float x, float y, @NonNull Paint paint) {
             canvas.drawText(text, x + Drawer.offsetX, y + Drawer.offsetY, paint);
         }
 

@@ -2,7 +2,6 @@ package ru.spbau.mit.circuit.logic.math.linearContainers;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -12,6 +11,14 @@ import ru.spbau.mit.circuit.logic.math.algebra.Field;
 import ru.spbau.mit.circuit.logic.math.linearContainers.exceptions.IllegalAdditionException;
 import ru.spbau.mit.circuit.logic.math.linearSystems.Gauss;
 
+/**
+ * Fixed size linear container. May store different values with their coefficients.
+ * <p>
+ * Stored values will be fixed at the moment f initialization, but their coefficients may alter.
+ *
+ * @param <C> type of the coefficient
+ * @param <T> type of the stored value
+ */
 public class Vector<C extends Field<C>, T extends Comparable<? super T>> implements Gauss<C,
         Vector<C, T>> {
 
@@ -29,15 +36,12 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
         }
     }
 
+    @SuppressWarnings("unused")
     public void setCoefficients(List<C> coefficients) {
         int index = 0;
         for (C c : coefficients) {
             cfs.set(index++, c);
         }
-    }
-
-    public void setCoefficients(C... coefficients) {
-        setCoefficients(Arrays.asList(coefficients));
     }
 
     @Override

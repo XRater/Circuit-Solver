@@ -86,7 +86,12 @@ public class Solver {
                 (underIntegralMatrix));
 
         // Find constants for initial values
-        ArrayList<NumericalVariable> variables = getCoefficients(matrixExponent, constPart);
+        ArrayList<NumericalVariable> variables;
+        try {
+            variables = getCoefficients(matrixExponent, constPart);
+        } catch (ZeroDeterminantException e) {
+            throw new RuntimeException(); // Should never happen
+        }
 
 
         // Set answer
@@ -115,7 +120,8 @@ public class Solver {
      */
     @NonNull
     private static ArrayList<NumericalVariable> getCoefficients(Matrix<Function> matrixExponent,
-                                                                Matrix<Function> constPart) {
+                                                                Matrix<Function> constPart)
+            throws ZeroDeterminantException {
         ArrayList<NumericalVariable> variables = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             variables.add(new NumericalVariable("c" + i));

@@ -25,17 +25,21 @@ public class DrawableModel {
     private static Map<Point, Drawable> field = new LinkedHashMap<>();
     private static Set<DrawableWire> drawableWires = new LinkedHashSet<>();
     private final Activity activity;
-    private Drawer drawer;
     private Set<Drawable> drawables = new LinkedHashSet<>();
     private Set<DrawableNode> realNodes = new LinkedHashSet<>();
+    private Drawer drawer;
+
     private DrawableNode holded;
     private Drawable chosen;
+
     private boolean showingCurrents;
 
     DrawableModel(Activity activity, Drawer drawer) {
         this.activity = activity;
         this.drawer = drawer;
     }
+
+    // Many methods are package private. We dont want to change model from outside.
 
     public static Drawable getByPoint(Point p) {
         return field.get(p);
@@ -45,23 +49,28 @@ public class DrawableModel {
         return drawableWires;
     }
 
-    public Set<Drawable> drawables() {
+    Set<Drawable> drawables() {
         return drawables;
     }
 
-    public Set<DrawableNode> realNodes() {
+    Set<DrawableNode> realNodes() {
         return realNodes;
     }
 
-    public boolean isShowingCurrents() {
+    boolean isShowingCurrents() {
         return showingCurrents;
     }
 
-    public void changeShowingCurrents() {
+    void changeShowingCurrents() {
         showingCurrents = !showingCurrents;
     }
 
-    public void addElement(Drawable e) {
+    /**
+     * Adding an element to drawableModel. Information is also transfered to controller.
+     *
+     * @param e drawable to add.
+     */
+    void addElement(Drawable e) {
         drawables.add(e);
         try {
             MainActivity.ui.addToModel((Element) e);
@@ -75,16 +84,21 @@ public class DrawableModel {
         redraw();
     }
 
-    public WireEnd getHolded() {
+    WireEnd getHolded() {
         return holded;
     }
 
-    public void redraw() {
+    void redraw() {
         drawer.drawModel(this);
     }
 
-    public void move(Drawable drawable, Point point) {
-        //horizontal case
+    /**
+     * Moves an object if point is empty. Otherwise nothing happens.
+     *
+     * @param drawable an object to move.
+     * @param point    where to move.
+     */
+    void move(Drawable drawable, Point point) {
         int realX = 0, realY = 0;
         if (((Element) drawable).isHorizontal()) {
             realX = Math.max(2 * Drawer.CELL_SIZE, point.x());
@@ -137,6 +151,12 @@ public class DrawableModel {
         redraw();
     }
 
+    /**
+     * Checking if an element can be centered in point.
+     * @param point new center.
+     * @param element element that is moved.
+     * @return true if can move.
+     */
     private boolean isValid(Point point, Element element) {
         if (element.isHorizontal()) {
             return isValidPoint(point, element) &&
@@ -172,11 +192,13 @@ public class DrawableModel {
         return true;
     }
 
-    public Point getPossiblePosition() {
+    /**
+     * @return a possible position to spawn new element.
+     */
+    Point getPossiblePosition() {
         int x = 5 * Drawer.CELL_SIZE;
         int y = 5 * Drawer.CELL_SIZE;
         while (!canPut(new Point(x, y))) {
-            //x += 2 * Drawer.CELL_SIZE;
             y += 2 * Drawer.CELL_SIZE;
         }
         return new Point(x, y);
@@ -224,12 +246,11 @@ public class DrawableModel {
             field.remove(element.from().position());
         }
         if (drawable instanceof Wire) {
-            drawableWires.remove(drawable);
+            drawableWires.remove((DrawableWire) drawable);
             deleteOldWirePosition((DrawableWire) drawable);
         }
     }
 
-    @Deprecated //TODO
     private void addNewWirePosition(DrawableWire wire) {
         LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
@@ -241,17 +262,12 @@ public class DrawableModel {
         }
     }
 
-    public void addWire(DrawableWire drawableWire) {
-        drawableWires.add(drawableWire);
-        addNewWirePosition(drawableWire);
-    }
-
     private void deleteOldWirePosition(DrawableWire wire) {
         LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
             DrawableNode node = (DrawableNode) field.get(p);
             if (node != null) {
-                if (!node.isRealNode())// && node.hasZeroWires())
+                if (!node.isRealNode())
                 {
                     boolean flag = false;
                     // Now we are checking if this Point is covered with any of other wires.
@@ -270,8 +286,12 @@ public class DrawableModel {
         wire.clearPath();
     }
 
-    public void connect(DrawableNode second) {
-        // May be info for user is required here, but I am not sure.
+    /**
+     * Connecting holded point with given.
+     *
+     * @param second second end of wire.
+     */
+    void connect(DrawableNode second) {
         if (second.position().equals(holded.position())) {
             return;
         }
@@ -345,20 +365,20 @@ public class DrawableModel {
         }
     }
 
-    public void hold(DrawableNode chosen) {
+    void hold(DrawableNode chosen) {
         holded = chosen;
         redraw();
     }
 
-    public boolean holding() {
+    boolean holding() {
         return holded != null;
     }
 
-    public void unhold() {
+    void unhold() {
         holded = null;
     }
 
-    public void clear() {
+    void clear() {
         drawables.clear();
         drawableWires.clear();
         realNodes.clear();
@@ -368,7 +388,12 @@ public class DrawableModel {
         chosen = null;
     }
 
-    public void removeElement(Drawable chosen) {
+    /**
+     * Remove element from drawableModel. Changes are transfered to controller,
+     *
+     * @param chosen an element to be removed.
+     */
+    void removeElement(Drawable chosen) {
         List<CircuitObject> toBeDeleted = new ArrayList<>();
         if (chosen instanceof Element) {
             for (DrawableWire wire : drawableWires) {
@@ -386,8 +411,7 @@ public class DrawableModel {
         redraw();
     }
 
-    public void removeWire(DrawableNode node) {
-//        ArrayList<Wire> toBeDeleted = new ArrayList<>();
+    void removeWire(DrawableNode node) {
         for (DrawableWire wire : drawableWires) {
             if (wire.getPath().contains(node.position())) {
                 killWire(wire);
@@ -402,7 +426,12 @@ public class DrawableModel {
         redraw();
     }
 
-    public void rotateElement(Element element) {
+    /**
+     * Rotates an element if possible.
+     *
+     * @param element an element to rotate.
+     */
+    void rotateElement(Element element) {
         if (!canRotate(element)) {
             Toast.makeText(activity.getApplicationContext(), "It is not possible to rotate the " +
                             "element here.",
@@ -457,7 +486,7 @@ public class DrawableModel {
         return true;
     }
 
-    public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
+    void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
         DrawableWire del1 = (DrawableWire) first;
         DrawableWire del2 = (DrawableWire) second;
 
@@ -466,7 +495,6 @@ public class DrawableModel {
         field.put(common.position(), (Drawable) common); // Map modified after deleting wire.
 
         realNodes.remove(common);
-
         DrawableWire.mergePath(del1, del2, common);
         redraw();
     }
@@ -477,30 +505,30 @@ public class DrawableModel {
         drawableWires.remove(wire);
     }
 
-    public void addRealNode(DrawableNode node) {
+    void addRealNode(DrawableNode node) {
         realNodes.add(node);
         addNewObjectPosition(node);
     }
 
-    public void loadElement(Drawable element) {
+    void loadElement(Drawable element) {
         drawables.add(element);
         addNewObjectPosition(element);
     }
 
-    public void loadWire(DrawableWire wire) {
+    void loadWire(DrawableWire wire) {
         drawableWires.add(wire);
         addNewWirePosition(wire);
     }
 
-    public void setDrawer(Drawer drawer) {
+    void setDrawer(Drawer drawer) {
         this.drawer = drawer;
     }
 
-    public Drawable chosen() {
+    Drawable chosen() {
         return chosen;
     }
 
-    public void setChosen(Drawable chosen) {
+    void setChosen(Drawable chosen) {
         this.chosen = chosen;
         redraw();
     }

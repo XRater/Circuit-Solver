@@ -14,7 +14,7 @@ import ru.spbau.mit.circuit.storage.Converter;
 
 public class UI {
     private final Controller controller;
-    public boolean circuitWasLoaded = false;
+    boolean circuitWasLoaded = false;
     private DrawableModel drawableModel;
 
     public UI(Controller controller) {
@@ -25,37 +25,33 @@ public class UI {
         controller.load(mode, name);
     }
 
-    public void calculateCurrents() throws CircuitShortingException, NotImplementedYetException {
+    void calculateCurrents() throws CircuitShortingException, ToHardException {
         controller.calculateCurrents();
     }
 
-    public void addToModel(CircuitObject e) throws NodesAreAlreadyConnected {
+    void addToModel(CircuitObject e) throws NodesAreAlreadyConnected {
         controller.add(e);
     }
 
-    public void addToModel(List<CircuitObject> e) throws NodesAreAlreadyConnected {
-        controller.addAll(e);
-    }
-
-    public void setDrawableModel(DrawableModel drawableModel) {
+    void setDrawableModel(DrawableModel drawableModel) {
         this.drawableModel = drawableModel;
     }
 
-    public void clearModel() {
+    private void clearModel() {
         if (drawableModel != null) {
             drawableModel.clear();
         }
     }
 
-    public void removeFromModel(CircuitObject chosen) {
+    void removeFromModel(CircuitObject chosen) {
         controller.remove(chosen);
     }
 
-    public void removeFromModel(List<CircuitObject> chosen) {
+    void removeFromModel(List<CircuitObject> chosen) {
         controller.removeAll(chosen);
     }
 
-    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+    void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
             throws NodesAreAlreadyConnected {
         controller.removeThenAdd(toBeDeleted, toBeAdded);
     }

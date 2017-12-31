@@ -11,7 +11,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveId;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,11 +25,18 @@ import ru.spbau.mit.circuit.ui.UI;
 
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_SIGN_IN = 0;
-
+    /**
+     * Request code for the Drive picker
+     */
+    protected static final int REQUEST_CODE_OPEN_ITEM = 1;
+    private static final String TAG = "BaseDriveActivity";
     public static UI ui;
     private static Controller controller;
-
     private DriveStorage driverStorage;
+    /**
+     * Tracks completion of the drive picker
+     */
+    private TaskCompletionSource<DriveId> mOpenItemTaskSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +56,6 @@ public class MainActivity extends AppCompatActivity {
     public void onLoadCircuit(View view) {
         Intent intent = new Intent(MainActivity.this, LoadActivity.class);
         startActivity(intent);
-    }
-
-    public void onSettings(View view) {
-
     }
 
     @Override

@@ -25,9 +25,9 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        String r = String.format("%.2f", getCharacteristicValue()) + "F";
-        Rect rSize = new Rect();
-        Drawer.ELEMENTS_PAINT.getTextBounds(r, 0, r.length(), rSize);
+        String capacity = String.format("%.2f", getCharacteristicValue()) + "F";
+        Rect capacitySize = new Rect();
+        Drawer.ELEMENTS_PAINT.getTextBounds(capacity, 0, capacity.length(), capacitySize);
 
         canvas.save();
         if (!isHorizontal()) {
@@ -36,20 +36,16 @@ public class DrawableCapacitor extends Capacitor implements Drawable {
             canvas.translate(-x() - Drawer.getOffsetX(), -y() - Drawer.getOffsetY());
         }
 
-
         canvas.drawLine(x() - CELL_SIZE * 2, y(), x() - CELL_SIZE / 4, y(),
                 Drawer.ELEMENTS_PAINT);
         canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 4, y(),
                 Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() - Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() - Drawer
-                .CELL_SIZE
-                / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
-        canvas.drawLine(x() + Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() + Drawer
-                .CELL_SIZE
-                / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() - Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4,
+                x() - Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() + Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4,
+                x() + Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
 
-        canvas.drawText(r, x() - rSize.width() / 2, y() + CELL_SIZE / 4 * 5, Drawer.ELEMENTS_PAINT);
-
+        canvas.drawText(capacity, x() - capacitySize.width() / 2, y() + CELL_SIZE / 4 * 5, Drawer.ELEMENTS_PAINT);
 
         canvas.restore();
         canvas.drawCircle(from.x(), from.y(), NODE_RADIUS, WIRE_PAINT);
