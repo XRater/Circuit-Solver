@@ -16,7 +16,7 @@ import ru.spbau.mit.circuit.logic.math.linearSystems.Gauss;
 /**
  * Fixed size linear container. May store different values with their coefficients.
  * <p>
- * Stored values will be fixed at the moment f initialization, but their coefficients may alter.
+ * Stored values will be fixed at the moment of initialization, but their coefficients may alter.
  *
  * @param <C> type of the coefficient
  * @param <T> type of the stored value
@@ -25,7 +25,7 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
         Vector<C, T>> {
 
     private final ArrayList<T> data = new ArrayList<>();
-    private final ArrayList<C> cfs = new ArrayList<>();
+    private final ArrayList<C> coefficients = new ArrayList<>();
 
     private final int size;
 
@@ -34,7 +34,7 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
         Collections.sort(data);
         size = data.size();
         for (int i = 0; i < size; i++) {
-            cfs.add(initial);
+            coefficients.add(initial);
         }
     }
 
@@ -42,7 +42,7 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
     public void setCoefficients(@NonNull List<C> coefficients) {
         int index = 0;
         for (C c : coefficients) {
-            cfs.set(index++, c);
+            this.coefficients.set(index++, c);
         }
     }
 
@@ -59,8 +59,8 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
             if (our.next().compareTo(their.next()) != 0) {
                 throw new IllegalAdditionException();
             }
-            C newC = cfs.get(index).add(item.cfs.get(index));
-            cfs.set(index, newC);
+            C newC = coefficients.get(index).add(item.coefficients.get(index));
+            coefficients.set(index, newC);
             index++;
         }
         if (their.hasNext()) {
@@ -73,8 +73,8 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
         int index = 0;
         for (T t1 : data) {
             if (t1.compareTo(t) == 0) {
-                C newC = cfs.get(index).add(cf);
-                cfs.set(index, newC);
+                C newC = coefficients.get(index).add(cf);
+                coefficients.set(index, newC);
                 return;
             }
             index++;
@@ -86,15 +86,15 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
     @Override
     public Vector<C, T> multiplyConstant(C c) {
         for (int i = 0; i < size; i++) {
-            C newC = cfs.get(i).multiply(c);
-            cfs.set(i, newC);
+            C newC = coefficients.get(i).multiply(c);
+            coefficients.set(i, newC);
         }
         return this;
     }
 
     @Override
     public C coefficientAt(int index) {
-        return cfs.get(index);
+        return coefficients.get(index);
     }
 
     public T valueAt(int i) {
@@ -111,7 +111,7 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
     public String toString() {
         StringBuilder sb = new StringBuilder();
         int i = 0;
-        for (C c : cfs) {
+        for (C c : coefficients) {
             sb.append(c).append(data.get(i++)).append(" ");
         }
         return sb.toString();

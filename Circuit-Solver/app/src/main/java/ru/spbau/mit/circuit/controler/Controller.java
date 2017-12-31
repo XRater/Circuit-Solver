@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
-import ru.spbau.mit.circuit.logic.ToHardException;
+import ru.spbau.mit.circuit.logic.NotImplementedYetException;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
@@ -20,6 +20,10 @@ import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
 
+/**
+ * Class connector between all other parts of the project (Logic, UI, Converter). Used only
+ * to pass messages. There might be no useful functionality.
+ */
 public class Controller {
 
     // FIXME handle exceptions
@@ -55,7 +59,7 @@ public class Controller {
         return model;
     }
 
-    public void calculateCurrents() throws CircuitShortingException, ToHardException {
+    public void calculateCurrents() throws CircuitShortingException, NotImplementedYetException {
         logic.calculateCurrents(model);
     }
 
@@ -63,6 +67,7 @@ public class Controller {
         model.add(object);
     }
 
+    @SuppressWarnings("unused")
     public void addAll(@NonNull List<CircuitObject> objects) throws NodesAreAlreadyConnected {
         model.addAll(objects);
     }
@@ -91,9 +96,7 @@ public class Controller {
     public boolean save(Converter.Mode mode, String filename) {
         try {
             return Tasks.saveTask(mode, converter, model).execute(filename).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return false;
@@ -103,9 +106,7 @@ public class Controller {
     public List<String> getCircuits(Converter.Mode mode) {
         try {
             return Tasks.getCircuitsTask(mode, converter).execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
@@ -117,9 +118,7 @@ public class Controller {
             newModel.setController(this);
             newModel.initializeVerificator();
             this.model = newModel;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
@@ -131,9 +130,7 @@ public class Controller {
     public void removeFromStorage(Converter.Mode mode, String name) {
         try {
             Tasks.deleteTask(mode, converter).execute(name).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }

@@ -42,7 +42,7 @@ class Vertex {
     }
 
     /**
-     * Makes new equation corresponding to the first Oms law.
+     * Makes new equation corresponding to the first Kirchhoff's law.
      */
     @NonNull
     Equation<

@@ -10,7 +10,10 @@ public class Functions {
     @NonNull
     private static Function identity = Functions.constant(1);
 
-    @NonNull
+
+    private Functions() {
+    }
+
     public static Function zero() {
         return zero;
     }

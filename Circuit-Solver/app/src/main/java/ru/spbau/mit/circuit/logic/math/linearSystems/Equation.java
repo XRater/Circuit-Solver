@@ -58,13 +58,6 @@ public class Equation<C extends Field<C>, T extends Gauss<C, T>, U extends Linea
         return constant;
     }
 
-//    @Override
-//    public String toString() {
-//        return coefficients.toString() + " = " + constant.toString();
-//    }
-
-
-    @NonNull
     @Override
     public String toString() {
         return coefficients.toString() + " = " + constant.toString();

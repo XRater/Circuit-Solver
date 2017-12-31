@@ -16,7 +16,7 @@ import ru.spbau.mit.circuit.storage.LoadingException;
  * This class stores some tasks to work with converter. Every task is AsyncTask which will be called
  * in another thread, therefore MainActivity thread will not be paused.
  * <p>
- * Class has number of inner tasks and and static fabric methods to create them.
+ * Class has number of inner tasks and and static factory methods to create them.
  * <p>
  * Every task requires converter and mode to work with.
  */

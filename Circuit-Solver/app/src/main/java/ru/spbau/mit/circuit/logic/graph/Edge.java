@@ -88,8 +88,8 @@ class Edge {
 
     double getCapacity() {
         if (item instanceof Capacitor) {
-            Capacitor resistor = (Capacitor) item;
-            return resistor.getCharacteristicValue();
+            Capacitor capacitor = (Capacitor) item;
+            return capacitor.getCharacteristicValue();
         }
         return 0;
     }

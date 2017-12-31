@@ -14,7 +14,7 @@ import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 
 /**
- * Graph representation of model. May contain more then one component.
+ * Graph representation of model. May contain more than one component.
  */
 public class Graph {
 
