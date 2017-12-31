@@ -64,6 +64,8 @@ class Tasks {
         private final Converter converter;
         private final Model model;
 
+        private Throwable t;
+
         SaveTask(Converter.Mode mode, Converter converter, Model model) {
             this.converter = converter;
             this.mode = mode;
@@ -75,7 +77,7 @@ class Tasks {
             try {
                 return converter.save(mode, model, filename[0]);
             } catch (StorageException e) {
-                e.printStackTrace();
+                t = e;
             }
             return false;
         }
