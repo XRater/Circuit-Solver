@@ -19,8 +19,9 @@ class Path {
         edges.offerLast(e);
     }
 
+    @SuppressWarnings("unused")
     void pop() {
-        edges.peekLast();
+        edges.pollLast();
     }
 
     @Override

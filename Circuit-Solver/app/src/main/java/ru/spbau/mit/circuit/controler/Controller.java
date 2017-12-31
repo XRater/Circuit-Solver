@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.Logic;
-import ru.spbau.mit.circuit.logic.ToHardException;
+import ru.spbau.mit.circuit.logic.NotImplementedYetException;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
@@ -48,7 +48,7 @@ public class Controller {
         return model;
     }
 
-    public void calculateCurrents() throws CircuitShortingException, ToHardException {
+    public void calculateCurrents() throws CircuitShortingException, NotImplementedYetException {
         logic.calculateCurrents(model);
     }
 
@@ -109,9 +109,7 @@ public class Controller {
             newModel.setController(this);
             newModel.initializeVerificator();
             this.model = newModel;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
@@ -123,9 +121,7 @@ public class Controller {
     public void removeFromStorage(Converter.Mode mode, String name) {
         try {
             Tasks.deleteTask(mode, converter).execute(name).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }
