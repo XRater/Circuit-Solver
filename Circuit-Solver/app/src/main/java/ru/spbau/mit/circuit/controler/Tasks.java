@@ -5,12 +5,11 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.io.IOException;
 import java.util.List;
 
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.storage.Converter;
-import ru.spbau.mit.circuit.storage.LoadingException;
+import ru.spbau.mit.circuit.storage.StorageException;
 
 /**
  * This class stores some tasks to work with converter. Every task is AsyncTask which will be called
@@ -75,7 +74,7 @@ class Tasks {
         public Boolean doInBackground(String... filename) {
             try {
                 return converter.save(mode, model, filename[0]);
-            } catch (IOException e) {
+            } catch (StorageException e) {
                 e.printStackTrace();
             }
             return false;
@@ -119,7 +118,7 @@ class Tasks {
             }
             try {
                 return converter.load(mode, filename[0]);
-            } catch (LoadingException e) {
+            } catch (StorageException e) {
                 t = e;
             }
             return null;
@@ -142,7 +141,7 @@ class Tasks {
         public Boolean doInBackground(String... filename) {
             try {
                 return converter.delete(mode, filename[0]);
-            } catch (LoadingException e) {
+            } catch (StorageException e) {
                 t = e;
                 return false;
             }
@@ -153,5 +152,4 @@ class Tasks {
             super.onPostExecute(aBoolean);
         }
     }
-
 }

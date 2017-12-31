@@ -31,5 +31,6 @@ public interface Field<T extends Field<T>> {
     @NonNull
     T getZero();
 
+    @NonNull
     T getIdentity();
 }

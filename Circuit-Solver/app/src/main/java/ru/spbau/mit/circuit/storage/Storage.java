@@ -18,6 +18,6 @@ public interface Storage {
     @Nullable
     ByteArrayInputStream load(String name);
 
-    void delete(String name) throws LoadingException;
+    void delete(String name) throws StorageException;
 
 }

@@ -1,10 +1,10 @@
 package ru.spbau.mit.circuit.logic;
 
 
-public class ToHardException extends Exception {
+public class TooHardException extends Exception {
 
     @SuppressWarnings("WeakerAccess")
-    public ToHardException(Throwable cause) {
+    public TooHardException(Throwable cause) {
         super(cause);
     }
 }

@@ -221,7 +221,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                         try {
                             element.setCharacteristicValue(Double.parseDouble(cp));
                             element.setVoltage(Double.parseDouble(voltage));
-                        } catch (@NonNull NumberFormatException | NullPointerException e2) {
+                        } catch (@NonNull NumberFormatException e) {
                             // No info
                         }
                         drawableModel.redraw();
@@ -237,7 +237,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                         String value = String.valueOf(taskEditText.getText());
                         try {
                             element.setCharacteristicValue(Double.parseDouble(value));
-                        } catch (@NonNull NumberFormatException | NullPointerException e2) {
+                        } catch (@NonNull NumberFormatException e) {
                             // No info
                         }
                         drawableModel.redraw();

@@ -17,6 +17,7 @@ import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.storage.Converter;
+import ru.spbau.mit.circuit.storage.StorageException;
 import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
 
@@ -25,8 +26,6 @@ import ru.spbau.mit.circuit.ui.UI;
  * to pass messages. There might be no useful functionality.
  */
 public class Controller {
-
-    // FIXME handle exceptions
 
     @NonNull
     private final Logic logic;
@@ -103,23 +102,22 @@ public class Controller {
     }
 
     @Nullable
-    public List<String> getCircuits(Converter.Mode mode) {
+    public List<String> getCircuits(Converter.Mode mode) throws StorageException {
         try {
             return Tasks.getCircuitsTask(mode, converter).execute().get();
         } catch (@NonNull InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            throw new StorageException();
         }
-        return null;
     }
 
-    public void load(Converter.Mode mode, String filename) {
+    public void load(Converter.Mode mode, String filename) throws StorageException {
         try {
             Model newModel = Tasks.loadTask(mode, converter).execute(filename).get();
             newModel.setController(this);
             newModel.initializeVerificator();
             this.model = newModel;
         } catch (@NonNull InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            throw new StorageException();
         }
 
         ui.setCircuitWasLoaded();
@@ -127,11 +125,11 @@ public class Controller {
         activity.startActivity(intent);
     }
 
-    public void removeFromStorage(Converter.Mode mode, String name) {
+    public void removeFromStorage(Converter.Mode mode, String name) throws StorageException {
         try {
             Tasks.deleteTask(mode, converter).execute(name).get();
         } catch (@NonNull InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            throw new StorageException();
         }
     }
 }

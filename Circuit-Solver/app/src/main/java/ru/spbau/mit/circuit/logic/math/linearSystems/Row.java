@@ -2,6 +2,7 @@ package ru.spbau.mit.circuit.logic.math.linearSystems;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -51,7 +52,7 @@ public class Row<C extends Field<C>, T extends Comparable<? super T>, S extends 
         constant = constant.add(s);
     }
 
-    // MAY RETURN NULL!
+    @Nullable
     public C get(T t) {
         return data.get(t);
     }

@@ -31,6 +31,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         down = down.div(down);
     }
 
+    @NonNull
     @Override
     public Function add(@NonNull Function other) {
         PolyFunction nUp = up.multiply(other.down).add(other.up.multiply(down));
@@ -40,6 +41,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         return new Function(nUp, down.multiply(other.down));
     }
 
+    @NonNull
     @Override
     public Function multiply(@NonNull Function other) {
         PolyFunction nUp = up.multiply(other.up);

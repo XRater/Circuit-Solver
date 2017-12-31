@@ -16,7 +16,7 @@ import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
 
 public class DrawableBattery extends Battery implements Drawable {
 
-    protected DrawableBattery(DrawableNode from, DrawableNode to) {
+    protected DrawableBattery(@NonNull DrawableNode from, @NonNull DrawableNode to) {
         super(from, to);
     }
 

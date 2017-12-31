@@ -14,6 +14,7 @@ import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.storage.Converter;
+import ru.spbau.mit.circuit.storage.StorageException;
 
 public class UI {
     private final Controller controller;
@@ -24,7 +25,7 @@ public class UI {
         this.controller = controller;
     }
 
-    public void load(Converter.Mode mode, String name) {
+    public void load(Converter.Mode mode, String name) throws StorageException {
         controller.load(mode, name);
     }
 
@@ -68,7 +69,7 @@ public class UI {
     }
 
     @Nullable
-    public List<String> getCircuits(Converter.Mode mode) {
+    public List<String> getCircuits(Converter.Mode mode) throws StorageException {
         return controller.getCircuits(mode);
     }
 
@@ -86,7 +87,7 @@ public class UI {
         return controller.getModel();
     }
 
-    public void removeFromStorage(Converter.Mode mode, String name) {
+    public void removeFromStorage(Converter.Mode mode, String name) throws StorageException {
         controller.removeFromStorage(mode, name);
     }
 

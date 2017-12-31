@@ -32,6 +32,25 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         this.ePow = ePow;
     }
 
+    private static String writeNumber(double d) {
+        if (isEquals(d, Math.round(d))) {
+            if (Math.round(d) == 0 || Math.round(d) == 1) {
+                return "";
+            }
+            if (Math.round(d) == -1) {
+                return "-";
+            }
+            return String.valueOf(Math.round(d));
+        }
+        BigDecimal decimal = new BigDecimal(d);
+        decimal = decimal.setScale(scale, RoundingMode.HALF_EVEN);
+        return decimal.toString();
+    }
+
+    private static boolean isEquals(double x, double y) {
+        return Math.abs(x - y) < precision;
+    }
+
     @Override
     public int compareTo(@NonNull PolyExponent o) {
         if (!Objects.equals(ePow, o.ePow)) {
@@ -118,25 +137,6 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         }
     }
 
-    private static String writeNumber(double d) {
-        if (isEquals(d, Math.round(d))) {
-            if (Math.round(d) == 0 || Math.round(d) == 1) {
-                return "";
-            }
-            if (Math.round(d) == -1) {
-                return "-";
-            }
-            return String.valueOf(Math.round(d));
-        }
-        BigDecimal decimal = new BigDecimal(d);
-        decimal = decimal.setScale(scale, RoundingMode.HALF_EVEN);
-        return decimal.toString();
-    }
-
-    private static boolean isEquals(double x, double y) {
-        return Math.abs(x - y) < precision;
-    }
-
     double doubleValue() {
         if (!isEquals(ePow, 0) || mPow != 0) {
             throw new IllegalDoubleConvertionException();
@@ -144,6 +144,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return cf;
     }
 
+    @NonNull
     PolyFunction differentiate() {
         PolyFunction ans = PolyFunctions.zero();
         ans = ans.add(PolyFunctions.polyExponent(cf * mPow, mPow - 1, ePow));

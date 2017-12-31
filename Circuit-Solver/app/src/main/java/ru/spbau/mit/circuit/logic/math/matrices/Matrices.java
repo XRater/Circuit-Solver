@@ -18,6 +18,7 @@ import ru.spbau.mit.circuit.logic.math.linearContainers.Polynom;
 @SuppressWarnings("WeakerAccess")
 public class Matrices {
 
+    @NonNull
     private static Function functionZero = Functions.zero();
 
     /**

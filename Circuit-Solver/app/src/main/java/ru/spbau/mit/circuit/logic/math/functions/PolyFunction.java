@@ -53,6 +53,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         }
     }
 
+    @NonNull
     @Override
     public PolyFunction multiply(@NonNull PolyFunction other) {
         if (other.isZero() || isZero()) {
@@ -67,6 +68,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return result;
     }
 
+    @NonNull
     @Override
     public PolyFunction negate() {
         return this.multiplyConstant(Numerical.number(-1));
@@ -78,6 +80,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         throw new UnsupportedOperationException();
     }
 
+    @NonNull
     @Override
     public PolyFunction multiplyConstant(@NonNull Numerical cf) {
         if (cf.isZero() || this.isZero()) {

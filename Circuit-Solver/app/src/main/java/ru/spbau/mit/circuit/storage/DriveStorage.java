@@ -152,7 +152,7 @@ public class DriveStorage implements Storage {
     }
 
     @Override
-    public void delete(String filename) throws LoadingException {
+    public void delete(String filename) throws StorageException {
         Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
                 .build();
@@ -170,7 +170,7 @@ public class DriveStorage implements Storage {
                 }
             }
         } catch (@NonNull InterruptedException | ExecutionException e) {
-            throw new LoadingException(e);
+            throw new StorageException(e);
         }
         if (driveFile != null) {
             driveResourceClient.delete(driveFile);

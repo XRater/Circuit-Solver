@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,26 +20,24 @@ public class Converter {
 
     public Converter(@NonNull Activity activity) {
         storageList.add(new Local(activity));
-        //storageList.add(new DriveStorage(activity));
+        storageList.add(new DriveStorage(activity));
     }
 
     private Storage getStorage(Mode mode) {
         return (mode == Mode.LOCAL) ? storageList.get(0) : storageList.get(1);
     }
 
-    public boolean save(Mode mode, Model model, String name) throws IOException {
+    public boolean save(Mode mode, Model model, String name) throws StorageException {
         List<String> names = getStorage(mode).getCircuits();
-        if (names.contains("name")) {
+        if (names.contains(name)) {
             return false;
         }
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);
-        objectOutputStream.writeObject(model);
-        objectOutputStream.close();
-        try {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);) {
+            objectOutputStream.writeObject(model);
             getStorage(mode).save(out.toByteArray(), name);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (@NonNull IOException | SQLException e) {
+            throw new StorageException();
         }
         return true;
     }
@@ -48,22 +47,22 @@ public class Converter {
         return getStorage(mode).getCircuits();
     }
 
-    public Model load(Mode mode, String name) throws LoadingException {
+    public Model load(Mode mode, String name) throws StorageException {
         ByteArrayInputStream in = getStorage(mode).load(name);
         Model model;
         try (ObjectInputStream objectInputStream = new ObjectInputStream(in)) {
             model = (Model) objectInputStream.readObject();
         } catch (@NonNull IOException | ClassNotFoundException e) {
-            throw new LoadingException(e);
+            throw new StorageException(e);
         }
         return model;
     }
 
-    public boolean delete(Mode mode, String name) throws LoadingException {
+    public boolean delete(Mode mode, String name) throws StorageException {
         try {
             getStorage(mode).delete(name);
         } catch (Exception e) {
-            throw new LoadingException(e);
+            throw new StorageException(e);
         }
         return true;
     }
