@@ -4,7 +4,7 @@ package ru.spbau.mit.circuit.logic.math.variables;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 
 /**
- * Class
+ * Class wrapper for numerical variables. For more convenience work with them.
  */
 public class NumericalVariable extends Variable<Numerical> {
 

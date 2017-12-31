@@ -96,17 +96,17 @@ public class Solver {
 
         // Set answer
         for (int i = 0; i < n; i++) {
-            Function ansI = Functions.constant(0);
+            Function answerAddition = Functions.constant(0);
 
             for (int j = 0; j < n; j++) {
-                ansI = ansI.add(matrixExponent.get(i, j).multiplyConstant(variables.get(j).value
-                        ()));
+                answerAddition = answerAddition.add(matrixExponent.get(i, j)
+                        .multiplyConstant(variables.get(j).value()));
             }
 
-            ansI = ansI.add(constPart.get(i, 0));
+            answerAddition = answerAddition.add(constPart.get(i, 0));
 
             Derivative d = systemToSolve.get(i).coefficients().valueAt(i);
-            d.parent().setValue(ansI);
+            d.parent().setValue(answerAddition);
             d.setValue();
         }
     }
@@ -145,8 +145,6 @@ public class Solver {
             constantsSystem.addEquation(eq);
         }
 
-        System.out.println("SOLVED");
-        constantsSystem.solve();
         for (int i = 0; i < n; i++) {
             Numerical constant = constantsSystem.get(i).constant();
             constantsSystem.get(i).coefficients().valueAt(i).setValue(constant);

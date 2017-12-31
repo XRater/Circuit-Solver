@@ -34,7 +34,4 @@ public class Derivative extends FunctionVariable {
     public String toString() {
         return parent.toString() + "'";
     }
-
-    public static void main(String[] args) {
-    }
 }

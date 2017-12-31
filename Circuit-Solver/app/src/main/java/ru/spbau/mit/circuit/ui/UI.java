@@ -25,7 +25,7 @@ public class UI {
         controller.load(mode, name);
     }
 
-    void calculateCurrents() throws CircuitShortingException, ToHardException {
+    void calculateCurrents() throws CircuitShortingException, NotImplementedYetException {
         controller.calculateCurrents();
     }
 
