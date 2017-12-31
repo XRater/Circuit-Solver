@@ -23,7 +23,8 @@ public class Logic {
      * @param model model to calculates currents for
      * @throws CircuitShortingException if there was any kind of shorting
      */
-    public void calculateCurrents(Model model) throws CircuitShortingException, ToHardException {
+    public void calculateCurrents(Model model) throws CircuitShortingException,
+            NotImplementedYetException {
         Graph g = new Graph(model);
         List<ConnectedGraph> components = g.decompose();
         for (ConnectedGraph component : components) {
@@ -32,7 +33,7 @@ public class Logic {
             } catch (CircuitShortingException e) {
                 throw e;
             } catch (Exception e) {
-                throw new ToHardException(e);
+                throw new NotImplementedYetException(e);
             }
         }
     }

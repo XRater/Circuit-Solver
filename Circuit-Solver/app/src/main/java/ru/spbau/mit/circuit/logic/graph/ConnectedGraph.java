@@ -26,8 +26,8 @@ public class ConnectedGraph {
     private final Vertex root; // root of the graph
 
     @SuppressWarnings("unused")
-    private int n = 0; // number of vertices
-    private int m = 0; // number of edges
+    private int verticesNumber = 0; // number of vertices
+    private int edgesNumber = 0; // number of edges
 
     private LinkedHashSet<Vertex> vertices = new LinkedHashSet<>();
     private List<Edge> edges = new ArrayList<>();
@@ -42,7 +42,7 @@ public class ConnectedGraph {
     ConnectedGraph(Vertex root) {
         Numerator.refresh();
         this.root = root;
-        n++;
+        verticesNumber++;
     }
 
     /**
@@ -56,7 +56,7 @@ public class ConnectedGraph {
         vertices.add(u);
         edge.addToTree();
         addEdge(edge);
-        n++;
+        verticesNumber++;
     }
 
     /**
@@ -88,7 +88,7 @@ public class ConnectedGraph {
         variables.add(edge.current());
         edge.setIndex(edges.size());
         edges.add(edge);
-        m++;
+        edgesNumber++;
     }
 
     /**
@@ -137,7 +137,7 @@ public class ConnectedGraph {
         LinearSystem<Numerical,
                 Vector<Numerical, Derivative>,
                 Row<Numerical, FunctionVariable, PolyFunction>> system =
-                new LinearSystem<>(m);
+                new LinearSystem<>(edgesNumber);
 
         for (Vertex node : vertices) {
             system.addEquation(node.getEquation(variables));

@@ -2,6 +2,8 @@ package ru.spbau.mit.circuit.storage;
 
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.Drive;
@@ -34,34 +36,28 @@ import ru.spbau.mit.circuit.MainActivity;
 public class DriveStorage implements Storage {
 
     private static final int BUFFER_SIZE = 1024;
+    @NonNull
     private final MainActivity activity;
 
-    private DriveClient mDriveClient;
-    private DriveResourceClient mDriveResourceClient;
-
-    public DriveClient getDriveClient() {
-        return mDriveClient;
-    }
-
-    public DriveResourceClient getDriveResourceClient() {
-        return mDriveResourceClient;
-    }
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
+    private DriveClient driveClient;
+    private DriveResourceClient driveResourceClient;
 
     public DriveStorage(Activity mainActivity) {
         this.activity = (MainActivity) mainActivity;
         activity.initDrive(this);
     }
 
-    public void initializeDriveClient(GoogleSignInAccount signInAccount) {
-        mDriveClient = Drive.getDriveClient(activity.getApplicationContext(), signInAccount);
-        mDriveResourceClient = Drive.getDriveResourceClient(activity.getApplicationContext(),
+    public void initializeDriveClient(@NonNull GoogleSignInAccount signInAccount) {
+        driveClient = Drive.getDriveClient(activity.getApplicationContext(), signInAccount);
+        driveResourceClient = Drive.getDriveResourceClient(activity.getApplicationContext(),
                 signInAccount);
     }
 
     @Override
-    public void save(byte[] bytes, String filename) {
-        final Task<DriveFolder> rootFolderTask = mDriveResourceClient.getAppFolder();
-        final Task<DriveContents> createContentsTask = mDriveResourceClient.createContents();
+    public void save(@NonNull byte[] bytes, @NonNull String filename) {
+        final Task<DriveFolder> rootFolderTask = driveResourceClient.getAppFolder();
+        final Task<DriveContents> createContentsTask = driveResourceClient.createContents();
         Tasks.whenAll(rootFolderTask, createContentsTask)
                 .continueWithTask(task -> {
                     DriveFolder parent = rootFolderTask.getResult();
@@ -75,18 +71,19 @@ public class DriveStorage implements Storage {
                             .setStarred(true)
                             .build();
 
-                    return mDriveResourceClient.createFile(parent, changeSet, contents);
+                    return driveResourceClient.createFile(parent, changeSet, contents);
                 });
         System.out.println("done " + filename);
     }
 
+    @NonNull
     @Override
     public List<String> getCircuits() {
         Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
                 .build();
 
-        Task<MetadataBuffer> queryTask = mDriveResourceClient.query(query);
+        Task<MetadataBuffer> queryTask = driveResourceClient.query(query);
         List<String> circuitsNames = new ArrayList<>();
 
         try {
@@ -96,22 +93,21 @@ public class DriveStorage implements Storage {
                 circuitsNames.add(metadata.getTitle());
             }
             System.out.println(circuitsNames.toString());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (@NonNull ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
         return circuitsNames;
     }
 
+    @Nullable
     @Override
     public ByteArrayInputStream load(String filename) {
         Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
                 .build();
 
-        Task<MetadataBuffer> queryTask = mDriveResourceClient.query(query);
+        Task<MetadataBuffer> queryTask = driveResourceClient.query(query);
 
         DriveFile driveFile = null;
         try {
@@ -123,13 +119,11 @@ public class DriveStorage implements Storage {
                     break;
                 }
             }
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (@NonNull ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        Task<DriveContents> driveContentsTask = mDriveResourceClient.openFile(driveFile,
+        Task<DriveContents> driveContentsTask = driveResourceClient.openFile(driveFile,
                 DriveFile.MODE_READ_ONLY);
         ByteArrayInputStream stream = null;
 
@@ -139,7 +133,7 @@ public class DriveStorage implements Storage {
 
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
             byte[] buff = new byte[BUFFER_SIZE];
-            int bytesRead = 0;
+            int bytesRead;
             while ((bytesRead = inputStream.read(buff)) != -1) {
                 bao.write(buff, 0, bytesRead);
             }
@@ -147,11 +141,7 @@ public class DriveStorage implements Storage {
             byte[] data = bao.toByteArray();
 
             stream = new ByteArrayInputStream(data);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (@NonNull InterruptedException | ExecutionException | IOException e) {
             e.printStackTrace();
         }
 
@@ -164,7 +154,7 @@ public class DriveStorage implements Storage {
                 .addFilter(Filters.eq(SearchableField.MIME_TYPE, "text/plain"))
                 .build();
 
-        Task<MetadataBuffer> queryTask = mDriveResourceClient.query(query);
+        Task<MetadataBuffer> queryTask = driveResourceClient.query(query);
 
         DriveFile driveFile = null;
         try {
@@ -176,11 +166,11 @@ public class DriveStorage implements Storage {
                     break;
                 }
             }
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (@NonNull InterruptedException | ExecutionException e) {
             throw new LoadingException(e);
         }
         if (driveFile != null) {
-            mDriveResourceClient.delete(driveFile);
+            driveResourceClient.delete(driveFile);
         }
     }
 }

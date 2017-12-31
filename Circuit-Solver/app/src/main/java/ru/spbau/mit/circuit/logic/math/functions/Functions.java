@@ -6,6 +6,9 @@ public class Functions {
     private static Function zero = Functions.constant(0);
     private static Function identity = Functions.constant(1);
 
+    private Functions() {
+    }
+
     public static Function zero() {
         return zero;
     }

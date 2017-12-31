@@ -17,7 +17,7 @@ import android.widget.Toast;
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
-import ru.spbau.mit.circuit.logic.ToHardException;
+import ru.spbau.mit.circuit.logic.NotImplementedYetException;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
@@ -88,7 +88,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Battery is shorted.", Toast.LENGTH_SHORT);
                 toast.show();
-            } catch (ToHardException e) {
+            } catch (NotImplementedYetException e) {
                 Toast toast = Toast.makeText(getApplicationContext(),
                         "Unsupported circuit.", Toast.LENGTH_SHORT);
                 toast.show();

@@ -7,6 +7,9 @@ public class PolyFunctions {
     private static final PolyFunction zero = PolyFunctions.constant(0);
     private static final PolyFunction identity = PolyFunctions.constant(1);
 
+    private PolyFunctions() {
+    }
+
     public static PolyFunction zero() {
         return zero;
     }

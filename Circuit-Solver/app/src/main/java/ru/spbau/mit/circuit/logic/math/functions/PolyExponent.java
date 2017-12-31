@@ -109,7 +109,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         }
     }
 
-    private String writeNumber(double d) {
+    private static String writeNumber(double d) {
         if (isEquals(d, Math.round(d))) {
             if (Math.round(d) == 0 || Math.round(d) == 1) {
                 return "";
@@ -124,7 +124,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return decimal.toString();
     }
 
-    private boolean isEquals(double x, double y) {
+    private static boolean isEquals(double x, double y) {
         return Math.abs(x - y) < precision;
     }
 
