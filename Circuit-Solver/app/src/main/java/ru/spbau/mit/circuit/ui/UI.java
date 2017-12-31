@@ -1,5 +1,8 @@
 package ru.spbau.mit.circuit.ui;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.List;
 
 import ru.spbau.mit.circuit.controler.Controller;
@@ -47,16 +50,16 @@ public class UI {
         controller.remove(chosen);
     }
 
-    void removeFromModel(List<CircuitObject> chosen) {
+    void removeFromModel(@NonNull List<CircuitObject> chosen) {
         controller.removeAll(chosen);
     }
 
-    void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+    void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject> toBeAdded)
             throws NodesAreAlreadyConnected {
         controller.removeThenAdd(toBeDeleted, toBeAdded);
     }
 
-    public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
+    public void deleteUnnecessaryNode(@NonNull Node common, Wire first, Wire second) {
         drawableModel.deleteUnnecessaryNode(common, first, second);
     }
 
@@ -64,6 +67,7 @@ public class UI {
         return controller.save(mode, name);
     }
 
+    @Nullable
     public List<String> getCircuits(Converter.Mode mode) {
         return controller.getCircuits(mode);
     }

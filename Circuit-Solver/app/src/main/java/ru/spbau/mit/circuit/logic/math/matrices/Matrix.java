@@ -75,6 +75,7 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return new Matrix<>(sz, zero);
     }
 
+    @NonNull
     @Override
     public Matrix<T> getIdentity() {
         if (n != m) {
@@ -83,6 +84,7 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return Matrices.identityMatix(n, zero);
     }
 
+    @NonNull
     public Matrix<T> getIdentity(int sz) {
         return Matrices.identityMatix(sz, zero);
     }

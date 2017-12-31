@@ -15,7 +15,7 @@ import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
 
 public class DrawableCapacitor extends Capacitor implements Drawable {
 
-    protected DrawableCapacitor(DrawableNode from, DrawableNode to) {
+    protected DrawableCapacitor(@NonNull DrawableNode from, @NonNull DrawableNode to) {
         super(from, to);
     }
 

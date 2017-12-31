@@ -42,6 +42,7 @@ public abstract class Element extends Item implements Movable, Serializable {
         return center;
     }
 
+    @NonNull
     abstract public String getCharacteristicName();
 
     abstract public double getCharacteristicValue();

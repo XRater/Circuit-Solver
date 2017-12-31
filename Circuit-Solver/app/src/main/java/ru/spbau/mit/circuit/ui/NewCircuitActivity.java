@@ -79,35 +79,10 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         });
 
         Button play = findViewById(R.id.play);
-        play.setOnClickListener(view -> {
-            try {
-                MainActivity.ui.calculateCurrents();
-                drawableModel.changeShowingCurrents();
-                drawableModel.redraw();
-                drawableModel.changeShowingCurrents();
-            } catch (CircuitShortingException e) {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Battery is shorted.", Toast.LENGTH_SHORT);
-                toast.show();
-            } catch (NotImplementedYetException e) {
-                Toast toast = Toast.makeText(getApplicationContext(),
-                        "Unsupported circuit.", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
+        play.setOnClickListener(view -> onPlayClicked());
 
         delete = findViewById(R.id.delete);
-        delete.setOnClickListener(v -> {
-            if (chosen instanceof Element) {
-                drawableModel.removeElement(chosen);
-            }
-            if (chosen instanceof DrawableNode) {
-                drawableModel.removeWire((DrawableNode) chosen);
-            }
-            makeButtonsInvisible();
-            drawableModel.redraw();
-            chosen = null;
-        });
+        delete.setOnClickListener(v -> onDeleteClicked());
 
         changeValue = findViewById(R.id.changeValue);
         changeValue.setOnClickListener(v -> onChangeValueClicked());
@@ -120,31 +95,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
         });
 
         Button save = findViewById(R.id.save);
-        save.setOnClickListener(v -> {
-            final EditText taskEditText = new EditText(this);
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("Choose where you want to save this circuit.")
-                    .setView(taskEditText)
-                    .setMessage("Name this circuit")
-                    .setPositiveButton("This device", (dialog1, which) -> {
-                        if (!MainActivity.ui.save(Converter.Mode.LOCAL,
-                                String.valueOf(taskEditText.getText()))) {
-                            Toast.makeText(getApplicationContext(),
-                                    "This name already exists, please choose another one.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .setNegativeButton("Google Drive", (dialog1, which) -> {
-                        if (!MainActivity.ui.save(Converter.Mode.DRIVE,
-                                String.valueOf(taskEditText.getText()))) {
-                            Toast.makeText(getApplicationContext(),
-                                    "This name already exists, please choose another one.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .create();
-            dialog.show();
-        });
+        save.setOnClickListener(v -> onSaveClicked());
         surface.setOnTouchListener(NewCircuitActivity.this);
     }
 
@@ -295,5 +246,60 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     .create();
             dialog.show();
         }
+    }
+
+    private void onPlayClicked() {
+        try {
+            MainActivity.ui.calculateCurrents();
+            drawableModel.changeShowingCurrents();
+            drawableModel.redraw();
+            drawableModel.changeShowingCurrents();
+        } catch (CircuitShortingException e) {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Battery is shorted.", Toast.LENGTH_SHORT);
+            toast.show();
+        } catch (NotImplementedYetException e) {
+            Toast toast = Toast.makeText(getApplicationContext(),
+                    "Unsupported circuit.", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    private void onSaveClicked() {
+        final EditText taskEditText = new EditText(this);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Choose where you want to save this circuit.")
+                .setView(taskEditText)
+                .setMessage("Name this circuit")
+                .setPositiveButton("This device", (dialog1, which) -> {
+                    if (!MainActivity.ui.save(Converter.Mode.LOCAL,
+                            String.valueOf(taskEditText.getText()))) {
+                        Toast.makeText(getApplicationContext(),
+                                "This name already exists, please choose another one.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Google Drive", (dialog1, which) -> {
+                    if (!MainActivity.ui.save(Converter.Mode.DRIVE,
+                            String.valueOf(taskEditText.getText()))) {
+                        Toast.makeText(getApplicationContext(),
+                                "This name already exists, please choose another one.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    private void onDeleteClicked() {
+        if (chosen instanceof Element) {
+            drawableModel.removeElement(chosen);
+        }
+        if (chosen instanceof DrawableNode) {
+            drawableModel.removeWire((DrawableNode) chosen);
+        }
+        makeButtonsInvisible();
+        drawableModel.redraw();
+        chosen = null;
     }
 }

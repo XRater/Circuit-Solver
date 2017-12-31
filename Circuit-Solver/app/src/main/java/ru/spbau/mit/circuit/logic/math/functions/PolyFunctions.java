@@ -9,11 +9,10 @@ public class PolyFunctions {
     private static final PolyFunction zero = PolyFunctions.constant(0);
     private static final PolyFunction identity = PolyFunctions.constant(1);
 
-
-    @NonNull
     private PolyFunctions() {
     }
 
+    @NonNull
     public static PolyFunction zero() {
         return zero;
     }

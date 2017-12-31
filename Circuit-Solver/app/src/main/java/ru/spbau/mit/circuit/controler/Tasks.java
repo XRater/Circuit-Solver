@@ -92,6 +92,7 @@ class Tasks {
             this.converter = converter;
         }
 
+        @NonNull
         @Override
         public List<String> doInBackground(Void... voids) {
             return converter.getCircuits(mode);

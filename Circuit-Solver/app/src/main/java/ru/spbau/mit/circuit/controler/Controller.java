@@ -89,14 +89,14 @@ public class Controller {
         model.clear();
     }
 
-    public void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
+    public void deleteUnnecessaryNode(@NonNull Node common, Wire first, Wire second) {
         ui.deleteUnnecessaryNode(common, first, second);
     }
 
     public boolean save(Converter.Mode mode, String filename) {
         try {
             return Tasks.saveTask(mode, converter, model).execute(filename).get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (@NonNull InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return false;
@@ -106,7 +106,7 @@ public class Controller {
     public List<String> getCircuits(Converter.Mode mode) {
         try {
             return Tasks.getCircuitsTask(mode, converter).execute().get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (@NonNull InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
@@ -118,7 +118,7 @@ public class Controller {
             newModel.setController(this);
             newModel.initializeVerificator();
             this.model = newModel;
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (@NonNull InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
@@ -130,7 +130,7 @@ public class Controller {
     public void removeFromStorage(Converter.Mode mode, String name) {
         try {
             Tasks.deleteTask(mode, converter).execute(name).get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (@NonNull InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
     }

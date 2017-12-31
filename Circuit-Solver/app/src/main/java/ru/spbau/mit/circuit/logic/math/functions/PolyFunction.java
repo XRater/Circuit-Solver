@@ -96,6 +96,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return PolyFunctions.constant(0);
     }
 
+    @NonNull
     @Override
     public PolyFunction getIdentity() {
         return PolyFunctions.identity();

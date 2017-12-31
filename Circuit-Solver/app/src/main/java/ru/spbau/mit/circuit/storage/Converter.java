@@ -43,6 +43,7 @@ public class Converter {
         return true;
     }
 
+    @NonNull
     public List<String> getCircuits(Mode mode) {
         return getStorage(mode).getCircuits();
     }

@@ -32,6 +32,7 @@ public class ConnectedGraph {
     private int verticesNumber = 0; // number of vertices
     private int edgesNumber = 0; // number of edges
 
+    @NonNull
     private LinkedHashSet<Vertex> vertices = new LinkedHashSet<>();
     @NonNull
     private List<Edge> edges = new ArrayList<>();
@@ -127,7 +128,8 @@ public class ConnectedGraph {
     }
 
     /**
-     * The method constructs linear system of the graph, corresponding to the Om's laws.
+     * The method constructs linear system of the graph, corresponding to the
+     * Kirchhoff's laws.
      *
      * @return constructed linear system.
      */

@@ -27,7 +27,7 @@ public class MatrixExponent {
 
     private static final Function functionZero = Functions.zero();
 
-    public static Matrix<Function> matrixExponent(RealMatrix matrix) {
+    public static Matrix<Function> matrixExponent(@NonNull RealMatrix matrix) {
 
         Map<Complex, Integer> roots = getEigenValues(matrix);
         Polynom<Function> polynom = buildVariablePolynom(roots);

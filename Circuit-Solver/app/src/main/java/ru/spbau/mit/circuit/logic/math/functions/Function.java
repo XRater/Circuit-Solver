@@ -51,7 +51,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
 
     @NonNull
     @Override
-    public Function multiplyConstant(Numerical d) {
+    public Function multiplyConstant(@NonNull Numerical d) {
         return new Function(up.multiplyConstant(d), down);
     }
 
@@ -86,6 +86,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         return Functions.constant(0);
     }
 
+    @NonNull
     @Override
     public Function getIdentity() {
         return Functions.identity();

@@ -14,6 +14,7 @@ public class Functions {
     private Functions() {
     }
 
+    @NonNull
     public static Function zero() {
         return zero;
     }

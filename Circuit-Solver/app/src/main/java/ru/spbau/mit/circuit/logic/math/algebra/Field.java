@@ -13,6 +13,7 @@ public interface Field<T extends Field<T>> {
 
     T negate();
 
+    @NonNull
     T reciprocal();
 
     default T subtract(@NonNull T a) throws NullArgumentException {
@@ -27,6 +28,7 @@ public interface Field<T extends Field<T>> {
 
     boolean isIdentity();
 
+    @NonNull
     T getZero();
 
     T getIdentity();

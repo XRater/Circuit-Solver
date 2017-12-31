@@ -1,6 +1,7 @@
 package ru.spbau.mit.circuit.storage;
 
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.ByteArrayInputStream;
@@ -11,6 +12,7 @@ public interface Storage {
 
     void save(byte[] stream, String name) throws SQLException;
 
+    @NonNull
     List<String> getCircuits();
 
     @Nullable

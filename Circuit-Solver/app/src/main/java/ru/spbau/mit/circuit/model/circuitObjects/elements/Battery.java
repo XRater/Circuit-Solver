@@ -8,7 +8,7 @@ public abstract class Battery extends Element {
 
     private double voltage = 10;
 
-    public Battery(Node from, Node to) {
+    public Battery(@NonNull Node from, @NonNull Node to) {
         super(from, to);
     }
 
