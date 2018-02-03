@@ -32,9 +32,10 @@ public class Logic {
                 component.solve();
             } catch (CircuitShortingException e) {
                 throw e;
-            } catch (Exception e) {
-                throw new NotImplementedYetException(e);
             }
+//            } catch (Exception e) {
+//                throw new NotImplementedYetException(e);
+//            }
         }
     }
 }

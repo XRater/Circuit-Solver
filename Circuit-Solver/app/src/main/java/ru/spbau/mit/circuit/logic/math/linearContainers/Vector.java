@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import ru.spbau.mit.circuit.logic.math.algebra.Field;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.linearContainers.exceptions.IllegalAdditionException;
 import ru.spbau.mit.circuit.logic.math.linearSystems.Gauss;
 
@@ -26,6 +26,10 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
     private final ArrayList<C> coefficients = new ArrayList<>();
 
     private final int size;
+
+    private Vector() {
+        size = 0;
+    }
 
     public Vector(Collection<T> c, C initial) {
         data.addAll(c);
@@ -86,6 +90,21 @@ public class Vector<C extends Field<C>, T extends Comparable<? super T>> impleme
             coefficients.set(i, newC);
         }
         return this;
+    }
+
+    @Override
+    public Vector<C, T> negate() {
+        return null;
+    }
+
+    @Override
+    public boolean isZero() {
+        return false;
+    }
+
+    @Override
+    public Vector<C, T> getZero() {
+        return new Vector<>();
     }
 
     @Override

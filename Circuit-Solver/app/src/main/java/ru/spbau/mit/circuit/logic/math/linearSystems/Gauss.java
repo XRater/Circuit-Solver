@@ -1,18 +1,18 @@
 package ru.spbau.mit.circuit.logic.math.linearSystems;
 
 
-import ru.spbau.mit.circuit.logic.math.algebra.Field;
-import ru.spbau.mit.circuit.logic.math.algebra.Linear;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Linear;
 
 /**
  * Interface, that represents any object that may be used as an object in linear system.
  *
- * @param <C> type of coefficients
+ * @param <F> type of coefficients
  * @param <T> type of stored value
  */
-public interface Gauss<C extends Field<C>, T extends Linear<C, T>> extends Linear<C, T> {
+public interface Gauss<F extends Field<F>, T extends Linear<F, T>> extends Linear<F, T> {
 
-    C coefficientAt(int index);
+    F coefficientAt(int index);
 
     int size();
 }

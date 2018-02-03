@@ -1,12 +1,15 @@
 package ru.spbau.mit.circuit.logic.math.algebra;
 
 
+import android.support.annotation.NonNull;
+
 import org.apache.commons.math3.complex.Complex;
 
 import ru.spbau.mit.circuit.logic.math.algebra.exceptions.IllegalInverseException;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 
 @SuppressWarnings("WeakerAccess")
-public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical> {
+public class Numerical implements Field<Numerical>, Comparable<Numerical> {
 
     private static final Numerical zero = Numerical.number(0);
     private static final Numerical identity = Numerical.number(1);
@@ -49,13 +52,8 @@ public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical>
     }
 
     @Override
-    public Numerical multiplyConstant(Numerical cf) {
-        return multiply(cf);
-    }
-
-    @Override
-    public Numerical multiply(Numerical f) {
-        return new Numerical(value.multiply(f.value));
+    public Numerical multiply(Numerical numerical) {
+        return new Numerical(value.multiply(numerical.value));
     }
 
     @Override
@@ -104,5 +102,10 @@ public class Numerical implements Field<Numerical>, Linear<Numerical, Numerical>
 
     public boolean isEquals(Numerical num) {
         return Complex.equals(value, num.value, precision);
+    }
+
+    @Override
+    public int compareTo(@NonNull Numerical o) {
+        return Double.compare(value.getReal(), o.value.getReal());
     }
 }

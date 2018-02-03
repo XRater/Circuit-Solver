@@ -1,17 +1,21 @@
 package ru.spbau.mit.circuit.logic.math.linearSystems;
 
-import ru.spbau.mit.circuit.logic.math.algebra.Field;
-import ru.spbau.mit.circuit.logic.math.algebra.Linear;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Abel;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Proportional;
 
 /**
- * Linear container which stores any container, that implements gauss interface in the left part
+ * Abel container which stores any container, that implements gauss interface in the left part
  * (represents variables with coefficients) and any linear container in the right part.
  *
  * @param <C> type of coefficients for both parts
  * @param <T> type of the left part
  * @param <U> type of the right part
  */
-public class Equation<C extends Field<C>, T extends Gauss<C, T>, U extends Linear<C, U>>
+public class Equation<
+        C extends Field<C>,
+        T extends Gauss<C, T>,
+        U extends Proportional<C, U> & Abel<U>>
         implements Gauss<C, Equation<C, T, U>> {
 
     private T coefficients;
@@ -37,6 +41,21 @@ public class Equation<C extends Field<C>, T extends Gauss<C, T>, U extends Linea
     }
 
     @Override
+    public Equation<C, T, U> negate() {
+        return null;
+    }
+
+    @Override
+    public boolean isZero() {
+        return false;
+    }
+
+    @Override
+    public Equation<C, T, U> getZero() {
+        return null;
+    }
+
+    @Override
     public C coefficientAt(int index) {
         return coefficients.coefficientAt(index);
     }
@@ -53,7 +72,7 @@ public class Equation<C extends Field<C>, T extends Gauss<C, T>, U extends Linea
     public U constant() {
         return constant;
     }
-    
+
     @Override
     public String toString() {
         return coefficients.toString() + " = " + constant.toString();

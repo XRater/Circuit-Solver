@@ -2,32 +2,32 @@ package ru.spbau.mit.circuit.logic.math.matrices;
 
 import java.lang.reflect.Array;
 
-import ru.spbau.mit.circuit.logic.math.algebra.Field;
-import ru.spbau.mit.circuit.logic.math.algebra.Linear;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Algebra;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 
 /**
  * Base matrix class. May store any values, which implements field interface.
  *
- * @param <T> stored type.
+ * @param <F> stored type.
  */
-public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, Matrix<T>> {
+public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
 
-    private final T[][] data;
+    private final F[][] data;
     private final int n;
     private final int m;
-    private final T zero;
+    private final F zero;
 
     @SuppressWarnings("WeakerAccess")
-    public Matrix(int n, T zero) {
+    public Matrix(int n, F zero) {
         this(n, n, zero);
     }
 
-    public Matrix(int n, int m, T zero) {
+    public Matrix(int n, int m, F zero) {
         this.zero = zero;
         this.n = n;
         this.m = m;
         //noinspection unchecked
-        data = (T[][]) (Array.newInstance(zero.getClass(), n, m));
+        data = (F[][]) (Array.newInstance(zero.getClass(), n, m));
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 data[i][j] = zero.getZero();
@@ -52,41 +52,41 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return n;
     }
 
-    public void set(int i, int j, T t) {
-        data[i][j] = t;
+    public void set(int i, int j, F f) {
+        data[i][j] = f;
     }
 
-    public T get(int i, int j) {
+    public F get(int i, int j) {
         return data[i][j];
     }
 
     @Override
-    public Matrix<T> getZero() {
+    public Matrix<F> getZero() {
         return new Matrix<>(n, m, zero);
     }
 
-    public Matrix<T> getZero(int sz) {
+    public Matrix<F> getZero(int sz) {
         return new Matrix<>(sz, zero);
     }
 
     @Override
-    public Matrix<T> getIdentity() {
+    public Matrix<F> getIdentity() {
         if (n != m) {
             throw new IllegalArgumentException();
         }
         return Matrices.identityMatix(n, zero);
     }
 
-    public Matrix<T> getIdentity(int sz) {
+    public Matrix<F> getIdentity(int sz) {
         return Matrices.identityMatix(sz, zero);
     }
 
     @Override
-    public Matrix<T> add(Matrix<T> matrix) {
+    public Matrix<F> add(Matrix<F> matrix) {
         if (n != matrix.n || m != matrix.m) {
             throw new IllegalArgumentException();
         }
-        Matrix<T> ans = new Matrix<>(matrix.n, matrix.m, matrix.zero);
+        Matrix<F> ans = new Matrix<>(matrix.n, matrix.m, matrix.zero);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 ans.set(i, j, get(i, j).add(matrix.get(i, j)));
@@ -96,11 +96,11 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
     }
 
     @Override
-    public Matrix<T> multiply(Matrix<T> matrix) {
+    public Matrix<F> multiply(Matrix<F> matrix) {
         if (m != matrix.n) {
             throw new IllegalArgumentException();
         }
-        Matrix<T> ans = new Matrix<>(n, matrix.m, matrix.zero);
+        Matrix<F> ans = new Matrix<>(n, matrix.m, matrix.zero);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < matrix.m; j++) {
                 for (int k = 0; k < m; k++) {
@@ -113,12 +113,12 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
     }
 
     @Override
-    public Matrix<T> negate() {
+    public Matrix<F> negate() {
         return this.multiplyConstant(zero.getIdentity().negate());
     }
 
     @Override
-    public Matrix<T> reciprocal() {
+    public Matrix<F> reciprocal() {
         throw new UnsupportedOperationException();
     }
 
@@ -156,11 +156,11 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
     }
 
     @Override
-    public Matrix<T> multiplyConstant(T t) {
-        Matrix<T> ans = new Matrix<>(this.n, this.zero);
+    public Matrix<F> multiplyConstant(F f) {
+        Matrix<F> ans = new Matrix<>(this.n, this.zero);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                ans.set(i, j, get(i, j).multiply(t));
+                ans.set(i, j, get(i, j).multiply(f));
             }
         }
         return ans;

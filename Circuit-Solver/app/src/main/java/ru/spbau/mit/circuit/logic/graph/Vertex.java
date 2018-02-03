@@ -9,8 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunctions;
 import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
 import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
 import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
@@ -73,12 +71,12 @@ class Vertex {
     Equation<
             Numerical,
             Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>
+            Row<Numerical, FunctionVariable>
             > getEquation(Collection<Derivative> variables) {
 
         Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
-        Row<Numerical, FunctionVariable, PolyFunction> consts =
-                new Row<>(PolyFunctions.zero());
+        Row<Numerical, FunctionVariable> consts =
+                new Row<>(Numerical.zero());
 
         for (Edge edge : edges) {
             vars.add(edge.current(), Numerical.number(edge.getDirection(this)));

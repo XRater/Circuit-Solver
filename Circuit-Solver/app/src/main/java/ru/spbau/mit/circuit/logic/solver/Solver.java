@@ -14,7 +14,6 @@ import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.functions.Functions;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
 import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
 import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
@@ -37,7 +36,7 @@ public class Solver {
     private static LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>> initSystem;
+            Row<Numerical, FunctionVariable>> initSystem;
 
     /**
      * The method sets values of function variables and derivatives to their exact values.
@@ -48,7 +47,7 @@ public class Solver {
     public static void solve(LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>
+            Row<Numerical, FunctionVariable>
             > systemToSolve) throws CircuitShortingException {
         initSystem = systemToSolve;
         n = initSystem.size();
@@ -65,7 +64,7 @@ public class Solver {
         RealMatrix A = getRightSideMatrix(initSystem);
         RealVector constants = getRightSideConstants(initSystem);
 
-        // Set answer if A is zero
+        // Set answer if A is getZero
         if (isZeroMatrix(A)) {
             for (int i = 0; i < n; i++) {
                 Derivative d = systemToSolve.get(i).coefficients().valueAt(i);
@@ -131,7 +130,8 @@ public class Solver {
                 Numerical> constantsSystem = new LinearSystem<>(n);
 
         for (int i = 0; i < n; i++) {
-            Vector<Numerical, NumericalVariable> vector = new Vector<>(variables, Numerical.zero());
+            Vector<Numerical, NumericalVariable> vector = new Vector<>(variables, Numerical.zero
+                    ());
             for (int j = 0; j < n; j++) {
                 vector.add(variables.get(i), matrixExponent.get(i, j).apply(0));
             }
@@ -153,10 +153,10 @@ public class Solver {
     }
 
     /**
-     * Checks if matrix is zero matrix
+     * Checks if matrix is getZero matrix
      *
      * @param a matrix to check
-     * @return true if matrix is zero matrix and false otherwise
+     * @return true if matrix is getZero matrix and false otherwise
      */
     private static boolean isZeroMatrix(RealMatrix a) {
         for (int i = 0; i < a.getRowDimension(); i++) {
@@ -179,10 +179,10 @@ public class Solver {
             LinearSystem<
                     Numerical,
                     Vector<Numerical, Derivative>,
-                    Row<Numerical, FunctionVariable, PolyFunction>> initSystem) {
+                    Row<Numerical, FunctionVariable>> initSystem) {
         RealVector vector = new ArrayRealVector(n);
         for (int i = 0; i < n; i++) {
-            vector.setEntry(i, initSystem.get(i).constant().constant().doubleValue());
+            vector.setEntry(i, initSystem.get(i).constant().constant().value());
         }
         return vector;
     }
@@ -196,10 +196,10 @@ public class Solver {
     private static RealMatrix getRightSideMatrix(LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>> system) {
+            Row<Numerical, FunctionVariable>> system) {
         RealMatrix matrix = new Array2DRowRealMatrix(system.size(), system.size());
         for (int i = 0; i < n; i++) {
-            Row<Numerical, FunctionVariable, PolyFunction> right = system.get(i).constant();
+            Row<Numerical, FunctionVariable> right = system.get(i).constant();
             for (int j = 0; j < n; j++) {
                 Derivative derivative = system.get(i).coefficients().valueAt(j);
                 Numerical c = right.get(derivative.parent());

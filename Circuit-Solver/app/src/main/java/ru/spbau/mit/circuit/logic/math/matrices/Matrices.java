@@ -1,14 +1,13 @@
 package ru.spbau.mit.circuit.logic.math.matrices;
 
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
-import ru.spbau.mit.circuit.logic.math.algebra.Field;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.functions.Functions;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Polynom;
+import ru.spbau.mit.circuit.logic.math.linearContainers.polynom.Polynom;
 
 /**
  * Class to create different kinds of matrices.
@@ -22,7 +21,7 @@ public class Matrices {
      * The method creates an identity matrix of the require size.
      *
      * @param size size of matrix
-     * @param zero zero of the field
+     * @param zero getZero of the field
      * @param <T>  type of elements stored in matrix
      * @return new identityMatix matrix
      */
@@ -92,18 +91,6 @@ public class Matrices {
      */
     @Deprecated
     public static Matrix<Function> applyInPolynom(RealMatrix matrix, Polynom<Function> polynom) {
-        int n = matrix.getRowDimension();
-        RealMatrix power = new Array2DRowRealMatrix(matrix.getRowDimension(), matrix
-                .getColumnDimension());
-        for (int i = 0; i < n; i++) {
-            power.setEntry(i, i, 1);
-        }
-        Matrix<Function> ans = Matrices.identityMatix(n, functionZero);
-        for (int i = 0; i < polynom.monoms().size(); i++) {
-            ans = ans.add(Matrices.getFunctionMatrix(power).multiplyConstant(polynom.monoms().get
-                    (i)));
-            power = matrix.multiply(power);
-        }
-        return ans;
+        return null;
     }
 }

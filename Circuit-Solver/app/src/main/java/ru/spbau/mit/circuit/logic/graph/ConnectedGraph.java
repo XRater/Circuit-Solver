@@ -8,7 +8,6 @@ import java.util.List;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
 import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
 import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
@@ -37,7 +36,7 @@ public class ConnectedGraph {
     private final Collection<Derivative> variables = new ArrayList<>();
 
     /**
-     * Creates connected graph from the root. Graph will contain only one vertex and zero edges.
+     * Creates connected graph from the root. Graph will contain only one vertex and getZero edges.
      */
     ConnectedGraph(Vertex root) {
         Numerator.refresh();
@@ -101,7 +100,7 @@ public class ConnectedGraph {
         LinearSystem<
                 Numerical,
                 Vector<Numerical, Derivative>,
-                Row<Numerical, FunctionVariable, PolyFunction>> system = constructSystem();
+                Row<Numerical, FunctionVariable>> system = constructSystem();
         Solver.solve(system);
         setCurrents();
     }
@@ -132,11 +131,11 @@ public class ConnectedGraph {
     private LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>> constructSystem() {
+            Row<Numerical, FunctionVariable>> constructSystem() {
 
         LinearSystem<Numerical,
                 Vector<Numerical, Derivative>,
-                Row<Numerical, FunctionVariable, PolyFunction>> system =
+                Row<Numerical, FunctionVariable>> system =
                 new LinearSystem<>(edgesNumber);
 
         for (Vertex node : vertices) {

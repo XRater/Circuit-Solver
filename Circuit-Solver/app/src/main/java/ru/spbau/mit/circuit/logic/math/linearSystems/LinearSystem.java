@@ -2,14 +2,15 @@ package ru.spbau.mit.circuit.logic.math.linearSystems;
 
 import java.util.ArrayList;
 
-import ru.spbau.mit.circuit.logic.math.algebra.Field;
-import ru.spbau.mit.circuit.logic.math.algebra.Linear;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Abel;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Proportional;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.IllegalEquationSizeException;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
 
 
 /**
- * Linear system. Has one public method, which represents Gauss algorithm.
+ * Abel system. Has one public method, which represents Gauss algorithm.
  *
  * @param <C> type of coefficients
  * @param <T> type of the left side of equation
@@ -18,7 +19,7 @@ import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantE
 public class LinearSystem<
         C extends Field<C>,
         T extends Gauss<C, T>,
-        U extends Linear<C, U>
+        U extends Abel<U> & Proportional<C, U>
         > {
 
     private final ArrayList<Equation<C, T, U>> equations = new ArrayList<>();

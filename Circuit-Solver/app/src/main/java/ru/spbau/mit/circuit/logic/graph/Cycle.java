@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.Deque;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunctions;
 import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
 import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
 import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
@@ -32,12 +30,12 @@ class Cycle {
     Equation<
             Numerical,
             Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>
+            Row<Numerical, FunctionVariable>
             > getEquation(Collection<Derivative> variables) {
 
         Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
-        Row<Numerical, FunctionVariable, PolyFunction> consts =
-                new Row<>(PolyFunctions.zero());
+        Row<Numerical, FunctionVariable> consts =
+                new Row<>(Numerical.zero());
 
         Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
@@ -50,7 +48,7 @@ class Cycle {
                         Numerical.number(-edge.getDirection(curr) / edge.getCapacity()));
             }
 
-            consts.addConst(PolyFunctions.constant(-edge.getVoltage() * edge.getDirection
+            consts.addConst(Numerical.number(-edge.getVoltage() * edge.getDirection
                     (curr)));
             curr = edge.getPair(curr);
         }

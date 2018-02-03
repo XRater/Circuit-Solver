@@ -4,19 +4,19 @@ package ru.spbau.mit.circuit.logic.math.matrices.matrixExponent;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.functions.Functions;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Polynom;
+import ru.spbau.mit.circuit.logic.math.linearContainers.polynom.Polynom;
+import ru.spbau.mit.circuit.logic.math.linearContainers.polynom.Polynoms;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrices;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
 
@@ -35,7 +35,7 @@ public class MatrixExponent {
 
     @NonNull
     private static Polynom<Function> buildVariablePolynom(Map<Complex, Integer> roots) {
-        Polynom<Function> ans = new Polynom<>(functionZero);
+        Polynom<Function> ans = Polynoms.zero(functionZero);
 
         // Make list of roots with duplicates
         List<Complex> rootList = new ArrayList<>();
@@ -50,8 +50,9 @@ public class MatrixExponent {
         }
 
         // initializes multiply coefficient
-        Polynom<Function> coefficient = new Polynom<>(functionZero,
-                Collections.singletonList(Functions.constant(1)));
+        Polynom<Function> coefficient = Polynoms.constant(Functions.constant(1));
+//        new Polynom<>(functionZero,
+//                Collections.singletonList(Functions.constant(1)));
 
         // initializes subtractColumn
         SubtractColumn subtractColumn = new SubtractColumn(rootList);
@@ -59,12 +60,15 @@ public class MatrixExponent {
         // updates answer polynom
         for (int i = 0; i < rootList.size(); i++) {
             ans = ans.add(coefficient.multiply(
-                    new Polynom<>(functionZero,
-                            Collections.singletonList(subtractColumn.first()))));
+                    Polynoms.constant(subtractColumn.first())));
+//                    new Polynom<>(functionZero,
+//                            Collections.singletonList(subtractColumn.first()))));
             subtractColumn.next();
-            coefficient = coefficient.multiply(new Polynom<>(functionZero,
-                    Arrays.asList(Functions.constant(
-                            -rootList.get(i).getReal()), Functions.constant(1))));
+            coefficient = coefficient.multiply(
+                    Polynoms.linearWithConstant(Functions.constant(-rootList.get(i).getReal())));
+//                    new Polynom<>(functionZero,
+//                    Arrays.asList(Functions.constant(
+//                            -rootList.get(i).getReal()), Functions.constant(1))));
         }
 
         return ans;
@@ -88,6 +92,15 @@ public class MatrixExponent {
             }
         }
         return ans;
+    }
+
+    public static void main(String[] args) {
+        RealMatrix matrix = new Array2DRowRealMatrix(2, 2);
+        matrix.setEntry(0, 0, 0);
+        matrix.setEntry(0, 1, 0);
+        matrix.setEntry(1, 0, 0);
+        matrix.setEntry(1, 1, 0);
+        System.out.println(matrixExponent(matrix));
     }
 
 }

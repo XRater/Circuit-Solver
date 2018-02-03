@@ -1,78 +1,31 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
-import ru.spbau.mit.circuit.logic.math.algebra.Field;
-import ru.spbau.mit.circuit.logic.math.algebra.Linear;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.algebra.exceptions.IllegalInverseException;
+import ru.spbau.mit.circuit.logic.math.algebra.QuotElement;
 
-public class Function implements Field<Function>, Linear<Numerical, Function> {
+public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction, Function> {
 
-    private PolyFunction up;
-    private PolyFunction down;
+    // zero / id
+    Function() {
+        up = PolyFunctions.zero().empty();
+        down = PolyFunctions.zero().single();
+    }
 
     Function(PolyFunction f) {
         up = f;
         down = PolyFunctions.constant(1);
     }
 
-    private Function(PolyFunction up, PolyFunction down) {
-        if (down.isZero()) {
-            throw new IllegalArgumentException();
-        }
-        this.down = down;
-        this.up = up;
-        simplify();
-    }
-
-    private void simplify() {
-        up = up.div(down);
-        down = down.div(down);
+    @Override
+    protected Function empty() {
+        return new Function();
     }
 
     @Override
-    public Function add(Function other) {
-        PolyFunction nUp = up.multiply(other.down).add(other.up.multiply(down));
-        if (nUp.isZero()) {
-            return Functions.zero();
-        }
-        return new Function(nUp, down.multiply(other.down));
-    }
-
-    @Override
-    public Function multiply(Function other) {
-        PolyFunction nUp = up.multiply(other.up);
-        if (up.isZero()) {
-            return Functions.zero();
-        }
-        return new Function(nUp, down.multiply(other.down));
-    }
-
-    @Override
-    public Function multiplyConstant(Numerical d) {
-        return new Function(up.multiplyConstant(d), down);
-    }
-
-    @Override
-    public Function reciprocal() {
-        if (up.isZero()) {
-            throw new IllegalInverseException();
-        }
-        return new Function(down, up);
-    }
-
-    @Override
-    public Function negate() {
-        return new Function(up.multiplyConstant(Numerical.number(-1)), down);
-    }
-
-    @Override
-    public boolean isZero() {
-        return up.isZero();
-    }
-
-    @Override
-    public boolean isIdentity() {
-        return up.isIdentity() && down.isIdentity();
+    protected Function single() {
+        Function f = new Function();
+        f.up = PolyFunctions.zero().single();
+        return f;
     }
 
     @Override
@@ -85,32 +38,38 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
         return Functions.identity();
     }
 
+    @Override
+    protected void simplify() {
+        super.simplify();
+        if (down.isSingle()) {
+            Numerical downValue = Numerical.number(down.doubleValue());
+            up = up.multiplyConstant(downValue.reciprocal());
+            down = down.multiplyConstant(downValue.reciprocal());
+        }
+    }
+
+    @Override
+    protected PolyExponent gcd() {
+        if (down.isSingle()) {
+            return down.front();
+        }
+        return PolyExponent.identity();
+    }
+
+
     public Function integrate() {
         if (!down.isIdentity()) {
             throw new IllegalArgumentException();
         }
-        return new Function(up.integrate(), down);
+        return construct(up.integrate(), down);
     }
 
     public Function differentiate() {
+        System.out.println(this);
         if (down.isIdentity()) {
-            return new Function(up.differentiate(), down);
+            return construct(up.differentiate(), down);
         }
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String toString() {
-        if (isZero()) {
-            return "0";
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append("").append(up.toString());
-        if (down.isIdentity()) {
-            return sb.append("").toString();
-        }
-        sb.append("/").append(down.toString()).append("");
-        return sb.toString();
     }
 
 
@@ -120,7 +79,7 @@ public class Function implements Field<Function>, Linear<Numerical, Function> {
      * @param x point to evaluate in.
      * @return result, represented as Numerical object
      */
-    @SuppressWarnings("SameParameterValue")
+//    @SuppressWarnings("SameParameterValue")
     public Numerical apply(double x) {
         return up.apply(x).divide(down.apply(x));
     }
