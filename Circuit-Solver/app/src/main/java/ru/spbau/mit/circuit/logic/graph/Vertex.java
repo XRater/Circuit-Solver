@@ -3,17 +3,14 @@ package ru.spbau.mit.circuit.logic.graph;
 
 import android.support.annotation.NonNull;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
-import ru.spbau.mit.circuit.logic.math.variables.Derivative;
-import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
 
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();
@@ -66,22 +63,16 @@ class Vertex {
     }
 
     /**
-     * Makes new equation corresponding to the first Kirchhoff's law.
+     * Adds new equation corresponding to the first Kirchhoff's law.
      */
-    Equation<
-            Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable>
-            > getEquation(Collection<Derivative> variables) {
-
-        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
-        Row<Numerical, FunctionVariable> consts =
-                new Row<>(Numerical.zero());
-
+    void addEquation(LSystem<Numerical, FArray<Numerical>> system) throws
+            ZeroDeterminantException {
+        FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
         for (Edge edge : edges) {
-            vars.add(edge.current(), Numerical.number(edge.getDirection(this)));
+            coefficients.set(edge.index(), Numerical.number(edge.getDirection(this)));
         }
-        return new Equation<>(vars, consts);
+        system.addEquation(coefficients, FArray.array(system.variablesNumber() + 1, Numerical
+                .zero()));
     }
 
     @Override

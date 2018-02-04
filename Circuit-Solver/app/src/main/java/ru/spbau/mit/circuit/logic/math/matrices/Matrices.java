@@ -18,15 +18,15 @@ public class Matrices {
     private static Function functionZero = Functions.zero();
 
     /**
-     * The method creates an identity matrix of the require size.
+     * The method creates an identity matrix of the require variablesNumber.
      *
-     * @param size size of matrix
+     * @param size variablesNumber of matrix
      * @param zero getZero of the field
      * @param <T>  type of elements stored in matrix
      * @return new identityMatix matrix
      */
     public static <T extends Field<T>> Matrix<T> identityMatix(int size, T zero) {
-        Matrix<T> ans = new Matrix<>(size, zero);
+        Matrix<T> ans = Matrix.squareMatrix(size, zero);
         for (int i = 0; i < size; i++) {
             ans.set(i, i, zero.getIdentity());
         }
@@ -42,7 +42,7 @@ public class Matrices {
      */
     public static Matrix<Function> getFunctionMatrix(RealMatrix matrix) {
         Matrix<Function> ans =
-                new Matrix<>(matrix.getRowDimension(), matrix.getColumnDimension(), functionZero);
+                Matrix.matrix(matrix.getRowDimension(), matrix.getColumnDimension(), functionZero);
 
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             for (int j = 0; j < matrix.getColumnDimension(); j++) {
@@ -63,7 +63,7 @@ public class Matrices {
      * @return function matrix representation of the given matrix
      */
     public static Matrix<Function> getFunctionMatrix(RealVector vector) {
-        Matrix<Function> answer = new Matrix<>(vector.getDimension(), 1, functionZero);
+        Matrix<Function> answer = Matrix.matrix(vector.getDimension(), 1, functionZero);
         for (int i = 0; i < vector.getDimension(); i++) {
             answer.set(i, 0, Functions.constant(vector.getEntry(i)));
         }
@@ -77,7 +77,7 @@ public class Matrices {
      * @param matrix matrix to integrate.
      */
     public static Matrix<Function> integrate(Matrix<Function> matrix) {
-        Matrix<Function> answer = new Matrix<>(matrix.n(), matrix.m(), functionZero);
+        Matrix<Function> answer = Matrix.matrix(matrix.n(), matrix.m(), functionZero);
         for (int i = 0; i < matrix.n(); i++) {
             for (int j = 0; j < matrix.m(); j++) {
                 answer.set(i, j, matrix.get(i, j).integrate());

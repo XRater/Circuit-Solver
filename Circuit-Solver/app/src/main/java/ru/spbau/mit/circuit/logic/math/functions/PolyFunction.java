@@ -26,7 +26,7 @@ public class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunct
 
 //    @Override
 //    public PolyExponent gcd() {
-//        if (data.size() == 1) {
+//        if (data.variablesNumber() == 1) {
 //            return data.keySet().iterator().next();
 //        }
 //        return PolyExponent.identity();

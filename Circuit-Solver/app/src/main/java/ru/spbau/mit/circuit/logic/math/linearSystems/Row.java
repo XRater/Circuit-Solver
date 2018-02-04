@@ -93,4 +93,9 @@ public class Row<
     public F constant() {
         return constant;
     }
+
+    //TODO
+    public static <F extends Field<F>, T extends Comparable<? super T>> Row<F, T> zero() {
+        return null;
+    }
 }

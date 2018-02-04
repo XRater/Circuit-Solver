@@ -8,11 +8,11 @@ import java.util.List;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
-import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
+import ru.spbau.mit.circuit.logic.math.functions.Function;
+import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
 import ru.spbau.mit.circuit.logic.math.variables.Derivative;
-import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
 import ru.spbau.mit.circuit.logic.math.variables.Numerator;
 import ru.spbau.mit.circuit.logic.solver.Solver;
 
@@ -36,7 +36,7 @@ public class ConnectedGraph {
     private final Collection<Derivative> variables = new ArrayList<>();
 
     /**
-     * Creates connected graph from the root. Graph will contain only one vertex and getZero edges.
+     * Creates connected graph from the root. Graph will contain only one vertex and zero edges.
      */
     ConnectedGraph(Vertex root) {
         Numerator.refresh();
@@ -97,16 +97,22 @@ public class ConnectedGraph {
      */
     public void solve() throws CircuitShortingException {
         findCycles();
-        LinearSystem<
+        LSystem<
                 Numerical,
-                Vector<Numerical, Derivative>,
-                Row<Numerical, FunctionVariable>> system = constructSystem();
-        Solver.solve(system);
-        setCurrents();
+                FArray<Numerical>> system = null;
+        try {
+            system = constructSystem();
+        } catch (ZeroDeterminantException e) {
+            throw new CircuitShortingException();
+        }
+        ArrayList<Function> solution = Solver.solve(system);
+        setCurrents(solution);
     }
 
-    private void setCurrents() {
+    private void setCurrents(ArrayList<Function> solution) {
         for (Edge edge : edges) {
+            edge.charge().setValue(solution.get(edge.index()));
+            edge.current().setValue();
             edge.updateCurrent();
         }
     }
@@ -128,21 +134,19 @@ public class ConnectedGraph {
      *
      * @return constructed linear system.
      */
-    private LinearSystem<
+    private LSystem<
             Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable>> constructSystem() {
+            FArray<Numerical>> constructSystem() throws ZeroDeterminantException {
 
-        LinearSystem<Numerical,
-                Vector<Numerical, Derivative>,
-                Row<Numerical, FunctionVariable>> system =
-                new LinearSystem<>(edgesNumber);
+        LSystem<Numerical, FArray<Numerical>> system = new LSystem<>(
+                variables.size(), Numerical.zero(), FArray.array(variables.size() + 1, Numerical
+                .zero()));
 
         for (Vertex node : vertices) {
-            system.addEquation(node.getEquation(variables));
+            node.addEquation(system);
         }
         for (Cycle cycle : cycles) {
-            system.addEquation(cycle.getEquation(variables));
+            cycle.addEquation(system);
         }
 
         return system;

@@ -1,15 +1,12 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Deque;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
-import ru.spbau.mit.circuit.logic.math.variables.Derivative;
-import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
 
 class Cycle {
 
@@ -27,32 +24,30 @@ class Cycle {
     }
 
 
-    Equation<
-            Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable>
-            > getEquation(Collection<Derivative> variables) {
+    void addEquation(LSystem<Numerical, FArray<Numerical>> system) throws
+            ZeroDeterminantException {
 
-        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
-        Row<Numerical, FunctionVariable> consts =
-                new Row<>(Numerical.zero());
+        FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
+        FArray<Numerical> constant = FArray.array(system.variablesNumber() + 1, Numerical.zero());
 
         Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
         for (Edge edge : edges) {
-            vars.add(edge.current(),
+            coefficients.set(edge.index(),
                     Numerical.number(edge.getResistance() * edge.getDirection(curr)));
 
             if (edge.getCapacity() != 0) {
-                consts.add(edge.charge(),
+                constant.set(edge.index(),
                         Numerical.number(-edge.getDirection(curr) / edge.getCapacity()));
             }
 
-            consts.addConst(Numerical.number(-edge.getVoltage() * edge.getDirection
-                    (curr)));
+            constant.set(system.variablesNumber(),
+                    Numerical.number(-edge.getVoltage() * edge.getDirection(curr)));
+            System.out.println(constant);
             curr = edge.getPair(curr);
         }
-        return new Equation<>(vars, consts);
+
+        system.addEquation(coefficients, constant);
     }
 
     @Override

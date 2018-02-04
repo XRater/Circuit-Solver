@@ -17,12 +17,15 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
     private final int m;
     private final F zero;
 
-    @SuppressWarnings("WeakerAccess")
-    public Matrix(int n, F zero) {
-        this(n, n, zero);
+    public static <F extends Field<F>> Matrix<F> matrix(int n, int m, F zero) {
+        return new Matrix<>(n, m, zero.getZero());
     }
 
-    public Matrix(int n, int m, F zero) {
+    public static <F extends Field<F>> Matrix<F> squareMatrix(int n, F zero) {
+        return new Matrix<>(n, n, zero.getZero());
+    }
+
+    private Matrix(int n, int m, F zero) {
         this.zero = zero;
         this.n = n;
         this.m = m;
@@ -66,7 +69,7 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
     }
 
     public Matrix<F> getZero(int sz) {
-        return new Matrix<>(sz, zero);
+        return new Matrix<>(sz, sz, zero);
     }
 
     @Override
@@ -157,7 +160,7 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
 
     @Override
     public Matrix<F> multiplyConstant(F f) {
-        Matrix<F> ans = new Matrix<>(this.n, this.zero);
+        Matrix<F> ans = matrix(n, m, zero);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 ans.set(i, j, get(i, j).multiply(f));
