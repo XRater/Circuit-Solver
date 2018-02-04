@@ -2,6 +2,7 @@ package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Battery;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
@@ -15,17 +16,17 @@ import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
 
 public class DrawableBattery extends Battery implements Drawable {
 
-    protected DrawableBattery(DrawableNode from, DrawableNode to) {
+    protected DrawableBattery(@NonNull DrawableNode from, @NonNull DrawableNode to) {
         super(from, to);
     }
 
-    public DrawableBattery(Point center) {
+    public DrawableBattery(@NonNull Point center) {
         super(new DrawableNode(center.x() - 2 * Drawer.CELL_SIZE, center.y()),
                 new DrawableNode(center.x() + 2 * Drawer.CELL_SIZE, center.y()));
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         String voltage = String.format("%.2f", getCharacteristicValue()) + "V";
         Rect voltageSize = new Rect();
         Drawer.ELEMENTS_PAINT.getTextBounds(voltage, 0, voltage.length(), voltageSize);

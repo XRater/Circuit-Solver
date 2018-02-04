@@ -1,6 +1,9 @@
 package ru.spbau.mit.circuit.logic.math.linearSystems;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -27,8 +30,9 @@ public class Row<C extends Field<C>, T extends Comparable<? super T>, S extends 
         this.constant = constant;
     }
 
+    @NonNull
     @Override
-    public Row<C, T, S> add(Row<C, T, S> item) {
+    public Row<C, T, S> add(@NonNull Row<C, T, S> item) {
         constant = constant.add(item.constant);
         for (Map.Entry<T, C> entry : item.data.entrySet()) {
             add(entry.getKey(), entry.getValue());
@@ -48,11 +52,12 @@ public class Row<C extends Field<C>, T extends Comparable<? super T>, S extends 
         constant = constant.add(s);
     }
 
-    // MAY RETURN NULL!
+    @Nullable
     public C get(T t) {
         return data.get(t);
     }
 
+    @NonNull
     @Override
     public Row<C, T, S> multiplyConstant(C d) {
         constant = constant.multiplyConstant(d);
@@ -62,6 +67,7 @@ public class Row<C extends Field<C>, T extends Comparable<? super T>, S extends 
         return this;
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

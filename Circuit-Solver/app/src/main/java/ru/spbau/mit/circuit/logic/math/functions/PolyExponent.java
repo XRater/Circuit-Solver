@@ -2,6 +2,7 @@ package ru.spbau.mit.circuit.logic.math.functions;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -31,84 +32,6 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         this.ePow = ePow;
     }
 
-    @Override
-    public int compareTo(@NonNull PolyExponent o) {
-        if (!Objects.equals(ePow, o.ePow)) {
-            return Double.compare(ePow, o.ePow);
-        }
-        return mPow - o.mPow;
-    }
-
-    @Override
-    public PolyExponent add(PolyExponent f) {
-        if (f != null) {
-            if (f.mPow != mPow || !isEquals(ePow, f.ePow)) {
-                throw new IllegalFunctionTransformationException();
-            }
-            return new PolyExponent(cf + f.cf, mPow, ePow);
-        }
-        throw new IllegalFunctionTransformationException();
-    }
-
-    @Override
-    public PolyExponent multiply(PolyExponent f) {
-        if (f != null) {
-            return new PolyExponent(cf * f.cf, mPow + f.mPow, ePow + f.ePow);
-        }
-        throw new IllegalFunctionTransformationException();
-    }
-
-    @Override
-    public PolyExponent reciprocal() {
-        return new PolyExponent(1 / cf, -mPow, -ePow);
-    }
-
-    @Override
-    public PolyExponent negate() {
-        return new PolyExponent(-cf, mPow, ePow);
-    }
-
-    @Override
-    public PolyExponent multiplyConstant(Numerical num) {
-        return new PolyExponent(cf * num.value(), mPow, ePow);
-    }
-
-    @Override
-    public boolean isZero() {
-        return isEquals(cf, 0);
-    }
-
-    @Override
-    public boolean isIdentity() {
-        return isEquals(cf, 1) && mPow == 0 && isEquals(ePow, 0);
-    }
-
-    @Override
-    public PolyExponent getZero() {
-        return new PolyExponent(0, 0, 0);
-    }
-
-    @Override
-    public PolyExponent getIdentity() {
-        return new PolyExponent(1, 0, 0);
-    }
-
-    PolyFunction integrate() {
-        if (isEquals(ePow, 0)) {
-            if (mPow != -1) {
-                return PolyFunctions.power(cf / (mPow + 1), mPow + 1);
-            } else {
-                throw new UnsupportedOperationException();
-            }
-        } else {
-            if (mPow == 0) {
-                return PolyFunctions.exponent(cf / ePow, ePow);
-            } else {
-                throw new UnsupportedOperationException();
-            }
-        }
-    }
-
     private static String writeNumber(double d) {
         if (isEquals(d, Math.round(d))) {
             if (Math.round(d) == 0 || Math.round(d) == 1) {
@@ -128,6 +51,92 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return Math.abs(x - y) < precision;
     }
 
+    @Override
+    public int compareTo(@NonNull PolyExponent o) {
+        if (!Objects.equals(ePow, o.ePow)) {
+            return Double.compare(ePow, o.ePow);
+        }
+        return mPow - o.mPow;
+    }
+
+    @NonNull
+    @Override
+    public PolyExponent add(@Nullable PolyExponent f) {
+        if (f != null) {
+            if (f.mPow != mPow || !isEquals(ePow, f.ePow)) {
+                throw new IllegalFunctionTransformationException();
+            }
+            return new PolyExponent(cf + f.cf, mPow, ePow);
+        }
+        throw new IllegalFunctionTransformationException();
+    }
+
+    @NonNull
+    @Override
+    public PolyExponent multiply(@Nullable PolyExponent f) {
+        if (f != null) {
+            return new PolyExponent(cf * f.cf, mPow + f.mPow, ePow + f.ePow);
+        }
+        throw new IllegalFunctionTransformationException();
+    }
+
+    @NonNull
+    @Override
+    public PolyExponent reciprocal() {
+        return new PolyExponent(1 / cf, -mPow, -ePow);
+    }
+
+    @NonNull
+    @Override
+    public PolyExponent negate() {
+        return new PolyExponent(-cf, mPow, ePow);
+    }
+
+    @NonNull
+    @Override
+    public PolyExponent multiplyConstant(@NonNull Numerical num) {
+        return new PolyExponent(cf * num.value(), mPow, ePow);
+    }
+
+    @Override
+    public boolean isZero() {
+        return isEquals(cf, 0);
+    }
+
+    @Override
+    public boolean isIdentity() {
+        return isEquals(cf, 1) && mPow == 0 && isEquals(ePow, 0);
+    }
+
+    @NonNull
+    @Override
+    public PolyExponent getZero() {
+        return new PolyExponent(0, 0, 0);
+    }
+
+    @NonNull
+    @Override
+    public PolyExponent getIdentity() {
+        return new PolyExponent(1, 0, 0);
+    }
+
+    @NonNull
+    PolyFunction integrate() {
+        if (isEquals(ePow, 0)) {
+            if (mPow != -1) {
+                return PolyFunctions.power(cf / (mPow + 1), mPow + 1);
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        } else {
+            if (mPow == 0) {
+                return PolyFunctions.exponent(cf / ePow, ePow);
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
+    }
+
     double doubleValue() {
         if (!isEquals(ePow, 0) || mPow != 0) {
             throw new IllegalDoubleConvertionException();
@@ -135,6 +144,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return cf;
     }
 
+    @NonNull
     PolyFunction differentiate() {
         PolyFunction ans = PolyFunctions.zero();
         ans = ans.add(PolyFunctions.polyExponent(cf * mPow, mPow - 1, ePow));
@@ -142,6 +152,7 @@ public class PolyExponent implements Comparable<PolyExponent>, Field<PolyExponen
         return ans;
     }
 
+    @NonNull
     Numerical apply(double x) {
         if (isEquals(x, 0)) {
             if (mPow == 0) {

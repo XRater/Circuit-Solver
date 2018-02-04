@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.variables;
 
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 
 public class Derivative extends FunctionVariable {
@@ -9,6 +11,9 @@ public class Derivative extends FunctionVariable {
 
     public Derivative(FunctionVariable parent) {
         this.parent = parent;
+    }
+
+    public static void main(String[] args) {
     }
 
     public FunctionVariable parent() {
@@ -30,6 +35,7 @@ public class Derivative extends FunctionVariable {
         throw new UnsupportedOperationException();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return parent.toString() + "'";

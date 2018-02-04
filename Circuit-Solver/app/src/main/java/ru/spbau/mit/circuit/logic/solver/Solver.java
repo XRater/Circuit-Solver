@@ -45,7 +45,7 @@ public class Solver {
      * @param systemToSolve system to solve
      * @throws CircuitShortingException if the system expected to has more then one solution
      */
-    public static void solve(LinearSystem<
+    public static void solve(@NonNull LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
             Row<Numerical, FunctionVariable, PolyFunction>
@@ -119,8 +119,8 @@ public class Solver {
      * @return ordered array list of numerical variables storing coefficients
      */
     @NonNull
-    private static ArrayList<NumericalVariable> getCoefficients(Matrix<Function> matrixExponent,
-                                                                Matrix<Function> constPart)
+    private static ArrayList<NumericalVariable> getCoefficients(@NonNull Matrix<Function> matrixExponent,
+                                                                @NonNull Matrix<Function> constPart)
             throws ZeroDeterminantException {
         ArrayList<NumericalVariable> variables = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -158,7 +158,7 @@ public class Solver {
      * @param a matrix to check
      * @return true if matrix is zero matrix and false otherwise
      */
-    private static boolean isZeroMatrix(RealMatrix a) {
+    private static boolean isZeroMatrix(@NonNull RealMatrix a) {
         for (int i = 0; i < a.getRowDimension(); i++) {
             for (int j = 0; j < a.getRowDimension(); j++) {
                 if (a.getEntry(i, j) != 0) {
@@ -175,8 +175,9 @@ public class Solver {
      * @param initSystem system to get constants from
      * @return realVector storing right side system constants
      */
+    @NonNull
     private static RealVector getRightSideConstants(
-            LinearSystem<
+            @NonNull LinearSystem<
                     Numerical,
                     Vector<Numerical, Derivative>,
                     Row<Numerical, FunctionVariable, PolyFunction>> initSystem) {
@@ -193,7 +194,8 @@ public class Solver {
      * @param system system to get right side coefficients from
      * @return realMatrix storing coefficients of the right side of the system
      */
-    private static RealMatrix getRightSideMatrix(LinearSystem<
+    @NonNull
+    private static RealMatrix getRightSideMatrix(@NonNull LinearSystem<
             Numerical,
             Vector<Numerical, Derivative>,
             Row<Numerical, FunctionVariable, PolyFunction>> system) {

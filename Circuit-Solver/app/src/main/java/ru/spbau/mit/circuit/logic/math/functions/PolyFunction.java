@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
+import android.support.annotation.NonNull;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,18 +19,19 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
     private PolyFunction() {
     }
 
-    PolyFunction(PolyExponent f) {
+    PolyFunction(@NonNull PolyExponent f) {
         add(f);
     }
 
-    private PolyFunction(PolyFunction function) {
+    private PolyFunction(@NonNull PolyFunction function) {
         for (PolyExponent f : function.data.values()) {
             add(f);
         }
     }
 
+    @NonNull
     @Override
-    public PolyFunction add(PolyFunction item) {
+    public PolyFunction add(@NonNull PolyFunction item) {
         PolyFunction result = new PolyFunction(this);
         for (PolyExponent function : item.data.values()) {
             result.add(function);
@@ -36,7 +39,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return result;
     }
 
-    private void add(PolyExponent function) {
+    private void add(@NonNull PolyExponent function) {
         if (function.isZero()) {
             return;
         }
@@ -50,8 +53,9 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         }
     }
 
+    @NonNull
     @Override
-    public PolyFunction multiply(PolyFunction other) {
+    public PolyFunction multiply(@NonNull PolyFunction other) {
         if (other.isZero() || isZero()) {
             return PolyFunctions.zero();
         }
@@ -64,18 +68,21 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return result;
     }
 
+    @NonNull
     @Override
     public PolyFunction negate() {
         return this.multiplyConstant(Numerical.number(-1));
     }
 
+    @NonNull
     @Override
     public PolyFunction reciprocal() {
         throw new UnsupportedOperationException();
     }
 
+    @NonNull
     @Override
-    public PolyFunction multiplyConstant(Numerical cf) {
+    public PolyFunction multiplyConstant(@NonNull Numerical cf) {
         if (cf.isZero() || this.isZero()) {
             return PolyFunctions.zero();
         }
@@ -86,11 +93,13 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return result;
     }
 
+    @NonNull
     @Override
     public PolyFunction getZero() {
         return PolyFunctions.constant(0);
     }
 
+    @NonNull
     @Override
     public PolyFunction getIdentity() {
         return PolyFunctions.identity();
@@ -106,7 +115,8 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return data.size() == 1 && data.values().iterator().next().isIdentity();
     }
 
-    private PolyFunction div(PolyExponent gcd) {
+    @NonNull
+    private PolyFunction div(@NonNull PolyExponent gcd) {
         PolyFunction answer = new PolyFunction();
         for (PolyExponent function : data.values()) {
             answer.add(function.divide(gcd));
@@ -114,13 +124,15 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return answer;
     }
 
-    PolyFunction div(PolyFunction function) {
+    @NonNull
+    PolyFunction div(@NonNull PolyFunction function) {
         if (function.data.size() == 1) {
             return div(function.data.values().iterator().next());
         }
         return this;
     }
 
+    @NonNull
     public PolyFunction differentiate() {
         PolyFunction ans = new PolyFunction();
         for (PolyExponent exponent : data.values()) {
@@ -129,6 +141,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return ans;
     }
 
+    @NonNull
     public PolyFunction integrate() {
         PolyFunction answer = new PolyFunction();
 
@@ -139,6 +152,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return answer;
     }
 
+    @NonNull
     public Numerical apply(double x) {
         Numerical answer = Numerical.zero();
         for (PolyExponent exponent : data.values()) {
@@ -157,6 +171,7 @@ public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, Poly
         return data.values().iterator().next().doubleValue();
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.ui;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
@@ -8,7 +10,7 @@ import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class Uploader {
-    public static void load(DrawableModel drawableModel) {
+    public static void load(@NonNull DrawableModel drawableModel) {
         Model model = MainActivity.ui.getModel();
         for (Element element : model.elements()) {
             drawableModel.loadElement((Drawable) element);
