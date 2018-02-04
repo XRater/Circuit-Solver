@@ -8,6 +8,8 @@ import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
 public class MatrixExponent {
 
     private static final Function functionZero = Functions.zero();
+    private static int roundingScale = 2;
 
     public static Matrix<Function> matrixExponent(RealMatrix matrix) {
         Map<Complex, Integer> roots = getEigenValues(matrix);
@@ -85,6 +88,7 @@ public class MatrixExponent {
         EigenDecomposition eg = new EigenDecomposition(matrix);
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             Complex value = new Complex(eg.getRealEigenvalue(i), eg.getImagEigenvalue(i));
+            value = round(value);
             if (ans.containsKey(value)) {
                 ans.put(value, ans.get(value) + 1);
             } else {
@@ -92,6 +96,16 @@ public class MatrixExponent {
             }
         }
         return ans;
+    }
+
+    private static Complex round(Complex value) {
+        double realPart = value.getReal();
+        realPart = new BigDecimal(realPart)
+                .setScale(roundingScale, RoundingMode.HALF_UP).doubleValue();
+        double imaginaryPart = value.getImaginary();
+        imaginaryPart = new BigDecimal(imaginaryPart)
+                .setScale(roundingScale, RoundingMode.HALF_UP).doubleValue();
+        return new Complex(realPart, imaginaryPart);
     }
 
     public static void main(String[] args) {
