@@ -38,6 +38,11 @@ class Verificator {
      * @return true if node is isolated and false otherwise.
      */
     boolean isIsolated(Node node) {
+        for (Element element : model.elements()) {
+            if (element.adjacent(node)) {
+                return false;
+            }
+        }
         return node.wires().size() == 0;
     }
 
