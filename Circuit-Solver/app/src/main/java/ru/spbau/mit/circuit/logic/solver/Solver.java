@@ -16,7 +16,7 @@ import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.functions.Functions;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
-import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrices;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
 import ru.spbau.mit.circuit.logic.math.matrices.matrixExponent.MatrixExponent;
@@ -47,6 +47,10 @@ public class Solver {
         // Solve initial system
         ArrayList<FArray<Numerical>> solution = initSystem.getSolution();
 
+        for (int i = 0; i < solution.size(); i++) {
+            System.out.println(solution.get(i));
+        }
+
         RealMatrix A = getRightSideMatrix(solution);
         RealVector constants = getRightSideConstants(solution);
 
@@ -67,6 +71,8 @@ public class Solver {
         // Evaluate general solution
         Matrix<Function> matrixExponent = MatrixExponent.matrixExponent(A);
 
+        System.out.println(matrixExponent);
+
         // Evaluate particle solution
         Matrix<Function> underIntegralMatrix = MatrixExponent.matrixExponent(A.scalarMultiply(-1))
                 .multiply(Matrices.getFunctionMatrix(constants));
@@ -78,7 +84,7 @@ public class Solver {
         ArrayList<Numerical> coefficients;
         try {
             coefficients = getCoefficients(matrixExponent, constPart);
-        } catch (ZeroDeterminantException e) {
+        } catch (InconsistentSystemException e) {
             throw new RuntimeException(); // Should never happen
         }
 
@@ -112,7 +118,7 @@ public class Solver {
     @NonNull
     private static ArrayList<Numerical> getCoefficients(Matrix<Function> matrixExponent,
                                                         Matrix<Function> constPart)
-            throws ZeroDeterminantException {
+            throws InconsistentSystemException {
         ArrayList<NumericalVariable> variables = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             variables.add(new NumericalVariable("c" + i));

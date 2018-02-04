@@ -11,7 +11,7 @@ import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
-import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 import ru.spbau.mit.circuit.logic.math.variables.Derivative;
 import ru.spbau.mit.circuit.logic.math.variables.Numerator;
 import ru.spbau.mit.circuit.logic.solver.Solver;
@@ -102,7 +102,7 @@ public class ConnectedGraph {
                 FArray<Numerical>> system = null;
         try {
             system = constructSystem();
-        } catch (ZeroDeterminantException e) {
+        } catch (InconsistentSystemException e) {
             throw new CircuitShortingException();
         }
         ArrayList<Function> solution = Solver.solve(system);
@@ -136,7 +136,7 @@ public class ConnectedGraph {
      */
     private LSystem<
             Numerical,
-            FArray<Numerical>> constructSystem() throws ZeroDeterminantException {
+            FArray<Numerical>> constructSystem() throws InconsistentSystemException {
 
         LSystem<Numerical, FArray<Numerical>> system = new LSystem<>(
                 variables.size(), Numerical.zero(), FArray.array(variables.size() + 1, Numerical

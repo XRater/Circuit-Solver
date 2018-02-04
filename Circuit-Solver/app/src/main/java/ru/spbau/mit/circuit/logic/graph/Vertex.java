@@ -10,7 +10,7 @@ import java.util.List;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
-import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();
@@ -66,7 +66,7 @@ class Vertex {
      * Adds new equation corresponding to the first Kirchhoff's law.
      */
     void addEquation(LSystem<Numerical, FArray<Numerical>> system) throws
-            ZeroDeterminantException {
+            InconsistentSystemException {
         FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
         for (Edge edge : edges) {
             coefficients.set(edge.index(), Numerical.number(edge.getDirection(this)));
