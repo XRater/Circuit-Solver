@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
 
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
@@ -11,7 +13,20 @@ import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
 import ru.spbau.mit.circuit.logic.math.functions.exceptions.IllegalFunctionTransformationException;
 
+import static ru.spbau.mit.circuit.ui.Drawer.ELEMENTS_PAINT;
+
 public class PolyExponent implements OrderedGroup<PolyExponent> {
+
+    private static final int scale = 2;
+    private static final double precision = 0.0000001;
+    private final int mPow;
+    private final double ePow;
+    private int hashCode;
+
+    private PolyExponent(int mPow, double ePow) {
+        this.mPow = mPow;
+        this.ePow = ePow;
+    }
 
     public static PolyExponent identity() {
         return new PolyExponent(0, 0);
@@ -21,18 +36,23 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return new PolyExponent(mPow, ePow);
     }
 
-    private static final int scale = 2;
+    private static String writeNumber(double d) {
+        if (isEquals(d, Math.round(d))) {
+            if (Math.round(d) == 0 || Math.round(d) == 1) {
+                return "";
+            }
+            if (Math.round(d) == -1) {
+                return "-";
+            }
+            return String.valueOf(Math.round(d));
+        }
+        BigDecimal decimal = new BigDecimal(d);
+        decimal = decimal.setScale(scale, RoundingMode.HALF_EVEN);
+        return decimal.toString();
+    }
 
-    private static final double precision = 0.0000001;
-    private final int mPow;
-
-    private final double ePow;
-
-    private int hashCode;
-
-    private PolyExponent(int mPow, double ePow) {
-        this.mPow = mPow;
-        this.ePow = ePow;
+    private static boolean isEquals(double x, double y) {
+        return Math.abs(x - y) < precision;
     }
 
     public boolean isExponent() {
@@ -80,25 +100,6 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
     @Override
     public PolyExponent getIdentity() {
         return new PolyExponent(0, 0);
-    }
-
-    private static String writeNumber(double d) {
-        if (isEquals(d, Math.round(d))) {
-            if (Math.round(d) == 0 || Math.round(d) == 1) {
-                return "";
-            }
-            if (Math.round(d) == -1) {
-                return "-";
-            }
-            return String.valueOf(Math.round(d));
-        }
-        BigDecimal decimal = new BigDecimal(d);
-        decimal = decimal.setScale(scale, RoundingMode.HALF_EVEN);
-        return decimal.toString();
-    }
-
-    private static boolean isEquals(double x, double y) {
-        return Math.abs(x - y) < precision;
     }
 
     //    PolyFunction integrate() {
@@ -156,6 +157,33 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         }
         res += "exp(" + writeNumber(ePow) + "t)";
         return res;
+    }
+
+    public int print(Canvas canvas, int x, int y) {
+        Rect textSize = new Rect();
+        if (isIdentity()) {
+            ELEMENTS_PAINT.getTextBounds("1", 0, "1".length(), textSize);
+            canvas.drawText("1", x, y, ELEMENTS_PAINT);
+            return x + textSize.width();
+        }
+
+        if (mPow != 0) {
+            ELEMENTS_PAINT.getTextBounds("t", 0, "t".length(), textSize);
+            canvas.drawText("t", x, y, ELEMENTS_PAINT);
+            x += textSize.width();
+            ELEMENTS_PAINT.getTextBounds(writeNumber(mPow), 0, writeNumber(mPow).length(), textSize);
+            canvas.drawText(writeNumber(mPow), x, y + textSize.height(), ELEMENTS_PAINT);
+            x += textSize.width();
+        }
+        if (!isEquals(ePow, 0)) {
+            ELEMENTS_PAINT.getTextBounds("e", 0, "e".length(), textSize);
+            canvas.drawText("e", x, y, ELEMENTS_PAINT);
+            x += textSize.width();
+            ELEMENTS_PAINT.getTextBounds(writeNumber(ePow), 0, writeNumber(ePow).length(), textSize);
+            canvas.drawText(writeNumber(ePow) + "t", x, y - textSize.height(), ELEMENTS_PAINT);
+            x += textSize.width();
+        }
+        return x;
     }
 
     @Override
