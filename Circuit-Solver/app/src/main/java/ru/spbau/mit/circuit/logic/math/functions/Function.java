@@ -16,6 +16,14 @@ public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction,
         down = PolyFunctions.constant(1);
     }
 
+    public PolyFunction getUp() {
+        return up;
+    }
+
+    public PolyFunction getDown() {
+        return down;
+    }
+
     @Override
     protected Function empty() {
         return new Function();
