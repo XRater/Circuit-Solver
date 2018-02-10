@@ -14,15 +14,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.NotImplementedYetException;
+import ru.spbau.mit.circuit.logic.math.variables.NumericalVariable;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
-import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
@@ -155,10 +157,14 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                         .setView(taskEditText)
                         .setPositiveButton("Set new value", (dialog1, which) -> {
                             String value = String.valueOf(taskEditText.getText());
-                            try {
+                            if (NumberUtils.isNumber(value)) {
                                 element.setCharacteristicValue(Double.parseDouble(value));
-                            } catch (NumberFormatException | NullPointerException e2) {
-                                // No info
+                            } else {
+                                if (value.matches("[a-zA-Z]_\\d+") || value.matches("[a-zA-Z]")) {
+                                    //element.setCharacteristicValue(Double.parseDouble(value));
+                                    System.out.println("Var");
+                                    element.parameter = new NumericalVariable(value);
+                                }
                             }
                             drawableModel.redraw();
                         })

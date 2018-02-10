@@ -3,6 +3,7 @@ package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
 import java.io.Serializable;
 
+import ru.spbau.mit.circuit.logic.math.variables.NumericalVariable;
 import ru.spbau.mit.circuit.model.circuitObjects.Item;
 import ru.spbau.mit.circuit.model.circuitObjects.exceptions.InvalidElementException;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
@@ -20,6 +21,7 @@ public abstract class Element extends Item implements Movable, Serializable {
 
     protected final Node from;
     protected final Node to;
+    public NumericalVariable parameter;
     private Point center;
 
     public Element(Node from, Node to) {
