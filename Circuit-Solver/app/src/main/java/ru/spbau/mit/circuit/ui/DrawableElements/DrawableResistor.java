@@ -2,6 +2,7 @@ package ru.spbau.mit.circuit.ui.DrawableElements;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Resistor;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
@@ -18,13 +19,13 @@ public class DrawableResistor extends Resistor implements Drawable {
         super(new DrawableNode(from), new DrawableNode(to));
     }
 
-    public DrawableResistor(Point center) {
+    public DrawableResistor(@NonNull Point center) {
         super(new DrawableNode(center.x() - 2 * CELL_SIZE, center.y()),
                 new DrawableNode(center.x() + 2 * CELL_SIZE, center.y()));
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         String r = String.format("%.2f", getResistance()) + "\u03A9";
         Rect rSize = new Rect();
         Drawer.ELEMENTS_PAINT.getTextBounds(r, 0, r.length(), rSize);

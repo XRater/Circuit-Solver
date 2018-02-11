@@ -2,13 +2,14 @@ package ru.spbau.mit.circuit.controler;
 
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import java.io.IOException;
 import java.util.List;
 
 import ru.spbau.mit.circuit.model.Model;
 import ru.spbau.mit.circuit.storage.Converter;
-import ru.spbau.mit.circuit.storage.LoadingException;
+import ru.spbau.mit.circuit.storage.StorageException;
 
 /**
  * This class stores some tasks to work with converter. Every task is AsyncTask which will be called
@@ -63,6 +64,8 @@ class Tasks {
         private final Converter converter;
         private final Model model;
 
+        private Throwable t;
+
         SaveTask(Converter.Mode mode, Converter converter, Model model) {
             this.converter = converter;
             this.mode = mode;
@@ -73,8 +76,8 @@ class Tasks {
         public Boolean doInBackground(String... filename) {
             try {
                 return converter.save(mode, model, filename[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (StorageException e) {
+                t = e;
             }
             return false;
         }
@@ -90,6 +93,7 @@ class Tasks {
             this.converter = converter;
         }
 
+        @NonNull
         @Override
         public List<String> doInBackground(Void... voids) {
             return converter.getCircuits(mode);
@@ -108,14 +112,15 @@ class Tasks {
             this.converter = converter;
         }
 
+        @Nullable
         @Override
-        public Model doInBackground(String... filename) {
+        public Model doInBackground(@NonNull String... filename) {
             if (filename.length != 1) {
                 throw new IllegalArgumentException();
             }
             try {
                 return converter.load(mode, filename[0]);
-            } catch (LoadingException e) {
+            } catch (StorageException e) {
                 t = e;
             }
             return null;
@@ -138,7 +143,7 @@ class Tasks {
         public Boolean doInBackground(String... filename) {
             try {
                 return converter.delete(mode, filename[0]);
-            } catch (LoadingException e) {
+            } catch (StorageException e) {
                 t = e;
                 return false;
             }
@@ -149,5 +154,4 @@ class Tasks {
             super.onPostExecute(aBoolean);
         }
     }
-
 }

@@ -62,7 +62,7 @@ public class Drawer {
         return offset < (Drawer.CELL_SIZE / 2) ? x : x + Drawer.CELL_SIZE;
     }
 
-    static Point round(Point p) {
+    static Point round(@NonNull Point p) {
         return new Point(round(p.x() - offsetX), round(p.y() - offsetY));
     }
 
@@ -79,7 +79,7 @@ public class Drawer {
         }
     }
 
-    void drawModel(DrawableModel drawableModel) {
+    void drawModel(@NonNull DrawableModel drawableModel) {
         Canvas simpleCanvas = surfaceHolder.lockCanvas();
         canvas = new MyCanvas(simpleCanvas);
         drawBackground();
@@ -90,7 +90,7 @@ public class Drawer {
             element.draw(canvas);
             ELEMENTS_PAINT.setColor(ELEMENTS_COLOR);
         }
-        for (DrawableWire wire : DrawableModel.wires()) {
+        for (DrawableWire wire : drawableModel.wires()) {
             wire.draw(canvas);
         }
         for (DrawableNode node : drawableModel.realNodes()) {
@@ -108,7 +108,7 @@ public class Drawer {
         surfaceHolder.unlockCanvasAndPost(simpleCanvas);
     }
 
-    private void showCurrents(DrawableModel drawableModel) {
+    private void showCurrents(@NonNull DrawableModel drawableModel) {
         for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
             String current = e.getCurrent() + "A";

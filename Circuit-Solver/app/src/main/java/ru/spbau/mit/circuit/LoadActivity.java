@@ -7,8 +7,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ru.spbau.mit.circuit.storage.Converter;
+import ru.spbau.mit.circuit.storage.StorageException;
 
 
 public class LoadActivity extends Activity {
@@ -28,10 +30,19 @@ public class LoadActivity extends Activity {
             String name = ((TextView) view).getText().toString();
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Chose action")
-                    .setPositiveButton("Load", (dialog1, which) ->
-                            MainActivity.ui.load(mode, name))
+                    .setPositiveButton("Load", (dialog1, which) -> {
+                        try {
+                            MainActivity.ui.load(mode, name);
+                        } catch (StorageException e) {
+                            showErrorToast(mode);
+                        }
+                    })
                     .setNegativeButton("Delete", (dialog1, which) -> {
-                        MainActivity.ui.removeFromStorage(mode, name);
+                        try {
+                            MainActivity.ui.removeFromStorage(mode, name);
+                        } catch (StorageException e) {
+                            showErrorToast(mode);
+                        }
                         if (mode == Converter.Mode.LOCAL) {
                             local.callOnClick();
                         } else {
@@ -43,19 +54,50 @@ public class LoadActivity extends Activity {
         });
 
         local.setOnClickListener(v -> {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_activated_1, MainActivity.ui.getCircuits(
-                    Converter.Mode.LOCAL));
+            ArrayAdapter<String> adapter = null;
+            try {
+                adapter = new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_activated_1,
+                        MainActivity.ui.getCircuits(Converter.Mode.LOCAL));
+            } catch (StorageException e) {
+                showErrorToastLocal();
+            }
             names.setAdapter(adapter);
             mode = Converter.Mode.LOCAL;
         });
 
         drive.setOnClickListener(v -> {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_activated_1, MainActivity.ui.getCircuits(
-                    Converter.Mode.DRIVE));
+            ArrayAdapter<String> adapter = null;
+            try {
+                adapter = new ArrayAdapter<>(this,
+                        android.R.layout.simple_list_item_activated_1,
+                        MainActivity.ui.getCircuits(Converter.Mode.DRIVE));
+            } catch (StorageException e) {
+                showErrorToastDrive();
+            }
             names.setAdapter(adapter);
             mode = Converter.Mode.DRIVE;
         });
+    }
+
+    private void showErrorToast(Converter.Mode mode) {
+        if (mode == Converter.Mode.LOCAL) {
+            showErrorToastLocal();
+        } else {
+            showErrorToastDrive();
+        }
+    }
+
+    private void showErrorToastLocal() {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "An error occurred.", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    private void showErrorToastDrive() {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "An error occurred. Check your Internet connection and try again.",
+                Toast.LENGTH_SHORT);
+        toast.show();
     }
 }

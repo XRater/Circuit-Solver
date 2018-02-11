@@ -1,11 +1,13 @@
 package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 
 public abstract class Resistor extends Element {
     private double resistance = 1;
 
-    public Resistor(Node from, Node to) {
+    public Resistor(@NonNull Node from, @NonNull Node to) {
         super(from, to);
     }
 
@@ -24,6 +26,7 @@ public abstract class Resistor extends Element {
         this.resistance = resistance;
     }
 
+    @NonNull
     @Override
     public String getCharacteristicName() {
         return "resistance";

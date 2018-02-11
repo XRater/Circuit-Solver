@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.matrices.matrixExponent;
 
 
+import android.support.annotation.NonNull;
+
 import org.apache.commons.math3.complex.Complex;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ class SubtractColumn {
 
     private final ArrayList<Element> elements = new ArrayList<>();
 
-    public SubtractColumn(List<Complex> roots) {
+    public SubtractColumn(@NonNull List<Complex> roots) {
         for (Complex root : roots) {
             elements.add(new Element(root));
         }
@@ -44,7 +46,7 @@ class SubtractColumn {
 
         private final Function value;
 
-        public Element(Complex root) {
+        public Element(@NonNull Complex root) {
             begin = root;
             end = root;
             size = 1;
@@ -52,7 +54,7 @@ class SubtractColumn {
             value = Functions.exponent(root.getReal());
         }
 
-        public Element(Element first, Element second) {
+        public Element(@NonNull Element first, @NonNull Element second) {
             if (first.size != second.size) {
                 throw new IllegalArgumentException();
             }
