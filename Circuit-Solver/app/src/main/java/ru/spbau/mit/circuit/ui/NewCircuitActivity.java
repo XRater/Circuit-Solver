@@ -22,7 +22,6 @@ import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
-import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
