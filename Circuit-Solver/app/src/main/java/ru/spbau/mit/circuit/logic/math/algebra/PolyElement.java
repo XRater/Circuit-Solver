@@ -10,10 +10,10 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
 
 /**
  * This class is created to lift any group class to the Algebra level.
- *
+ * <p>
  * For example if 1, x, x^2, ... are elements of the group, then any PolyElement
  * looks like c_0 + c_1x + c_2x^2 + ... (any polynom).
- *
+ * <p>
  * Easy to observe, that such elements may be easily multiplied/added to each other.
  *
  * @param <F> field class for coefficients
