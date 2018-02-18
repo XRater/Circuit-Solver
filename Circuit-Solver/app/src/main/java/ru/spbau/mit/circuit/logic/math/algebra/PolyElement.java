@@ -152,10 +152,11 @@ public abstract class PolyElement<
 
     public int print(Canvas canvas, int x, int y) {
         Iterator<Pair<F, G>> iter = data.values().iterator();
-        if (iter.hasNext())
+        if (iter.hasNext()) {
             x += iter.next().print(canvas, x, y);
-        else
+        } else {
             System.out.println("(((((((((((((((((");
+        }
         Rect textSize = new Rect();
         while (iter.hasNext()) {
             ELEMENTS_PAINT.getTextBounds(" + ", 0, " + ".length(), textSize);
@@ -164,6 +165,13 @@ public abstract class PolyElement<
             x += iter.next().print(canvas, x, y);
         }
         return x;
+    }
+
+    protected F singleValue() {
+        if (data.size() != 1) {
+            throw new IllegalArgumentException();
+        }
+        return data.values().iterator().next().first;
     }
 
     protected class Pair<U, V> {

@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 
 import org.apache.commons.math3.complex.Complex;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import ru.spbau.mit.circuit.logic.math.algebra.exceptions.IllegalInverseException;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 
@@ -13,6 +16,7 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
 
     private static final Numerical zero = Numerical.number(0);
     private static final Numerical identity = Numerical.number(1);
+    private static final int roundingScale = 5;
 
     private final Complex value;
     @SuppressWarnings("FieldCanBeLocal")
@@ -35,7 +39,7 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
     }
 
     private Numerical(Complex value) {
-        this.value = value;
+        this.value = round(value);
     }
 
     private Numerical(double value) {
@@ -113,4 +117,16 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
     public int compareTo(@NonNull Numerical o) {
         return Double.compare(value.getReal(), o.value.getReal());
     }
+
+    private static Complex round(Complex value) {
+        double realPart = value.getReal();
+        realPart = new BigDecimal(realPart)
+                .setScale(roundingScale, RoundingMode.HALF_UP).doubleValue();
+        double imaginaryPart = value.getImaginary();
+        imaginaryPart = new BigDecimal(imaginaryPart)
+                .setScale(roundingScale, RoundingMode.HALF_UP).doubleValue();
+        return new Complex(realPart, imaginaryPart);
+    }
+
+
 }

@@ -14,10 +14,13 @@ import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.expressions.Expression;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
+import ru.spbau.mit.circuit.logic.math.functions.Functions;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
+import ru.spbau.mit.circuit.logic.math.matrices.Matrices;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
+import ru.spbau.mit.circuit.logic.math.matrices.matrixExponent.MatrixExponent;
 import ru.spbau.mit.circuit.logic.math.variables.NumericalVariable;
 import ru.spbau.mit.circuit.model.Result;
 
@@ -63,11 +66,10 @@ public class Solver {
             return answer;
         }
 
-//        RealMatrix A = getRightSideMatrix(solution);
-//        RealVector constants = getRightSideConstants(solution);
+        RealMatrix A = getRightSideMatrix(solution);
+        RealVector constants = getRightSideConstants(solution);
 
-//        throw new RuntimeException();
-/*
+
         // Evaluate general solution
         Matrix<Function> matrixExponent = MatrixExponent.matrixExponent(A);
 
@@ -99,14 +101,12 @@ public class Solver {
                         .multiplyConstant(coefficients.get(j)));
             }
 
-            answerAddition = answerAddition.add(constPart.get(i, 0));
+            answerAddition = answerAddition.add(constPart.get(i, 0).differentiate());
 
             answer.add(answerAddition);
         }
 
         return answer;
-  */
-        throw new RuntimeException();
     }
 
     private static boolean noCapacitors(ArrayList<FArray<Expression>> solution) {
@@ -178,21 +178,21 @@ public class Solver {
         return true;
     }
 
-    private static RealVector getRightSideConstants(ArrayList<FArray<Numerical>> solution) {
+    private static RealVector getRightSideConstants(ArrayList<FArray<Expression>> solution) {
         int size = solution.get(0).size();
         RealVector vector = new ArrayRealVector(n);
         for (int i = 0; i < n; i++) {
-            vector.setEntry(i, solution.get(i).get(size - 1).value());
+            vector.setEntry(i, solution.get(i).get(size - 1).doubleValue());
         }
         return vector;
     }
 
-    private static RealMatrix getRightSideMatrix(ArrayList<FArray<Numerical>> solution) {
+    private static RealMatrix getRightSideMatrix(ArrayList<FArray<Expression>> solution) {
         RealMatrix matrix = new Array2DRowRealMatrix(solution.size(), solution.size());
         for (int i = 0; i < n; i++) {
-            FArray<Numerical> right = solution.get(i);
+            FArray<Expression> right = solution.get(i);
             for (int j = 0; j < n; j++) {
-                matrix.setEntry(i, j, right.get(j).value());
+                matrix.setEntry(i, j, right.get(j).doubleValue());
                 //                Derivative derivative = system.get(i).coefficients().valueAt(j);
 //                Numerical c = right.get(derivative.parent());
 //                matrix.setEntry(i, j, c == null ? 0 : c.value());

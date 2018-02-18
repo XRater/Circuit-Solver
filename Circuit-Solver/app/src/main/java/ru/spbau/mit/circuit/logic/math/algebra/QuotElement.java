@@ -29,9 +29,18 @@ public abstract class QuotElement<
     }
 
     protected void simplify() {
+        if (up.isZero()) {
+            down = down.getIdentity();
+            return;
+        }
         G gcd = gcd();
         up = up.div(gcd);
         down = down.div(gcd);
+        if (down.isSingle()) {
+            F constant = down.singleValue().reciprocal();
+            up = up.multiplyConstant(constant);
+            down = down.multiplyConstant(constant);
+        }
     }
 
     @Override
