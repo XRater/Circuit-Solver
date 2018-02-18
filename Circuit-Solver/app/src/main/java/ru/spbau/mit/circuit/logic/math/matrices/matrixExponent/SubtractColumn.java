@@ -19,7 +19,7 @@ class SubtractColumn {
 
     private final ArrayList<Element> elements = new ArrayList<>();
 
-    public SubtractColumn(@NonNull List<Complex> roots) {
+    SubtractColumn(@NonNull List<Complex> roots) {
         for (Complex root : roots) {
             elements.add(new Element(root));
         }
@@ -32,7 +32,7 @@ class SubtractColumn {
         return elements.get(0).value;
     }
 
-    public void next() {
+    void next() {
         for (int i = 0; i < elements.size() - 1; i++) {
             elements.set(i, new Element(elements.get(i), elements.get(i + 1)));
         }
@@ -62,8 +62,8 @@ class SubtractColumn {
             end = second.end;
             size = first.size + 1;
             if (Complex.equals(first.begin, second.end, precision)) {
-                value = second.value.multiply(Functions.power(1)).divide(Functions.constant(first
-                        .size));
+                value = second.value.multiply(Functions.power(1))
+                        .divide(Functions.constant(first.size));
             } else {
                 value = second.value.subtract(first.value)
                         .divide(Functions.constant((end.subtract(begin).getReal())));

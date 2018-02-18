@@ -135,12 +135,12 @@ class Tasks {
         }
     }
 
-    static class ResultHolder<Result> {
+    static class ResultHolder<R> {
 
-        private Result result;
+        private R result;
         private StorageException exception = null;
 
-        private ResultHolder(Result result) {
+        private ResultHolder(R result) {
             this.result = result;
         }
 
@@ -148,7 +148,7 @@ class Tasks {
             this.exception = exception;
         }
 
-        Result getResult() throws StorageException {
+        R getResult() throws StorageException {
             if (exception != null) {
                 throw exception;
             }

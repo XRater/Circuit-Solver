@@ -1,7 +1,5 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
-import android.graphics.Canvas;
-
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.QuotElement;
 
@@ -16,21 +14,6 @@ public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction,
     Function(PolyFunction f) {
         up = f;
         down = PolyFunctions.constant(1);
-    }
-
-    public PolyFunction getUp() {
-        return up;
-    }
-
-    public PolyFunction getDown() {
-        return down;
-    }
-
-    public int print(Canvas canvas, int x, int y) {
-        if (!down.isIdentity()) {
-            throw new UnsupportedOperationException();
-        }
-        return up.print(canvas, x, y);
     }
 
     @Override
