@@ -7,11 +7,9 @@ import org.apache.commons.math3.complex.Complex;
 
 import ru.spbau.mit.circuit.logic.math.algebra.exceptions.IllegalInverseException;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
-import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Linear;
 
 @SuppressWarnings("WeakerAccess")
-public class Numerical implements Field<Numerical>, Comparable<Numerical>, Linear<Numerical,
-        Numerical> {
+public class Numerical implements Field<Numerical>, Comparable<Numerical> {
 
     private static final Numerical zero = Numerical.number(0);
     private static final Numerical identity = Numerical.number(1);

@@ -9,7 +9,7 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Abel;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Proportional;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
-import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 
 public class LSystem<F extends Field<F>, U extends Abel<U> & Proportional<F, U>> {
 
@@ -37,7 +37,7 @@ public class LSystem<F extends Field<F>, U extends Abel<U> & Proportional<F, U>>
     }
 
     public void addEquation(@NonNull FArray<F> coefficients, @NonNull U constant) throws
-            ZeroDeterminantException {
+            InconsistentSystemException {
         if (coefficients.size() != variablesNumber) {
             throw new IllegalArgumentException();
         }
@@ -59,7 +59,8 @@ public class LSystem<F extends Field<F>, U extends Abel<U> & Proportional<F, U>>
         if (!constants.get(equationsNumber - 1).isZero()) {
             data.remove(equationsNumber - 1);
             constants.remove(equationsNumber - 1);
-            throw new ZeroDeterminantException();
+            equationsNumber--;
+            throw new InconsistentSystemException();
         }
         data.remove(equationsNumber - 1);
         constants.remove(equationsNumber - 1);

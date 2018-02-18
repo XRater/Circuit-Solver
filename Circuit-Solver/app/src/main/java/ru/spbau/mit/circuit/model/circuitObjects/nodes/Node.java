@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.model.circuitObjects.nodes;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -20,6 +22,7 @@ import ru.spbau.mit.circuit.model.interfaces.Wireable;
  */
 public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable, Serializable {
 
+    @NonNull
     protected Collection<Wire> wires = new LinkedHashSet<>();  // adjacent wires
     protected Point point;
 
@@ -34,6 +37,7 @@ public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable,
     /**
      * Returns collection of adjacent to the node wires.
      */
+    @NonNull
     @Override
     public Collection<Wire> wires() {
         return wires;
@@ -58,6 +62,7 @@ public abstract class Node implements CircuitObject, Movable, WireEnd, Wireable,
         point = new Point(point.x() + dx, point.y() + dy);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "<" + x() + ", " + y() + ">";

@@ -1,6 +1,11 @@
 package ru.spbau.mit.circuit.model;
 
 
+import android.support.annotation.NonNull;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,10 +37,14 @@ import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 public class Model implements Serializable {
 
     private transient Controller controller; // controller
+    @NonNull
     private transient Verificator verificator = new Verificator(this); // verificator
 
+    @NonNull
     private List<Element> elements = new ArrayList<>(); // elements
+    @NonNull
     private List<Wire> wires = new ArrayList<>(); // wires
+    @NonNull
     private Set<Node> nodes = new HashSet<>(); // nodes
 
     public Model(Controller controller) {
@@ -44,15 +53,15 @@ public class Model implements Serializable {
 
     //some getters
     public List<Element> elements() {
-        return elements;
+        return ImmutableList.copyOf(elements);
     }
 
     public List<Wire> wires() {
-        return wires;
+        return ImmutableList.copyOf(wires);
     }
 
     public Set<Node> nodes() {
-        return nodes;
+        return ImmutableSet.copyOf(nodes);
     }
 
     // this methods are required in case we loaded new circuit instead of creating new one.
@@ -78,7 +87,7 @@ public class Model implements Serializable {
     /**
      * The method consequently adds all objects from the list to model. Result action must be legal.
      **/
-    public void addAll(List<CircuitObject> objects) throws NodesAreAlreadyConnected {
+    public void addAll(@NonNull List<CircuitObject> objects) throws NodesAreAlreadyConnected {
         removeThenAdd(Collections.emptyList(), objects);
     }
 
@@ -95,7 +104,7 @@ public class Model implements Serializable {
      * The method consequently removes all objects from the list to model. Result action must be
      * legal.
      **/
-    public void removeAll(List<CircuitObject> objects) {
+    public void removeAll(@NonNull List<CircuitObject> objects) {
         try {
             removeThenAdd(objects, Collections.emptyList());
         } catch (NodesAreAlreadyConnected nodesAreAlreadyConnected) {
@@ -112,7 +121,7 @@ public class Model implements Serializable {
      * @param toBeDeleted list to remove at first
      * @param toBeAdded   list to add after
      */
-    public void removeThenAdd(List<CircuitObject> toBeDeleted, List<CircuitObject> toBeAdded)
+    public void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject> toBeAdded)
             throws NodesAreAlreadyConnected {
         List<CircuitObject> deleted = new LinkedList<>();
         List<CircuitObject> added = new LinkedList<>();
@@ -247,6 +256,7 @@ public class Model implements Serializable {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

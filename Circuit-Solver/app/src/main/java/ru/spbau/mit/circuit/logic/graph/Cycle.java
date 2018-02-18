@@ -6,7 +6,7 @@ import java.util.Deque;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
-import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.ZeroDeterminantException;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 
 class Cycle {
 
@@ -25,10 +25,11 @@ class Cycle {
 
 
     void addEquation(LSystem<Numerical, FArray<Numerical>> system) throws
-            ZeroDeterminantException {
+            InconsistentSystemException {
 
         FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
         FArray<Numerical> constant = FArray.array(system.variablesNumber() + 1, Numerical.zero());
+        Numerical voltage = Numerical.zero();
 
         Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
@@ -41,13 +42,29 @@ class Cycle {
                         Numerical.number(-edge.getDirection(curr) / edge.getCapacity()));
             }
 
-            constant.set(system.variablesNumber(),
-                    Numerical.number(-edge.getVoltage() * edge.getDirection(curr)));
-            System.out.println(constant);
+            voltage = voltage.add(Numerical.number(-edge.getVoltage() * edge.getDirection(curr)));
             curr = edge.getPair(curr);
         }
 
-        system.addEquation(coefficients, constant);
+        constant.set(system.variablesNumber(), voltage);
+
+        try {
+            system.addEquation(coefficients, constant);
+        } catch (InconsistentSystemException e) {
+            for (int i = 0; i < system.variablesNumber(); i++) {
+                if (!coefficients.get(i).isZero()) {
+                    throw new RuntimeException(); // should never happen
+                }
+            }
+            if (!constant.get(system.variablesNumber()).isZero()) {
+                throw new InconsistentSystemException();
+            }
+            for (int i = 0; i < system.variablesNumber(); i++) {
+                coefficients.set(i, constant.get(i));
+            }
+            system.addEquation(coefficients,
+                    FArray.array(system.variablesNumber() + 1, Numerical.zero()));
+        }
     }
 
     @Override

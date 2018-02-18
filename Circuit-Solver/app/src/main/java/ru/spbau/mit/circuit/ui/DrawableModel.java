@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.ui;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,14 +24,20 @@ import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
 public class DrawableModel {
+    @NonNull
     private static Map<Point, Drawable> field = new LinkedHashMap<>();
-    private static Set<DrawableWire> drawableWires = new LinkedHashSet<>();
     private final Activity activity;
+    @NonNull
+    private Set<DrawableWire> drawableWires = new LinkedHashSet<>();
+    @NonNull
     private Set<Drawable> drawables = new LinkedHashSet<>();
+    @NonNull
     private Set<DrawableNode> realNodes = new LinkedHashSet<>();
     private Drawer drawer;
 
+    @Nullable
     private DrawableNode holded;
+    @Nullable
     private Drawable chosen;
 
     private boolean showingCurrents;
@@ -45,14 +53,17 @@ public class DrawableModel {
         return field.get(p);
     }
 
-    public static Set<DrawableWire> wires() {
+    @NonNull
+    public Set<DrawableWire> wires() {
         return drawableWires;
     }
 
+    @NonNull
     Set<Drawable> drawables() {
         return drawables;
     }
 
+    @NonNull
     Set<DrawableNode> realNodes() {
         return realNodes;
     }
@@ -84,6 +95,7 @@ public class DrawableModel {
         redraw();
     }
 
+    @Nullable
     WireEnd getHolded() {
         return holded;
     }
@@ -98,7 +110,7 @@ public class DrawableModel {
      * @param drawable an object to move.
      * @param point    where to move.
      */
-    void move(Drawable drawable, Point point) {
+    void move(@NonNull Drawable drawable, @NonNull Point point) {
         int realX = 0, realY = 0;
         if (((Element) drawable).isHorizontal()) {
             realX = Math.max(2 * Drawer.CELL_SIZE, point.x());
@@ -157,7 +169,7 @@ public class DrawableModel {
      * @param element element that is moved.
      * @return true if can move.
      */
-    private boolean isValid(Point point, Element element) {
+    private boolean isValid(@NonNull Point point, @NonNull Element element) {
         if (element.isHorizontal()) {
             return isValidPoint(point, element) &&
                     isValidPoint(new Point(point.x() - 2 * Drawer.CELL_SIZE, point.y()), element) &&
@@ -173,7 +185,7 @@ public class DrawableModel {
         }
     }
 
-    private boolean isValidPoint(Point point, Element element) {
+    private boolean isValidPoint(Point point, @NonNull Element element) {
         Drawable cur = field.get(point);
         if (cur == null) {
             return true;
@@ -195,6 +207,7 @@ public class DrawableModel {
     /**
      * @return a possible position to spawn new element.
      */
+    @NonNull
     Point getPossiblePosition() {
         int x = 5 * Drawer.CELL_SIZE;
         int y = 5 * Drawer.CELL_SIZE;
@@ -204,7 +217,7 @@ public class DrawableModel {
         return new Point(x, y);
     }
 
-    private boolean canPut(Point point) {
+    private boolean canPut(@NonNull Point point) {
         return field.get(point) == null &&
                 field.get(new Point(point.x() - 2 * Drawer.CELL_SIZE, point.y())) == null &&
                 field.get(new Point(point.x() + 2 * Drawer.CELL_SIZE, point.y())) == null &&
@@ -251,7 +264,7 @@ public class DrawableModel {
         }
     }
 
-    private void addNewWirePosition(DrawableWire wire) {
+    private void addNewWirePosition(@NonNull DrawableWire wire) {
         LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
             DrawableNode node = (DrawableNode) field.get(p);
@@ -262,7 +275,7 @@ public class DrawableModel {
         }
     }
 
-    private void deleteOldWirePosition(DrawableWire wire) {
+    private void deleteOldWirePosition(@NonNull DrawableWire wire) {
         LinkedHashSet<Point> path = wire.getPath();
         for (Point p : path) {
             DrawableNode node = (DrawableNode) field.get(p);
@@ -291,7 +304,7 @@ public class DrawableModel {
      *
      * @param second second end of wire.
      */
-    void connect(DrawableNode second) {
+    void connect(@NonNull DrawableNode second) {
         if (second.position().equals(holded.position())) {
             return;
         }
@@ -311,7 +324,7 @@ public class DrawableModel {
         splitWires(first, toBeDeleted, toBeAdded);
         splitWires(second, toBeDeleted, toBeAdded);
 
-        DrawableWire dw = new DrawableWire(first, second);
+        DrawableWire dw = new DrawableWire(first, second, drawableWires);
         toBeAdded.add(dw);
 
         // Try to apply changes to model
@@ -343,8 +356,8 @@ public class DrawableModel {
         redraw();
     }
 
-    private void splitWires(DrawableNode node, List<CircuitObject> toBeDeleted,
-                            List<CircuitObject> toBeAdded) {
+    private void splitWires(@NonNull DrawableNode node, @NonNull List<CircuitObject> toBeDeleted,
+                            @NonNull List<CircuitObject> toBeAdded) {
         if (node.isRealNode()) {
             return; // No wires through real node.
         }
@@ -357,8 +370,8 @@ public class DrawableModel {
                 toBeDeleted.add(wire);
             }
 
-            DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node);
-            DrawableWire newWire2 = new DrawableWire((DrawableNode) wire.to(), node);
+            DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node, drawableWires);
+            DrawableWire newWire2 = new DrawableWire((DrawableNode) wire.to(), node, drawableWires);
 
             toBeAdded.add(newWire1);
             toBeAdded.add(newWire2);
@@ -411,7 +424,7 @@ public class DrawableModel {
         redraw();
     }
 
-    void removeWire(DrawableNode node) {
+    void removeWire(@NonNull DrawableNode node) {
         for (DrawableWire wire : drawableWires) {
             if (wire.getPath().contains(node.position())) {
                 killWire(wire);
@@ -431,7 +444,7 @@ public class DrawableModel {
      *
      * @param element an element to rotate.
      */
-    void rotateElement(Element element) {
+    void rotateElement(@NonNull Element element) {
         if (!canRotate(element)) {
             Toast.makeText(activity.getApplicationContext(), "It is not possible to rotate the " +
                             "element here.",
@@ -455,7 +468,7 @@ public class DrawableModel {
         redraw();
     }
 
-    private boolean canRotate(Element element) {
+    private boolean canRotate(@NonNull Element element) {
         int x = element.center().x();
         int y = element.center().y();
         if (element.isHorizontal()) { // If it is horizontal, it is going to become vertical.
@@ -486,7 +499,7 @@ public class DrawableModel {
         return true;
     }
 
-    void deleteUnnecessaryNode(Node common, Wire first, Wire second) {
+    void deleteUnnecessaryNode(@NonNull Node common, Wire first, Wire second) {
         DrawableWire del1 = (DrawableWire) first;
         DrawableWire del2 = (DrawableWire) second;
 
@@ -499,7 +512,7 @@ public class DrawableModel {
         redraw();
     }
 
-    private void killWire(DrawableWire wire) {
+    private void killWire(@NonNull DrawableWire wire) {
         deleteOldWirePosition(wire);
         MainActivity.ui.removeFromModel(wire);
         drawableWires.remove(wire);
@@ -515,7 +528,7 @@ public class DrawableModel {
         addNewObjectPosition(element);
     }
 
-    void loadWire(DrawableWire wire) {
+    void loadWire(@NonNull DrawableWire wire) {
         drawableWires.add(wire);
         addNewWirePosition(wire);
     }
@@ -524,6 +537,7 @@ public class DrawableModel {
         this.drawer = drawer;
     }
 
+    @Nullable
     Drawable chosen() {
         return chosen;
     }

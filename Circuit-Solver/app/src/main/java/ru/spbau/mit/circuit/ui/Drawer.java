@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 
+import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
@@ -62,7 +63,7 @@ public class Drawer {
         return offset < (Drawer.CELL_SIZE / 2) ? x : x + Drawer.CELL_SIZE;
     }
 
-    static Point round(Point p) {
+    static Point round(@NonNull Point p) {
         return new Point(round(p.x() - offsetX), round(p.y() - offsetY));
     }
 
@@ -79,7 +80,7 @@ public class Drawer {
         }
     }
 
-    void drawModel(DrawableModel drawableModel) {
+    void drawModel(@NonNull DrawableModel drawableModel) {
         Canvas simpleCanvas = surfaceHolder.lockCanvas();
         canvas = new MyCanvas(simpleCanvas);
         drawBackground();
@@ -90,7 +91,7 @@ public class Drawer {
             element.draw(canvas);
             ELEMENTS_PAINT.setColor(ELEMENTS_COLOR);
         }
-        for (DrawableWire wire : DrawableModel.wires()) {
+        for (DrawableWire wire : drawableModel.wires()) {
             wire.draw(canvas);
         }
         for (DrawableNode node : drawableModel.realNodes()) {
@@ -108,13 +109,13 @@ public class Drawer {
         surfaceHolder.unlockCanvasAndPost(simpleCanvas);
     }
 
-    private void showCurrents(DrawableModel drawableModel) {
+    private void showCurrents(@NonNull DrawableModel drawableModel) {
         for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
-            String current = e.getCurrent() + "A";
+            Function current = e.getCurrent();
             System.out.println(current);
             Rect textSize = new Rect();
-            ELEMENTS_PAINT.getTextBounds(current, 0, current.length(), textSize);
+            ELEMENTS_PAINT.getTextBounds(current.toString(), 0, current.toString().length(), textSize);
             canvas.save();
             if (e.isVertical()) {
                 canvas.translate(e.x() + Drawer.getOffsetX(), e.y() + Drawer.getOffsetY());
@@ -122,8 +123,7 @@ public class Drawer {
                 canvas.translate(-e.x() - Drawer.getOffsetX(), -e.y() - Drawer.getOffsetY());
             }
 
-            canvas.drawText(current, e.x() - textSize.width() / 2, e.y() - CELL_SIZE,
-                    ELEMENTS_PAINT);
+            current.print(canvas, e.x() - textSize.width() / 2, e.y() - CELL_SIZE);
             canvas.restore();
         }
     }
