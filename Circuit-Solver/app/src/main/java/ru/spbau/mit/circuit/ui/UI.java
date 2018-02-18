@@ -65,7 +65,7 @@ public class UI {
         drawableModel.deleteUnnecessaryNode(common, first, second);
     }
 
-    public boolean save(Converter.Mode mode, String name) {
+    public boolean save(Converter.Mode mode, String name) throws StorageException {
         return controller.save(mode, name);
     }
 
