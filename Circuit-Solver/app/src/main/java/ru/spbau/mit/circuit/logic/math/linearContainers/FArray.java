@@ -8,12 +8,19 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Abel;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Proportional;
 
+/**
+ * Fixed size array of field elements. Implements linear interface, therefore it is possible
+ * to use this array as a right side of linear system equation.
+ *
+ * @param <F> field elements.
+ */
 public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional<F, FArray<F>> {
 
     public static <F extends Field<F>> FArray<F> array(int size, F element) {
         return new FArray<>(size, element);
     }
 
+    @SuppressWarnings("unused")
     @SafeVarargs
     public static <F extends Field<F>> FArray<F> array(F... array) {
         if (array.length == 0) {

@@ -15,12 +15,11 @@ import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.functions.Functions;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
-import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrices;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
 import ru.spbau.mit.circuit.logic.math.matrices.matrixExponent.MatrixExponent;
-import ru.spbau.mit.circuit.logic.math.variables.NumericalVariable;
 
 
 /**
@@ -29,7 +28,6 @@ import ru.spbau.mit.circuit.logic.math.variables.NumericalVariable;
 public class Solver {
 
     private static int n;
-    private static LSystem<Numerical, FArray<Numerical>> initSystem;
 
     /**
      * The method sets values of function variables and derivatives to their exact values.
@@ -37,15 +35,15 @@ public class Solver {
      * @param systemToSolve system to solve
      * @throws CircuitShortingException if the system expected to has more then one solution
      */
-    public static ArrayList<Function> solve(LSystem<Numerical, FArray<Numerical>> systemToSolve)
+    public static ArrayList<Function> solve(
+            LinearSystem<Numerical, FArray<Numerical>> systemToSolve)
             throws CircuitShortingException {
 
-        initSystem = systemToSolve;
-        n = initSystem.variablesNumber();
-        System.out.println(initSystem);
+        n = systemToSolve.variablesNumber();
+        System.out.println(systemToSolve);
 
         // Solve initial system
-        ArrayList<FArray<Numerical>> solution = initSystem.getSolution();
+        ArrayList<FArray<Numerical>> solution = systemToSolve.getSolution();
 
         for (int i = 0; i < solution.size(); i++) {
             System.out.println(solution.get(i));
@@ -119,12 +117,8 @@ public class Solver {
     private static ArrayList<Numerical> getCoefficients(Matrix<Function> matrixExponent,
                                                         Matrix<Function> constPart)
             throws InconsistentSystemException {
-        ArrayList<NumericalVariable> variables = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            variables.add(new NumericalVariable("c" + i));
-        }
-        LSystem<Numerical, Numerical> constantsSystem =
-                new LSystem<>(n, Numerical.zero(), Numerical.zero());
+        LinearSystem<Numerical, Numerical> constantsSystem =
+                new LinearSystem<>(n, Numerical.zero(), Numerical.zero());
 
         for (int i = 0; i < n; i++) {
             FArray<Numerical> array = FArray.array(n, Numerical.zero());
@@ -138,14 +132,6 @@ public class Solver {
         }
 
         return constantsSystem.getSolution();
-//
-//            @SuppressWarnings("unchecked") Equation<Numerical, LArray<Numerical,
-//                    NumericalVariable>, Numerical> eq =
-//                    new Equation(LArray,
-//                            constPart.get(i, 0).apply(0).negate()
-//                                    .add(initSystem.get(i).coefficients().valueAt(i).parent()
-//                                            .initialValue()));
-//            constantsSystem.addEquation(eq);
     }
 
     /**

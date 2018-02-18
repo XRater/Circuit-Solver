@@ -3,58 +3,73 @@ package ru.spbau.mit.circuit.logic.math.linearContainers.polynom;
 
 import android.support.annotation.NonNull;
 
+import ru.spbau.mit.circuit.logic.math.algebra.Pair;
 import ru.spbau.mit.circuit.logic.math.algebra.PolyElement;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
 
-public class Polynom<C extends Field<C>> extends PolyElement<C, Monom, Polynom<C>> {
+/**
+ * Base polynom above any field.
+ *
+ * @param <F> field class.
+ */
+public class Polynom<F extends Field<F>> extends PolyElement<F, Monom, Polynom<F>> {
 
-    private final C fieldZero;
+    private final F fieldZero;
 
-    Polynom(C zero) {
+    Polynom(F zero) {
         fieldZero = zero.getZero();
     }
 
-    public C fieldZero() {
+    @SuppressWarnings("unused")
+    public F fieldZero() {
         return fieldZero.getZero();
     }
 
-    public C fieldIdentity() {
+    @SuppressWarnings("WeakerAccess")
+    public F fieldIdentity() {
         return fieldZero.getIdentity();
     }
 
     @Override
-    protected Polynom<C> empty() {
+    protected Polynom<F> empty() {
         return new Polynom<>(fieldZero);
     }
 
     @Override
-    protected Polynom<C> single() {
-        Polynom<C> answer = new Polynom<>(fieldZero);
+    protected Polynom<F> single() {
+        Polynom<F> answer = new Polynom<>(fieldZero);
         answer.add(fieldZero.getIdentity(), Monom.identity());
         return answer;
     }
 
-    public C evaluate(C c) {
-        C ans = fieldZero.getZero();
+    /**
+     * Evaluates polynom value in the given field point.
+     */
+    @SuppressWarnings("unused")
+    public F evaluate(F f) {
+        F ans = fieldZero.getZero();
         int pow = 0;
-        C power = fieldZero.getIdentity();
-        for (Pair<C, Monom> pair : data.values()) {
+        F power = fieldZero.getIdentity();
+        for (Pair<F, Monom> pair : data.values()) {
             ans.add(power.multiply(pair.first()));
             while (pow <= pair.second().power()) {
-                power = power.multiply(c);
+                power = power.multiply(f);
                 pow++;
             }
         }
         return ans;
     }
 
+    /**
+     * The method evaluates polynom value from the given matrix of field elements.
+     */
     @NonNull
-    public Matrix<C> evaluate(Matrix<C> matrix) {
-        Matrix<C> ans = matrix.getZero(matrix.size());
+    public Matrix<F> evaluate(Matrix<F> matrix) {
+        Matrix<F> ans = matrix.getZero(matrix.size());
         int pow = 0;
-        Matrix<C> power = matrix.getIdentity(matrix.size());
-        for (Pair<C, Monom> pair : data.values()) {
+        Matrix<F> power = matrix.getIdentity(matrix.size());
+        for (Pair<F, Monom> pair : data.values()) {
             ans = ans.add(power.multiplyConstant(pair.first()));
             while (pow <= pair.second().power()) {
                 power = matrix.multiply(power);

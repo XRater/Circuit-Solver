@@ -14,7 +14,6 @@ import ru.spbau.mit.circuit.logic.math.functions.Functions;
 
 class SubtractColumn {
 
-    private static final Function functionZero = Functions.constant(0);
     private static final double precision = 0.0001;
 
     private final ArrayList<Element> elements = new ArrayList<>();

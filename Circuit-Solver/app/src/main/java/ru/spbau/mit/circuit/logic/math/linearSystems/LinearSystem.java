@@ -11,21 +11,31 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Proportional;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 
-public class LSystem<F extends Field<F>, U extends Abel<U> & Proportional<F, U>> {
+/**
+ * Basic linear system class above any field.
+ * <p>
+ * May store ant linear object in the right side of the system.
+ * <p>
+ * This class stores set of base vectors at any time. Therefore it is possible to find
+ * all solutions for system at any moment.
+ *
+ * @param <F> field class.
+ * @param <U> right side class.
+ */
+public class LinearSystem<F extends Field<F>, U extends Abel<U> & Proportional<F, U>> {
 
     private final F fZero;
     private final U uZero;
 
     private final ArrayList<FArray<F>> data = new ArrayList<>();
     private final ArrayList<U> constants = new ArrayList<>();
-//    private final ArrayList<? extends Variable<U>> variables;
 
     private final ArrayList<Integer> columns = new ArrayList<>();
 
     private final int variablesNumber;
     private int equationsNumber;
 
-    public LSystem(int n, @NonNull F f, @NonNull U u) {
+    public LinearSystem(int n, @NonNull F f, @NonNull U u) {
         variablesNumber = n;
         equationsNumber = 0;
         fZero = f.getZero();
@@ -36,6 +46,13 @@ public class LSystem<F extends Field<F>, U extends Abel<U> & Proportional<F, U>>
         return variablesNumber;
     }
 
+    /**
+     * The method adds equation to the system and recalculates set of base vectors.
+     *
+     * @param coefficients set of coefficients to the left side of the system
+     * @param constant right side constant of the equation
+     * @throws InconsistentSystemException if there is no more solution of the system.
+     */
     public void addEquation(@NonNull FArray<F> coefficients, @NonNull U constant) throws
             InconsistentSystemException {
         if (coefficients.size() != variablesNumber) {
@@ -68,6 +85,9 @@ public class LSystem<F extends Field<F>, U extends Abel<U> & Proportional<F, U>>
         // already in the system
     }
 
+    /**
+     * The methods find any solution for the system. Only in case if system was consistent.
+     */
     @NonNull
     public ArrayList<U> getSolution() {
         for (int i = 0; i < variablesNumber; i++) {

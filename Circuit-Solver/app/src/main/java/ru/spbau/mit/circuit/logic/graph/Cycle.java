@@ -5,7 +5,7 @@ import java.util.Deque;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
-import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 
 class Cycle {
@@ -24,7 +24,7 @@ class Cycle {
     }
 
 
-    void addEquation(LSystem<Numerical, FArray<Numerical>> system) throws
+    void addEquation(LinearSystem<Numerical, FArray<Numerical>> system) throws
             InconsistentSystemException {
 
         FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());

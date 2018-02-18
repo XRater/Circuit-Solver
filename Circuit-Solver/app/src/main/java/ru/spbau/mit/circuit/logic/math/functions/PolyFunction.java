@@ -1,16 +1,18 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.algebra.Pair;
 import ru.spbau.mit.circuit.logic.math.algebra.PolyElement;
 import ru.spbau.mit.circuit.logic.math.functions.exceptions.IllegalDoubleConvertionException;
 
-@SuppressWarnings("WeakerAccess")
-public class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunction> {
+import static ru.spbau.mit.circuit.logic.math.algebra.Pair.pair;
+
+class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunction> {
 
     PolyFunction() {
     }
 
-    PolyFunction(PolyExponent e) {
+    private PolyFunction(PolyExponent e) {
         data.put(e, pair(Numerical.identity(), e));
     }
 
@@ -24,14 +26,6 @@ public class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunct
         return new PolyFunction(PolyExponent.identity());
     }
 
-//    @Override
-//    public PolyExponent gcd() {
-//        if (data.variablesNumber() == 1) {
-//            return data.keySet().iterator().next();
-//        }
-//        return PolyExponent.identity();
-//    }
-
     @Override
     public PolyFunction getZero() {
         return PolyFunctions.zero();
@@ -42,7 +36,7 @@ public class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunct
         return PolyFunctions.identity();
     }
 
-    public PolyFunction differentiate() {
+    PolyFunction differentiate() {
         PolyFunction answer = empty();
 
         for (Pair<Numerical, PolyExponent> pair : data.values()) {
@@ -57,7 +51,7 @@ public class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunct
         return answer;
     }
 
-    public PolyFunction integrate() {
+    PolyFunction integrate() {
         PolyFunction answer = empty();
 
         for (Pair<Numerical, PolyExponent> pair : data.values()) {
@@ -86,7 +80,7 @@ public class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunct
         return answer;
     }
 
-    public Numerical apply(double x) {
+    Numerical apply(double x) {
         Numerical answer = Numerical.zero();
         for (Pair<Numerical, PolyExponent> pair : data.values()) {
             answer = answer.add(pair.first().multiply(pair.second().apply(x)));
@@ -94,7 +88,7 @@ public class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunct
         return answer;
     }
 
-    public double doubleValue() {
+    double doubleValue() {
         if (data.size() == 0) {
             return 0;
         }
@@ -104,7 +98,7 @@ public class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunct
         return data.values().iterator().next().first().value();
     }
 
-    public PolyExponent front() {
+    PolyExponent front() {
         return data.keySet().iterator().next();
     }
 }

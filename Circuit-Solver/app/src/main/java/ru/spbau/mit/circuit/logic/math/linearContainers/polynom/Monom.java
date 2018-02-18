@@ -5,29 +5,28 @@ import android.support.annotation.NonNull;
 
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
 
+/**
+ * Monom class. Base group for polynom class.
+ */
 class Monom implements OrderedGroup<Monom> {
 
-    private static final Monom zero = new Monom();
+    private final static Monom identity = new Monom(0);
 
     public static Monom identity() {
-        return identity();
+        return identity;
     }
 
-    public static Monom monom(int n) {
+    static Monom monom(int n) {
         return new Monom(n);
     }
 
     private final int power;
 
-    private Monom() {
-        power = 0;
-    }
-
     private Monom(int p) {
         power = p;
     }
 
-    public int power() {
+    int power() {
         return power;
     }
 
@@ -48,7 +47,7 @@ class Monom implements OrderedGroup<Monom> {
 
     @Override
     public Monom getIdentity() {
-        return identity();
+        return identity;
     }
 
     @Override

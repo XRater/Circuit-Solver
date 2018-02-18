@@ -2,6 +2,10 @@ package ru.spbau.mit.circuit.logic.math.linearContainers.polynom;
 
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 
+/**
+ * Fabricity class for polynom class.
+ */
+@SuppressWarnings("WeakerAccess")
 public class Polynoms {
 
     public static <C extends Field<C>> Polynom<C> zero(C zero) {

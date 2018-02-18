@@ -18,7 +18,7 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
  *
  * @param <F> field class for coefficients
  * @param <G> group class
- * @param <I>
+ * @param <I> type of our result class
  */
 public abstract class PolyElement<
         F extends Field<F>,
@@ -37,23 +37,34 @@ public abstract class PolyElement<
      */
     protected abstract I single();
 
+    /**
+     * Creates new PolyElement from group element and coefficient
+     *
+     * @param cf target coefficient
+     * @param g  target group element
+     * @return new PolyElement
+     */
     public I singleton(F cf, G g) {
         I result = empty();
         result.add(cf, g);
         return result;
     }
 
+    /**
+     * Creates new PolyElement identical to the given one.
+     */
     private I copy(I p) {
         I result = empty();
         result.data.putAll(p.data);
         return result;
     }
 
+
     @Override
     public I add(I p) {
         I result = copy(p);
         for (Pair<F, G> pr : data.values()) {
-            result.add(pr.first, pr.second);
+            result.add(pr.first(), pr.second());
         }
         return result;
     }
@@ -65,10 +76,10 @@ public abstract class PolyElement<
         }
         Pair<F, G> p = new Pair<>(cf, g);
         if (data.containsKey(g)) {
-            p = new Pair<>(cf.add(data.get(g).first), g);
+            p = new Pair<>(cf.add(data.get(g).first()), g);
         }
         data.put(g, p);
-        if (data.get(g).first.isZero()) {
+        if (data.get(g).first().isZero()) {
             data.remove(g);
         }
     }
@@ -81,7 +92,7 @@ public abstract class PolyElement<
         I result = empty();
         for (Pair<F, G> p1 : data.values()) {
             for (Pair<F, G> p2 : other.data.values()) {
-                result.add(p1.first.multiply(p2.first), p1.second.multiply(p2.second));
+                result.add(p1.first().multiply(p2.first()), p1.second().multiply(p2.second()));
             }
         }
         return result;
@@ -91,7 +102,7 @@ public abstract class PolyElement<
     public I negate() {
         I result = empty();
         for (Pair<F, G> pr : data.values()) {
-            result.add(pr.first.negate(), pr.second);
+            result.add(pr.first().negate(), pr.second());
         }
         return result;
     }
@@ -103,7 +114,7 @@ public abstract class PolyElement<
         }
         I result = empty();
         for (Pair<F, G> pr : data.values()) {
-            result.add(pr.first.multiply(cf), pr.second);
+            result.add(pr.first().multiply(cf), pr.second());
         }
         return result;
     }
@@ -124,11 +135,7 @@ public abstract class PolyElement<
             return false;
         }
         Pair<F, G> pr = data.values().iterator().next();
-        return pr.first.isIdentity() && pr.second.isIdentity();
-    }
-
-    public boolean isSingle() {
-        return data.size() == 1;
+        return pr.first().isIdentity() && pr.second().isIdentity();
     }
 
     @Override
@@ -136,16 +143,25 @@ public abstract class PolyElement<
         return single();
     }
 
+    /**
+     * @return true if PolyElement contains only one monom and false otherwise.
+     */
+    public boolean isSingle() {
+        return data.size() == 1;
+    }
+
+    /**
+     * Divides every monom to the given group element.
+     *
+     * @param g group element to divide on.
+     * @return new PolyElement object.
+     */
     I div(G g) {
         I answer = empty();
         for (Pair<F, G> pair : data.values()) {
-            answer.add(pair.first, pair.second.divide(g));
+            answer.add(pair.first(), pair.second().divide(g));
         }
         return answer;
-    }
-
-    protected Pair<F, G> pair(F f, G g) {
-        return new Pair<>(f, g);
     }
 
     @Override
@@ -162,27 +178,4 @@ public abstract class PolyElement<
         return sb.toString();
     }
 
-    protected class Pair<U, V> {
-
-        private final U first;
-        private final V second;
-
-        Pair(U u, V v) {
-            first = u;
-            second = v;
-        }
-
-        public U first() {
-            return first;
-        }
-
-        public V second() {
-            return second;
-        }
-
-        @Override
-        public String toString() {
-            return first + "*" + second;
-        }
-    }
 }

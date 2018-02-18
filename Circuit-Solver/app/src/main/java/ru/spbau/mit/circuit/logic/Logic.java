@@ -28,7 +28,6 @@ public class Logic {
 
     public void calculateCurrents(@NonNull Model model) throws CircuitShortingException,
             NotImplementedYetException {
-        double start = System.currentTimeMillis();
         Graph g = new Graph(model);
         List<ConnectedGraph> components = g.decompose();
         for (ConnectedGraph component : components) {
@@ -36,12 +35,9 @@ public class Logic {
                 component.solve();
             } catch (CircuitShortingException e) {
                 throw e;
+            } catch (Exception e) {
+                throw new NotImplementedYetException(e);
             }
-//            } catch (Exception e) {
-//                throw new NotImplementedYetException(e);
-//            }
-            double end = System.currentTimeMillis();
-            System.out.println(end - start);
         }
     }
 }

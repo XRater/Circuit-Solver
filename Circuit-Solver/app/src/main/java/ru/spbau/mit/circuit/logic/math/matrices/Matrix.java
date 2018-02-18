@@ -17,10 +17,12 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
     private final int m;
     private final F zero;
 
+    @SuppressWarnings("WeakerAccess")
     public static <F extends Field<F>> Matrix<F> matrix(int n, int m, F zero) {
         return new Matrix<>(n, m, zero.getZero());
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static <F extends Field<F>> Matrix<F> squareMatrix(int n, F zero) {
         return new Matrix<>(n, n, zero.getZero());
     }

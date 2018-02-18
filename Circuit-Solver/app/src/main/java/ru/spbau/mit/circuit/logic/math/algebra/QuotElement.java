@@ -5,6 +5,17 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Quot;
 
+/**
+ * This class is created to lift up group class to the quot class.
+ * <p>
+ * Any element of QuotElement type contains nominator and denominator (of PolyElement type),
+ * therefore it is similar to simple fractions.
+ *
+ * @param <F> type of coefficients field
+ * @param <G> type of group
+ * @param <A> type of PolyElement raised from group
+ * @param <I> type of our result class
+ */
 public abstract class QuotElement<
         F extends Field<F>,
         G extends OrderedGroup<G>,
@@ -14,12 +25,30 @@ public abstract class QuotElement<
     protected A up;
     protected A down;
 
+    /**
+     * The method constructs new empty QuotElement
+     */
     protected abstract I empty();
 
+    /**
+     * The method constructs new QuotElement, that equals to identity.
+     */
     protected abstract I single();
 
+    /**
+     * The method to find greatest common division of nominator and denominator.
+     * <p>
+     * Required for simplify function.
+     */
     protected abstract G gcd();
 
+    /**
+     * Constructs QuotElement from its nominator and denominator.
+     *
+     * @param up   nominator
+     * @param down denominator
+     * @return new QuotElement
+     */
     protected I construct(A up, A down) {
         I answer = getZero();
         answer.up = up;
@@ -28,6 +57,10 @@ public abstract class QuotElement<
         return answer;
     }
 
+    /**
+     * Sort of simplify function for fractions. In base variant just divides nominator and
+     * denominator on their greatest common division.
+     */
     protected void simplify() {
         G gcd = gcd();
         up = up.div(gcd);
