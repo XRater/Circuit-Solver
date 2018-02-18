@@ -63,11 +63,16 @@ class PolyExpression extends PolyElement<Numerical, Monom, PolyExpression> {
         PolyExpression reminder = copy(this);
         PolyExpression result = empty();
 
+        System.out.println(this + " divide " + f);
+
         Pair<Numerical, Monom> front = reminder.data.values().iterator().next();
         Pair<Numerical, Monom> fFront = f.data.values().iterator().next();
 
         while (front.second().compareTo(fFront.second()) > 0) {
             Monom coefficientForF = front.second().subMonom(fFront.second());
+            if (coefficientForF == null) {
+                return null;
+            }
             Numerical coefficient = front.first().divide(fFront.first());
             reminder = reminder.subtract(f.multiply(coefficientForF).multiplyConstant(coefficient));
 
