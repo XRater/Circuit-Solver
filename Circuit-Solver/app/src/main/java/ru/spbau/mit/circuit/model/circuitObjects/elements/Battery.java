@@ -6,24 +6,24 @@ import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 
 public abstract class Battery extends Element {
 
-    private double voltage = 10;
+    private ResultValue voltage;
 
     public Battery(@NonNull Node from, @NonNull Node to) {
         super(from, to);
     }
 
     @Override
-    public double getVoltage() {
+    public ResultValue getVoltage() {
         return voltage;
     }
 
     @Override
-    public double getCharacteristicValue() {
+    public ResultValue getCharacteristicValue() {
         return voltage;
     }
 
     @Override
-    public void setCharacteristicValue(double voltage) {
+    public void setCharacteristicValue(Expression voltage) {
         this.voltage = voltage;
     }
 

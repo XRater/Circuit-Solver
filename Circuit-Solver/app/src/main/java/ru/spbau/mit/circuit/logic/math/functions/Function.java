@@ -1,11 +1,11 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
-import android.graphics.Canvas;
-
+import ru.spbau.mit.circuit.logic.math.ResultValue;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.QuotElement;
 
-public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction, Function> {
+public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction, Function>
+        implements ResultValue {
 
     // zero / id
     Function() {

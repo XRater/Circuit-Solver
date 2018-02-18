@@ -1,5 +1,6 @@
 package ru.spbau.mit.circuit.model.circuitObjects;
 
+import ru.spbau.mit.circuit.logic.math.ResultValue;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 
@@ -8,10 +9,10 @@ import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
  * Represents that we can evaluate current and voltage for the object.
  */
 abstract public class Item implements CircuitObject {
-    private Function current;
-    private double voltage;
+    private ResultValue current;
+    private ResultValue voltage;
 
-    public Function getCurrent() {
+    public ResultValue getCurrent() {
         return current;
     }
 
@@ -19,11 +20,11 @@ abstract public class Item implements CircuitObject {
         this.current = current;
     }
 
-    public double getVoltage() {
+    public ResultValue getVoltage() {
         return voltage;
     }
 
-    public void setVoltage(double voltage) {
+    public void setVoltage(ResultValue voltage) {
         this.voltage = voltage;
     }
 }

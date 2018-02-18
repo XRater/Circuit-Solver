@@ -1,30 +1,29 @@
 package ru.spbau.mit.circuit.logic.math.variables;
 
 
-import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.functions.Function;
+import ru.spbau.mit.circuit.logic.math.ResultValue;
 
 /**
  * Function variable. May have any Numerical initial value.
  */
-public class FunctionVariable extends Variable<Function> {
+public class ResultValueVariable extends Variable<ResultValue> {
 
-    private Numerical initialValue;
+    private ResultValue initialValue;
 
-    public FunctionVariable() {
+    public ResultValueVariable() {
         super();
     }
 
     @SuppressWarnings("unused")
-    public FunctionVariable(String name) {
+    public ResultValueVariable(String name) {
         super(name);
     }
 
-    public Numerical initialValue() {
+    public ResultValue initialValue() {
         return initialValue;
     }
 
-    public void setInitialValue(Numerical initialValue) {
+    public void setInitialValue(ResultValue initialValue) {
         this.initialValue = initialValue;
     }
 

@@ -1,9 +1,10 @@
 package ru.spbau.mit.circuit.logic.math.expressions;
 
+import ru.spbau.mit.circuit.logic.math.ResultValue;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.QuotElement;
 
-public class Expression extends QuotElement<Numerical, Monom, PolyExpression, Expression> {
+public class Expression extends QuotElement<Numerical, Monom, PolyExpression, Expression> implements ResultValue {
 
     Expression() {
         up = PolyExpressions.zero().empty();

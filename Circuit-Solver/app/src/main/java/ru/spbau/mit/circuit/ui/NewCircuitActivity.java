@@ -20,6 +20,7 @@ import ru.spbau.mit.circuit.MainActivity;
 import ru.spbau.mit.circuit.R;
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.NotImplementedYetException;
+import ru.spbau.mit.circuit.logic.math.expressions.Expressions;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
@@ -35,7 +36,8 @@ import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
 
-    private static DrawableModel drawableModel; // static because after turning the screen onCreate is called.
+    private static DrawableModel drawableModel; // static because after turning the screen
+    // onCreate is called.
     @Nullable
     private Drawable chosen;
     private int startX, startY;
@@ -219,8 +221,9 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                         String cp = String.valueOf(taskEditText.getText());
                         String voltage = String.valueOf(voltageField.getText());
                         try {
-                            element.setCharacteristicValue(Double.parseDouble(cp));
-                            element.setVoltage(Double.parseDouble(voltage));
+                            element.setCharacteristicValue(Expressions.constant(Double
+                                    .parseDouble(cp)));
+                            ((Capacitor) element).setInitialVoltage(Double.parseDouble(voltage));
                         } catch (@NonNull NumberFormatException e) {
                             // No info
                         }
@@ -236,7 +239,8 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     .setPositiveButton("Set new value", (dialog1, which) -> {
                         String value = String.valueOf(taskEditText.getText());
                         try {
-                            element.setCharacteristicValue(Double.parseDouble(value));
+                            element.setCharacteristicValue(Expressions.constant(Double
+                                    .parseDouble(value)));
                         } catch (@NonNull NumberFormatException e) {
                             // No info
                         }

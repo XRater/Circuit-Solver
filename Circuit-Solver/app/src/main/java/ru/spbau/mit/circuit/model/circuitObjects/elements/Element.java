@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
+import ru.spbau.mit.circuit.logic.math.ResultValue;
+import ru.spbau.mit.circuit.logic.math.expressions.Expression;
 import ru.spbau.mit.circuit.logic.math.variables.NumericalVariable;
 import ru.spbau.mit.circuit.model.circuitObjects.Item;
 import ru.spbau.mit.circuit.model.circuitObjects.exceptions.InvalidElementException;
@@ -47,9 +49,9 @@ public abstract class Element extends Item implements Movable, Serializable {
     @NonNull
     abstract public String getCharacteristicName();
 
-    abstract public double getCharacteristicValue();
+    abstract public ResultValue getCharacteristicValue();
 
-    abstract public void setCharacteristicValue(double value);
+    abstract public void setCharacteristicValue(ResultValue value);
 
     @Override
     public int x() {

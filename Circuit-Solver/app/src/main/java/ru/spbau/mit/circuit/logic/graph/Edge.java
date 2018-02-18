@@ -5,8 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.expressions.Expression;
+import ru.spbau.mit.circuit.logic.math.expressions.Expressions;
 import ru.spbau.mit.circuit.logic.math.variables.Derivative;
 import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.variables.ResultValueVariable;
 import ru.spbau.mit.circuit.model.circuitObjects.Item;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Battery;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
@@ -18,16 +21,22 @@ class Edge {
 
     private final Vertex from;
     private final Vertex to;
-    private final FunctionVariable charge = new FunctionVariable();
-    private final Derivative current = new Derivative(charge);
-    private final Derivative inductive = new Derivative(current);
+
     private int index = -1; // number of edge in its component.
     private boolean inTree; // is edge in the tree structure
+
+    private ResultValueVariable charge;
+    private ResultValueVariable current;
+
+
+//    private final FunctionVariable charge = new FunctionVariable();
+//    private final Derivative current = new Derivative(charge);
+//    private final Derivative inductive = new Derivative(current);
 
     Edge(Item item, Vertex from, Vertex to) {
         this.item = item;
         if (item instanceof Capacitor) {
-            charge.setInitialValue(Numerical.number(item.getVoltage()));
+            charge.setInitialValue(Expressions.constant(item.getVoltage()));
         } else {
             charge.setInitialValue(Numerical.zero());
         }
