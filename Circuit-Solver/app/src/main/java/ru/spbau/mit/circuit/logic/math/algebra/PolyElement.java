@@ -4,7 +4,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.TreeMap;
 
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Algebra;
@@ -19,7 +18,7 @@ public abstract class PolyElement<
         G extends OrderedGroup<G>,
         I extends PolyElement<F, G, I>> implements Algebra<F, I> {
 
-    protected final Map<G, Pair<F, G>> data = new TreeMap<>();
+    protected final TreeMap<G, Pair<F, G>> data = new TreeMap<>();
 
     protected abstract I empty();
 
@@ -31,7 +30,7 @@ public abstract class PolyElement<
         return result;
     }
 
-    private I copy(I p) {
+    protected I copy(I p) {
         I result = empty();
         result.data.putAll(p.data);
         return result;
@@ -74,6 +73,18 @@ public abstract class PolyElement<
         }
         return result;
     }
+
+    public I multiply(G other) {
+        if (isZero()) {
+            return getZero();
+        }
+        I result = empty();
+        for (Pair<F, G> p1 : data.values()) {
+            result.add(p1.first, p1.second.multiply(other));
+        }
+        return result;
+    }
+
 
     @Override
     public I negate() {

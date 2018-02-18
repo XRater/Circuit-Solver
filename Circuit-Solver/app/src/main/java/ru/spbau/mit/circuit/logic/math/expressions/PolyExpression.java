@@ -54,4 +54,31 @@ class PolyExpression extends PolyElement<Numerical, Monom, PolyExpression> {
         }
         return data.values().iterator().next().first().value();
     }
+
+    public PolyExpression tryDivide(PolyExpression f) {
+        if (isZero()) {
+            return PolyExpressions.zero();
+        }
+
+        PolyExpression reminder = copy(this);
+        PolyExpression result = empty();
+
+        Pair<Numerical, Monom> front = reminder.data.values().iterator().next();
+        Pair<Numerical, Monom> fFront = f.data.values().iterator().next();
+
+        while (front.second().compareTo(fFront.second()) > 0) {
+            Monom coefficientForF = front.second().subMonom(fFront.second());
+            Numerical coefficient = front.first().divide(fFront.first());
+            reminder = reminder.subtract(f.multiply(coefficientForF).multiplyConstant(coefficient));
+
+            result.add(coefficient, coefficientForF);
+
+            if (reminder.isZero()) {
+                return result;
+            }
+            front = reminder.data.values().iterator().next();
+        }
+
+        return null;
+    }
 }

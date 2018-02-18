@@ -17,6 +17,28 @@ public class Expression extends QuotElement<Numerical, Monom, PolyExpression, Ex
         down = PolyExpressions.constant(1);
     }
 
+    private Expression(PolyExpression up, PolyExpression down) {
+        this.up = up;
+        this.down = down;
+        simplify();
+    }
+
+    @Override
+    public Expression multiply(Expression f) {
+        PolyExpression newUp = up.tryDivide(f.down);
+        PolyExpression newDown = down.tryDivide(f.up);
+        if (newUp != null || newDown != null) {
+            if (newDown == null) {
+                return new Expression(newUp, down.multiply(f.up));
+            }
+            if (newUp == null) {
+                return new Expression(up.multiply(f.down), newDown);
+            }
+            return new Expression(newUp, newDown);
+        }
+        return super.multiply(f);
+    }
+
     @Override
     protected Expression empty() {
         return new Expression();
@@ -43,35 +65,4 @@ public class Expression extends QuotElement<Numerical, Monom, PolyExpression, Ex
         return up.doubleValue() / down.doubleValue();
     }
 
-//    public static void main(String[] args) throws ZeroDeterminantException {
-//
-//        Variable<Expression> a = new ExpressionVariable("a");
-//        Variable<Expression> b = new ExpressionVariable("b");
-//
-//        List<Variable<Expression>> l = Arrays.asList(a, b);
-//
-//        LinearSystem<Expression,
-//                LArray<Expression, Variable<Expression>>,
-//                Expression> system = new LinearSystem<>(2);
-//
-//        LArray<Expression, Variable<Expression>> v1 = new LArray<>(l, Expressions.zero());
-//        LArray<Expression, Variable<Expression>> v2 = new LArray<>(l, Expressions.zero());
-//
-//        v1.setCoefficients(Arrays.asList(Expressions.variable(2, "R"), Expressions.zero()));
-//        v2.setCoefficients(Arrays.asList(Expressions.variable(1, "R"), Expressions.variable(1,
-//                "R")));
-//
-//        Equation<Expression, LArray<Expression, Variable<Expression>>, Expression> eq1
-//                = new Equation<>(v1, Expressions.variable("R"));
-//
-//        Equation<Expression, LArray<Expression, Variable<Expression>>, Expression> eq2
-//                = new Equation<>(v2, Expressions.variable("R"));
-//
-//        system.addEquation(eq1);
-//        system.addEquation(eq2);
-//
-//        System.out.println(system);
-//        system.solve();
-//        System.out.println(system);
-//    }
 }

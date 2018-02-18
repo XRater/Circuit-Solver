@@ -125,4 +125,60 @@ class Monom implements OrderedGroup<Monom> {
         }
         return sb.toString();
     }
+
+    public Monom subMonom(Monom o) {
+        Monom answer = new Monom();
+        Iterator<Map.Entry<Var, Integer>> iter1 = data.entrySet().iterator();
+        Iterator<Map.Entry<Var, Integer>> iter2 = o.data.entrySet().iterator();
+        while (iter1.hasNext() && iter2.hasNext()) {
+            Map.Entry<Var, Integer> entry1 = iter1.next();
+            Map.Entry<Var, Integer> entry2 = iter2.next();
+            int cmp = entry1.getKey().name().compareTo(entry2.getKey().name());
+            while (cmp < 0) {
+                answer.addVar(entry1.getKey(), entry1.getValue());
+                entry1 = iter1.next();
+                cmp = entry1.getKey().name().compareTo(entry2.getKey().name());
+            }
+            if (cmp == 0) {
+                int cmpPow = entry1.getValue().compareTo(entry2.getValue());
+                if (cmpPow == 0) {
+                    continue;
+                }
+                if (cmpPow < 0) {
+                    return null;
+                }
+                answer.addVar(entry1.getKey(), entry1.getValue() - entry2.getValue());
+            }
+            if (cmp > 0) {
+                return null;
+            }
+        }
+        if (iter2.hasNext()) {
+            return null;
+        }
+        while (iter1.hasNext()) {
+            Map.Entry<Var, Integer> entry1 = iter1.next();
+            answer.addVar(entry1.getKey(), entry1.getValue());
+        }
+        return answer;
+    }
+
+    public static void main(String[] args) {
+
+        Monom m1 = new Monom();
+        Monom m2 = new Monom();
+
+        m1.addVar(new Var("A"), 1);
+        m1.addVar(new Var("B"), 3);
+        m1.addVar(new Var("X"), 2);
+        m1.addVar(new Var("E"), 2);
+
+        m2.addVar(new Var("A"), 1);
+        m2.addVar(new Var("B"), 2);
+        m2.addVar(new Var("E"), 1);
+//        m2.addVar(new Var("D"), 2);
+
+        System.out.println(m1.subMonom(m2));
+    }
 }
+
