@@ -3,24 +3,18 @@ package ru.spbau.mit.circuit.logic.graph;
 
 import android.support.annotation.NonNull;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunctions;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
-import ru.spbau.mit.circuit.logic.math.variables.Derivative;
-import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();
 
-    @NonNull
     List<Edge> getEdges() {
         return edges;
     }
@@ -35,35 +29,9 @@ class Vertex {
         return this::treeEdgesIterator;
     }
 
-    @NonNull
     @SuppressWarnings("WeakerAccess")
     Iterator<Edge> treeEdgesIterator() {
         return new treeIterator();
-    }
-
-    /**
-     * Makes new equation corresponding to the first Kirchhoff's law.
-     */
-    @NonNull
-    Equation<
-            Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>
-            > getEquation(@NonNull Collection<Derivative> variables) {
-
-        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
-        Row<Numerical, FunctionVariable, PolyFunction> consts =
-                new Row<>(PolyFunctions.zero());
-
-        for (Edge edge : edges) {
-            vars.add(edge.current(), Numerical.number(edge.getDirection(this)));
-        }
-        return new Equation<>(vars, consts);
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf("Vertex");
     }
 
     private class treeIterator implements Iterator<Edge> {
@@ -71,7 +39,6 @@ class Vertex {
 
         Edge e;
 
-        @NonNull
         private Iterator<Edge> iterator = edges.iterator();
 
         @Override
@@ -93,5 +60,23 @@ class Vertex {
             return e;
         }
 
+    }
+
+    /**
+     * Adds new equation corresponding to the first Kirchhoff's law.
+     */
+    void addEquation(LSystem<Numerical, FArray<Numerical>> system) throws
+            InconsistentSystemException {
+        FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
+        for (Edge edge : edges) {
+            coefficients.set(edge.index(), Numerical.number(edge.getDirection(this)));
+        }
+        system.addEquation(coefficients, FArray.array(system.variablesNumber() + 1, Numerical
+                .zero()));
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf("Vertex");
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 
+import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
@@ -111,10 +112,10 @@ public class Drawer {
     private void showCurrents(@NonNull DrawableModel drawableModel) {
         for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
-            String current = e.getCurrent() + "A";
+            Function current = e.getCurrent();
             System.out.println(current);
             Rect textSize = new Rect();
-            ELEMENTS_PAINT.getTextBounds(current, 0, current.length(), textSize);
+            ELEMENTS_PAINT.getTextBounds(current.toString(), 0, current.toString().length(), textSize);
             canvas.save();
             if (e.isVertical()) {
                 canvas.translate(e.x() + Drawer.getOffsetX(), e.y() + Drawer.getOffsetY());

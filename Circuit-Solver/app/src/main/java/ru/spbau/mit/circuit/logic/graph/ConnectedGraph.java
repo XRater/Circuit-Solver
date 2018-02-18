@@ -1,8 +1,6 @@
 package ru.spbau.mit.circuit.logic.graph;
 
 
-import android.support.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -10,12 +8,11 @@ import java.util.List;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
-import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
+import ru.spbau.mit.circuit.logic.math.functions.Function;
+import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 import ru.spbau.mit.circuit.logic.math.variables.Derivative;
-import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
 import ru.spbau.mit.circuit.logic.math.variables.Numerator;
 import ru.spbau.mit.circuit.logic.solver.Solver;
 
@@ -26,18 +23,17 @@ public class ConnectedGraph {
 
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private final Vertex root; // root of the graph
-    private final Collection<Derivative> variables = new ArrayList<>();
+
     @SuppressWarnings("unused")
-    @NonNull
     private int verticesNumber = 0; // number of vertices
     private int edgesNumber = 0; // number of edges
 
-    @NonNull
     private LinkedHashSet<Vertex> vertices = new LinkedHashSet<>();
-    @NonNull
     private List<Edge> edges = new ArrayList<>();
-    @NonNull
+
     private List<Cycle> cycles = new ArrayList<>(); // Base system of cycles
+
+    private final Collection<Derivative> variables = new ArrayList<>();
 
     /**
      * Creates connected graph from the root. Graph will contain only one vertex and zero edges.
@@ -55,7 +51,7 @@ public class ConnectedGraph {
      * @param u    new vertex
      * @param edge new edge
      */
-    void add(Vertex u, @NonNull Edge edge) {
+    void add(Vertex u, Edge edge) {
         vertices.add(u);
         edge.addToTree();
         addEdge(edge);
@@ -84,7 +80,7 @@ public class ConnectedGraph {
      *
      * @param edge edge to add.
      */
-    private void addEdge(@NonNull Edge edge) {
+    private void addEdge(Edge edge) {
         if (edge.index() != -1) {
             throw new IllegalArgumentException();
         }
@@ -101,16 +97,22 @@ public class ConnectedGraph {
      */
     public void solve() throws CircuitShortingException {
         findCycles();
-        LinearSystem<
+        LSystem<
                 Numerical,
-                Vector<Numerical, Derivative>,
-                Row<Numerical, FunctionVariable, PolyFunction>> system = constructSystem();
-        Solver.solve(system);
-        setCurrents();
+                FArray<Numerical>> system = null;
+        try {
+            system = constructSystem();
+        } catch (InconsistentSystemException e) {
+            throw new CircuitShortingException();
+        }
+        ArrayList<Function> solution = Solver.solve(system);
+        setCurrents(solution);
     }
 
-    private void setCurrents() {
+    private void setCurrents(ArrayList<Function> solution) {
         for (Edge edge : edges) {
+            edge.charge().setValue(solution.get(edge.index()));
+            edge.current().setValue();
             edge.updateCurrent();
         }
     }
@@ -128,27 +130,23 @@ public class ConnectedGraph {
     }
 
     /**
-     * The method constructs linear system of the graph, corresponding to the
-     * Kirchhoff's laws.
+     * The method constructs linear system of the graph, corresponding to the Om's laws.
      *
      * @return constructed linear system.
      */
-    @NonNull
-    private LinearSystem<
+    private LSystem<
             Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>> constructSystem() {
+            FArray<Numerical>> constructSystem() throws InconsistentSystemException {
 
-        LinearSystem<Numerical,
-                Vector<Numerical, Derivative>,
-                Row<Numerical, FunctionVariable, PolyFunction>> system =
-                new LinearSystem<>(edgesNumber);
+        LSystem<Numerical, FArray<Numerical>> system = new LSystem<>(
+                variables.size(), Numerical.zero(), FArray.array(variables.size() + 1, Numerical
+                .zero()));
 
         for (Vertex node : vertices) {
-            system.addEquation(node.getEquation(variables));
+            node.addEquation(system);
         }
         for (Cycle cycle : cycles) {
-            system.addEquation(cycle.getEquation(variables));
+            cycle.addEquation(system);
         }
 
         return system;
@@ -159,7 +157,7 @@ public class ConnectedGraph {
      *
      * @param edge edge to find cycle through.
      */
-    private Cycle getCycle(@NonNull Edge edge) {
+    private Cycle getCycle(Edge edge) {
         if (edge.isInTree()) {
             throw new IllegalArgumentException();
         }
@@ -175,7 +173,7 @@ public class ConnectedGraph {
      *
      * @return true if path was found and false otherwise.
      */
-    private boolean findPath(@NonNull Path path, @NonNull Vertex from, Vertex to) {
+    private boolean findPath(Path path, Vertex from, Vertex to) {
         if (from.equals(to)) {
             return true;
         }
@@ -191,7 +189,6 @@ public class ConnectedGraph {
         return false;
     }
 
-    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
