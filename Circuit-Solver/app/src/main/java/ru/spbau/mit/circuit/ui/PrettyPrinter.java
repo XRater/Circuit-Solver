@@ -14,6 +14,7 @@ import static ru.spbau.mit.circuit.ui.Drawer.ELEMENTS_PAINT;
 class PrettyPrinter {
     static void print(@NonNull Canvas canvas, int x, int y, @NonNull Element element) {
         String current = element.getCurrent().toString().replace('*', '\u00B7') + "A";
+        current = current.replace("empty", "0");
         Rect size = new Rect();
         int pos = current.indexOf("exp(");
         float fontSize = ELEMENTS_PAINT.getTextSize();
