@@ -23,6 +23,10 @@ import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
+/**
+ * Class for storing and checking all invariants to draw model,
+ * move objects and to create new elements.
+ */
 public class DrawableModel {
     @NonNull
     private static Map<Point, Drawable> field = new LinkedHashMap<>();
@@ -280,8 +284,7 @@ public class DrawableModel {
         for (Point p : path) {
             DrawableNode node = (DrawableNode) field.get(p);
             if (node != null) {
-                if (!node.isRealNode())
-                {
+                if (!node.isRealNode()) {
                     boolean flag = false;
                     // Now we are checking if this Point is covered with any of other wires.
                     for (DrawableWire another : drawableWires) {

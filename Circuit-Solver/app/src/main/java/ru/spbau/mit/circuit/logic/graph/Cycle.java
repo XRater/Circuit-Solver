@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.graph;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Deque;
 
@@ -12,7 +14,7 @@ class Cycle {
 
     private final ArrayList<Edge> edges = new ArrayList<>();
 
-    Cycle(Path path, Edge e) {
+    Cycle(@NonNull Path path, @NonNull Edge e) {
         Deque<Edge> pathEdges = path.edges();
         if (!pathEdges.getLast().adjacent(e) ||
                 !pathEdges.getFirst().adjacent(e)) {
@@ -24,7 +26,7 @@ class Cycle {
     }
 
 
-    void addEquation(LSystem<Numerical, FArray<Numerical>> system) throws
+    void addEquation(@NonNull LSystem<Numerical, FArray<Numerical>> system) throws
             InconsistentSystemException {
 
         FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
@@ -67,6 +69,7 @@ class Cycle {
         }
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

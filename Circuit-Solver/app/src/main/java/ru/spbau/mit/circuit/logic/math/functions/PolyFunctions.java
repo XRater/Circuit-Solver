@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 
 @SuppressWarnings("WeakerAccess")
@@ -12,6 +14,7 @@ public class PolyFunctions {
     private PolyFunctions() {
     }
 
+    @NonNull
     public static PolyFunction zero() {
         return zero;
     }

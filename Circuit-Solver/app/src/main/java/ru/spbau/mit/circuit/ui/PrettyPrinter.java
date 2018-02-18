@@ -2,13 +2,17 @@ package ru.spbau.mit.circuit.ui;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 
 import static ru.spbau.mit.circuit.ui.Drawer.ELEMENTS_PAINT;
 
+/**
+ * Printing output currents beautifully.
+ */
 class PrettyPrinter {
-    static void print(Canvas canvas, int x, int y, Element element) {
+    static void print(@NonNull Canvas canvas, int x, int y, @NonNull Element element) {
         String current = element.getCurrent().toString().replace('*', '\u00B7') + "A";
         Rect size = new Rect();
         int pos = current.indexOf("exp(");

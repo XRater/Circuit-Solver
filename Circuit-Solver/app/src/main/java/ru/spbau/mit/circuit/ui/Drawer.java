@@ -13,6 +13,9 @@ import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
+/**
+ * A class for drawing all objects.
+ */
 public class Drawer {
     public static final int CELL_SIZE = 70;
     public static final int FIELD_SIZE = 25;

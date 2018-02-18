@@ -18,22 +18,6 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
     @SuppressWarnings("FieldCanBeLocal")
     private final double precision = 0.00000000001;
 
-    public static Numerical number(double value) {
-        return new Numerical(value);
-    }
-
-    public static Numerical number(Complex value) {
-        return new Numerical(value);
-    }
-
-    public static Numerical zero() {
-        return zero;
-    }
-
-    public static Numerical identity() {
-        return identity;
-    }
-
     private Numerical(Complex value) {
         this.value = value;
     }
@@ -42,25 +26,47 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         this.value = new Complex(value);
     }
 
+    public static Numerical number(double value) {
+        return new Numerical(value);
+    }
+
+    public static Numerical number(Complex value) {
+        return new Numerical(value);
+    }
+
+    @NonNull
+    public static Numerical zero() {
+        return zero;
+    }
+
+    @NonNull
+    public static Numerical identity() {
+        return identity;
+    }
+
     public double value() {
         return value.getReal();
     }
 
+    @NonNull
     @Override
-    public Numerical add(Numerical f) {
+    public Numerical add(@NonNull Numerical f) {
         return new Numerical(value.add(f.value));
     }
 
+    @NonNull
     @Override
-    public Numerical multiply(Numerical numerical) {
+    public Numerical multiply(@NonNull Numerical numerical) {
         return new Numerical(value.multiply(numerical.value));
     }
 
+    @NonNull
     @Override
-    public Numerical multiplyConstant(Numerical numerical) {
+    public Numerical multiplyConstant(@NonNull Numerical numerical) {
         return multiply(numerical);
     }
 
+    @NonNull
     @Override
     public Numerical reciprocal() {
         if (!isZero()) {
@@ -69,6 +75,7 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         throw new IllegalInverseException();
     }
 
+    @NonNull
     @Override
     public Numerical negate() {
         return new Numerical(value.negate());
@@ -84,11 +91,13 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         return isEquals(identity());
     }
 
+    @NonNull
     @Override
     public Numerical getZero() {
         return Numerical.zero();
     }
 
+    @NonNull
     @Override
     public Numerical getIdentity() {
         return Numerical.identity();
@@ -105,7 +114,7 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         return Double.toString(value.getReal()) + " " + Double.toString(value.getImaginary()) + "i";
     }
 
-    public boolean isEquals(Numerical num) {
+    public boolean isEquals(@NonNull Numerical num) {
         return Complex.equals(value, num.value, precision);
     }
 

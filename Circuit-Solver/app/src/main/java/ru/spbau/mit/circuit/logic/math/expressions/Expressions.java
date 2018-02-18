@@ -1,15 +1,19 @@
 package ru.spbau.mit.circuit.logic.math.expressions;
 
 
+import android.support.annotation.NonNull;
+
 public class Expressions {
 
     private static final Expression zero = new Expression();
     private static final Expression identity = zero.single();
 
+    @NonNull
     public static Expression zero() {
         return zero;
     }
 
+    @NonNull
     public static Expression identity() {
         return identity;
     }

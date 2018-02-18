@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.expressions;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.QuotElement;
 
@@ -15,11 +17,13 @@ public class Expression extends QuotElement<Numerical, Monom, PolyExpression, Ex
         down = PolyExpressions.constant(1);
     }
 
+    @NonNull
     @Override
     protected Expression empty() {
         return new Expression();
     }
 
+    @NonNull
     @Override
     protected Expression single() {
         Expression e = new Expression();
@@ -27,6 +31,7 @@ public class Expression extends QuotElement<Numerical, Monom, PolyExpression, Ex
         return e;
     }
 
+    @NonNull
     @Override
     protected Monom gcd() {
         Monom upGcd = up.gcd();

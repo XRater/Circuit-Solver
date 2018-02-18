@@ -11,29 +11,8 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
 class Monom implements OrderedGroup<Monom> {
 
     private static final Monom identity = identity();
-
-    public static Monom identity() {
-        return new Monom();
-    }
-
-    public static Monom monom(String name) {
-        return new Monom(new Var(name));
-    }
-
     private static double precision = 0.0000001;
-
-    static Monom gcd(Monom a, Monom b) {
-        Monom m = new Monom();
-        for (Map.Entry<Var, Integer> var : a.data.entrySet()) {
-            Var key = var.getKey();
-            Integer value = var.getValue();
-            if (b.data.containsKey(key)) {
-                m.addVar(key, Math.min(value, b.data.get(key)));
-            }
-        }
-        return m;
-    }
-
+    @NonNull
     private Map<Var, Integer> data = new TreeMap<>();
 
     private Monom() {
@@ -44,8 +23,29 @@ class Monom implements OrderedGroup<Monom> {
         data.put(var, 1);
     }
 
-    private Monom(Map<Var, Integer> data) {
+    private Monom(@NonNull Map<Var, Integer> data) {
         this.data.putAll(data);
+    }
+
+    public static Monom identity() {
+        return new Monom();
+    }
+
+    public static Monom monom(String name) {
+        return new Monom(new Var(name));
+    }
+
+    @NonNull
+    static Monom gcd(@NonNull Monom a, @NonNull Monom b) {
+        Monom m = new Monom();
+        for (Map.Entry<Var, Integer> var : a.data.entrySet()) {
+            Var key = var.getKey();
+            Integer value = var.getValue();
+            if (b.data.containsKey(key)) {
+                m.addVar(key, Math.min(value, b.data.get(key)));
+            }
+        }
+        return m;
     }
 
     private void addVar(Var key, int p) {
@@ -80,8 +80,9 @@ class Monom implements OrderedGroup<Monom> {
         return 0;
     }
 
+    @NonNull
     @Override
-    public Monom multiply(Monom m) {
+    public Monom multiply(@NonNull Monom m) {
         Map<Var, Integer> vars = new TreeMap<>();
         vars.putAll(data);
         for (Map.Entry<Var, Integer> var : m.data.entrySet()) {
@@ -98,6 +99,7 @@ class Monom implements OrderedGroup<Monom> {
         return new Monom(vars);
     }
 
+    @NonNull
     @Override
     public Monom reciprocal() {
         Monom answer = new Monom();
@@ -112,11 +114,13 @@ class Monom implements OrderedGroup<Monom> {
         return data.size() == 0;
     }
 
+    @NonNull
     @Override
     public Monom getIdentity() {
         return identity;
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

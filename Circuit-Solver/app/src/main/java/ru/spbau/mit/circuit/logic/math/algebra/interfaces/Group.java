@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.algebra.interfaces;
 
 
+import android.support.annotation.NonNull;
+
 public interface Group<G extends Group<G>> extends Proportional<G, G> {
 
     G multiply(G g);
@@ -9,7 +11,7 @@ public interface Group<G extends Group<G>> extends Proportional<G, G> {
 
     G getIdentity();
 
-    default G divide(G f) {
+    default G divide(@NonNull G f) {
         return multiply(f.reciprocal());
     }
 

@@ -22,7 +22,6 @@ import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.NotImplementedYetException;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
-import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.storage.StorageException;
@@ -33,6 +32,10 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableResistor;
 
 import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
 
+
+/**
+ * All user input is processed in here.
+ */
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
 
@@ -171,8 +174,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 if (chosen instanceof Element) {
                     Point point = getPoint(motionEvent.getX(), motionEvent.getY());
                     drawableModel.move(chosen, point);
-                } else if (chosen instanceof Node) {
-                    // May be we should do something.
                 }
                 return true;
             }

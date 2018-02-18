@@ -21,6 +21,10 @@ import ru.spbau.mit.circuit.storage.DriveStorage;
 import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
 
+/**
+ * Initialization of main parts of the program is here. Two buttons
+ * for activities.
+ */
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_SIGN_IN = 0;
 

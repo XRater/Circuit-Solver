@@ -64,6 +64,7 @@ class Tasks {
             this.model = model;
         }
 
+        @NonNull
         @Override
         public ResultHolder<Boolean> doInBackground(String... filename) {
             try {
@@ -103,7 +104,7 @@ class Tasks {
 
         @Nullable
         @Override
-        public ResultHolder<Model> doInBackground(String... filename) {
+        public ResultHolder<Model> doInBackground(@NonNull String... filename) {
             if (filename.length != 1) {
                 throw new IllegalArgumentException();
             }
@@ -125,6 +126,7 @@ class Tasks {
             this.converter = converter;
         }
 
+        @NonNull
         @Override
         public ResultHolder<Boolean> doInBackground(String... filename) {
             try {
@@ -135,9 +137,15 @@ class Tasks {
         }
     }
 
+    /**
+     * A type that stores result if everything is OK and an exception otherwise.
+     *
+     * @param <Result> type that is stored.
+     */
     static class ResultHolder<Result> {
 
         private Result result;
+        @Nullable
         private StorageException exception = null;
 
         private ResultHolder(Result result) {

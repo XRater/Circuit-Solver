@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.expressions;
 
 
+import android.support.annotation.NonNull;
+
 import java.util.Iterator;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
@@ -8,11 +10,13 @@ import ru.spbau.mit.circuit.logic.math.algebra.PolyElement;
 
 class PolyExpression extends PolyElement<Numerical, Monom, PolyExpression> {
 
+    @NonNull
     @Override
     protected PolyExpression empty() {
         return new PolyExpression();
     }
 
+    @NonNull
     @Override
     protected PolyExpression single() {
         PolyExpression ans = empty();

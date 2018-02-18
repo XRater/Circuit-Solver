@@ -1,6 +1,5 @@
 package ru.spbau.mit.circuit.storage;
 
-
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

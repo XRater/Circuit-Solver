@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.expressions;
 
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 
 public class PolyExpressions {
@@ -8,10 +10,12 @@ public class PolyExpressions {
     private static final PolyExpression zero = new PolyExpression();
     private static final PolyExpression identity = zero.single();
 
+    @NonNull
     public static PolyExpression zero() {
         return zero;
     }
 
+    @NonNull
     public static PolyExpression identity() {
         return identity;
     }
