@@ -4,9 +4,9 @@ package ru.spbau.mit.circuit.logic.graph;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.variables.Derivative;
-import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.expressions.Expression;
+import ru.spbau.mit.circuit.logic.math.expressions.Expressions;
+import ru.spbau.mit.circuit.logic.math.variables.ResultVariable;
 import ru.spbau.mit.circuit.model.circuitObjects.Item;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Battery;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
@@ -18,18 +18,23 @@ class Edge {
 
     private final Vertex from;
     private final Vertex to;
-    private final FunctionVariable charge = new FunctionVariable();
-    private final Derivative current = new Derivative(charge);
-    private final Derivative inductive = new Derivative(current);
+
+    private final ResultVariable charge = new ResultVariable();
+    private final ResultVariable current = new ResultVariable();
+
+    //    private final FunctionVariable charge = new FunctionVariable();
+//    private final Derivative current = new Derivative(charge);
+//    private final Derivative inductive = new Derivative(current);
+
     private int index = -1; // number of edge in its component.
     private boolean inTree; // is edge in the tree structure
 
     Edge(Item item, Vertex from, Vertex to) {
         this.item = item;
         if (item instanceof Capacitor) {
-            charge.setInitialValue(Numerical.number(item.getVoltage()));
+            charge.setInitialValue(item.getVoltage());
         } else {
-            charge.setInitialValue(Numerical.zero());
+            charge.setInitialValue(Expressions.zero());
         }
         this.from = from;
         this.to = to;
@@ -52,49 +57,50 @@ class Edge {
     }
 
     @NonNull
-    FunctionVariable charge() {
+    ResultVariable charge() {
         return charge;
     }
 
     @NonNull
-    Derivative current() {
+    ResultVariable current() {
         return current;
     }
 
-    @NonNull
-    @SuppressWarnings("unused")
-    public Derivative inductive() {
-        return inductive;
-    }
+//    @NonNull
+//    @SuppressWarnings("unused")
+//    public Derivative inductive() {
+//        return inductive;
+//    }
 
-    double getVoltage() {
+    Expression getVoltage() {
         if (item instanceof Battery) {
             Battery battery = (Battery) item;
-            return battery.getVoltage();
+            return battery.getCharacteristicValue();
         }
-        return 0;
+        return Expressions.zero();
     }
 
-    double getResistance() {
+    Expression getResistance() {
         if (item instanceof Resistor) {
             Resistor resistor = (Resistor) item;
             return resistor.getCharacteristicValue();
         }
         if (item instanceof Capacitor) {
-            return 0;
+            return Expressions.zero();
         }
-        return 0;
+        return Expressions.zero();
     }
 
     double getCapacity() {
         if (item instanceof Capacitor) {
             Capacitor capacitor = (Capacitor) item;
-            return capacitor.getCharacteristicValue();
+            return capacitor.getCharacteristicValue().doubleValue();
         }
         return 0;
     }
 
     void updateCurrent() {
+        // value of charge was not set
         item.setCurrent(current.value());
     }
 

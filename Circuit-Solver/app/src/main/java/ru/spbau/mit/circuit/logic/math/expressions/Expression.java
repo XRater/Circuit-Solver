@@ -2,8 +2,10 @@ package ru.spbau.mit.circuit.logic.math.expressions;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.QuotElement;
+import ru.spbau.mit.circuit.model.Result;
 
-public class Expression extends QuotElement<Numerical, Monom, PolyExpression, Expression> {
+public class Expression extends QuotElement<Numerical, Monom, PolyExpression, Expression>
+        implements Result {
 
     Expression() {
         up = PolyExpressions.zero().empty();
@@ -32,6 +34,13 @@ public class Expression extends QuotElement<Numerical, Monom, PolyExpression, Ex
         Monom upGcd = up.gcd();
         Monom downGcd = down.gcd();
         return Monom.gcd(upGcd, downGcd);
+    }
+
+    public double doubleValue() {
+        if (isZero()) {
+            return 0;
+        }
+        return up.doubleValue() / down.doubleValue();
     }
 
 //    public static void main(String[] args) throws ZeroDeterminantException {

@@ -41,4 +41,17 @@ class PolyExpression extends PolyElement<Numerical, Monom, PolyExpression> {
         }
         return gcd;
     }
+
+    public double doubleValue() {
+        if (isZero()) {
+            return 0;
+        }
+        if (data.size() != 1) {
+            throw new IllegalArgumentException();
+        }
+        if (!data.keySet().iterator().next().isIdentity()) {
+            throw new IllegalArgumentException();
+        }
+        return data.values().iterator().next().first().value();
+    }
 }

@@ -27,7 +27,8 @@ public class DrawableBattery extends Battery implements Drawable {
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        String voltage = String.format("%.2f", getCharacteristicValue()) + "V";
+//        String voltage = String.format("%.2f", getCharacteristicValue()) + "V";
+        String voltage = getCharacteristicValue().toString();
         Rect voltageSize = new Rect();
         Drawer.ELEMENTS_PAINT.getTextBounds(voltage, 0, voltage.length(), voltageSize);
 
@@ -49,12 +50,14 @@ public class DrawableBattery extends Battery implements Drawable {
                     Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
         } else {
             canvas.drawLine(x() + Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 7,
-                    x() + Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 7, Drawer.ELEMENTS_PAINT);
+                    x() + Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 7, Drawer
+                            .ELEMENTS_PAINT);
             canvas.drawLine(x() - Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4, x() -
                     Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
         }
 
-        canvas.drawText(voltage, x() - voltageSize.width() / 2, y() + CELL_SIZE / 4 * 5, Drawer.ELEMENTS_PAINT);
+        canvas.drawText(voltage, x() - voltageSize.width() / 2, y() + CELL_SIZE / 4 * 5, Drawer
+                .ELEMENTS_PAINT);
 
         canvas.restore();
 

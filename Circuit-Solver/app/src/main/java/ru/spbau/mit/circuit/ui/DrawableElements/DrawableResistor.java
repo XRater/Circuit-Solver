@@ -26,7 +26,8 @@ public class DrawableResistor extends Resistor implements Drawable {
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        String r = String.format("%.2f", getResistance()) + "\u03A9";
+//        String r = String.format("%.2f", getResistance()) + "\u03A9";
+        String r = getResistance().toString();
         Rect rSize = new Rect();
         Drawer.ELEMENTS_PAINT.getTextBounds(r, 0, r.length(), rSize);
 

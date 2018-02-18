@@ -7,7 +7,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 
-import ru.spbau.mit.circuit.logic.math.functions.Function;
+import ru.spbau.mit.circuit.model.Result;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
@@ -112,10 +112,11 @@ public class Drawer {
     private void showCurrents(@NonNull DrawableModel drawableModel) {
         for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
-            Function current = e.getCurrent();
+            Result current = e.getCurrent();
             System.out.println(current);
             Rect textSize = new Rect();
-            ELEMENTS_PAINT.getTextBounds(current.toString(), 0, current.toString().length(), textSize);
+            ELEMENTS_PAINT.getTextBounds(current.toString(), 0, current.toString().length(),
+                    textSize);
             canvas.save();
             if (e.isVertical()) {
                 canvas.translate(e.x() + Drawer.getOffsetX(), e.y() + Drawer.getOffsetY());
@@ -123,7 +124,8 @@ public class Drawer {
                 canvas.translate(-e.x() - Drawer.getOffsetX(), -e.y() - Drawer.getOffsetY());
             }
 
-            current.print(canvas, e.x() - textSize.width() / 2, e.y() - CELL_SIZE);
+//            current.print(canvas, e.x() - textSize.width() / 2, e.y() - CELL_SIZE);
+            canvas.drawText(current.toString(), e.x(), e.y(), ELEMENTS_PAINT);
             canvas.restore();
         }
     }

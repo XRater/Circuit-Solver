@@ -2,27 +2,29 @@ package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
 import android.support.annotation.NonNull;
 
+import ru.spbau.mit.circuit.logic.math.expressions.Expression;
+import ru.spbau.mit.circuit.logic.math.expressions.Expressions;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 
 public abstract class Resistor extends Element {
-    private double resistance = 1;
+    private Expression resistance = Expressions.constant(1);
 
     public Resistor(@NonNull Node from, @NonNull Node to) {
         super(from, to);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public double getResistance() {
+    public Expression getResistance() {
         return resistance;
     }
 
     @Override
-    public double getCharacteristicValue() {
+    public Expression getCharacteristicValue() {
         return resistance;
     }
 
     @Override
-    public void setCharacteristicValue(double resistance) {
+    public void setCharacteristicValue(Expression resistance) {
         this.resistance = resistance;
     }
 

@@ -12,15 +12,14 @@ import java.util.ArrayList;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.expressions.Expression;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
-import ru.spbau.mit.circuit.logic.math.functions.Functions;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
-import ru.spbau.mit.circuit.logic.math.matrices.Matrices;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
-import ru.spbau.mit.circuit.logic.math.matrices.matrixExponent.MatrixExponent;
 import ru.spbau.mit.circuit.logic.math.variables.NumericalVariable;
+import ru.spbau.mit.circuit.model.Result;
 
 
 /**
@@ -29,7 +28,7 @@ import ru.spbau.mit.circuit.logic.math.variables.NumericalVariable;
 public class Solver {
 
     private static int n;
-    private static LSystem<Numerical, FArray<Numerical>> initSystem;
+    private static LSystem<Expression, FArray<Expression>> initSystem;
 
     /**
      * The method sets values of function variables and derivatives to their exact values.
@@ -37,7 +36,8 @@ public class Solver {
      * @param systemToSolve system to solve
      * @throws CircuitShortingException if the system expected to has more then one solution
      */
-    public static ArrayList<Function> solve(LSystem<Numerical, FArray<Numerical>> systemToSolve)
+    public static ArrayList<? extends Result> solve(LSystem<Expression, FArray<Expression>>
+                                                            systemToSolve)
             throws CircuitShortingException {
 
         initSystem = systemToSolve;
@@ -45,20 +45,17 @@ public class Solver {
         System.out.println(initSystem);
 
         // Solve initial system
-        ArrayList<FArray<Numerical>> solution = initSystem.getSolution();
+        ArrayList<FArray<Expression>> solution = initSystem.getSolution();
 
         for (int i = 0; i < solution.size(); i++) {
             System.out.println(solution.get(i));
         }
 
-        RealMatrix A = getRightSideMatrix(solution);
-        RealVector constants = getRightSideConstants(solution);
-
         // Set answer if A is getZero
-        if (isZeroMatrix(A)) {
-            ArrayList<Function> answer = new ArrayList<>();
+        if (noCapacitors(solution)) {
+            ArrayList<Expression> answer = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                answer.add(Functions.constant(constants.getEntry(i)).integrate());
+                answer.add(solution.get(i).back());
             }
             for (int i = 0; i < answer.size(); i++) {
                 System.out.println(answer.get(i));
@@ -66,8 +63,11 @@ public class Solver {
             return answer;
         }
 
-//        throw new RuntimeException();
+//        RealMatrix A = getRightSideMatrix(solution);
+//        RealVector constants = getRightSideConstants(solution);
 
+//        throw new RuntimeException();
+/*
         // Evaluate general solution
         Matrix<Function> matrixExponent = MatrixExponent.matrixExponent(A);
 
@@ -105,6 +105,19 @@ public class Solver {
         }
 
         return answer;
+  */
+        throw new RuntimeException();
+    }
+
+    private static boolean noCapacitors(ArrayList<FArray<Expression>> solution) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (!solution.get(i).get(j).isZero()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

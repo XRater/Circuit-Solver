@@ -7,7 +7,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.expressions.Expression;
+import ru.spbau.mit.circuit.logic.math.expressions.Expressions;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
@@ -65,14 +66,15 @@ class Vertex {
     /**
      * Adds new equation corresponding to the first Kirchhoff's law.
      */
-    void addEquation(LSystem<Numerical, FArray<Numerical>> system) throws
+    void addEquation(LSystem<Expression, FArray<Expression>> system) throws
             InconsistentSystemException {
-        FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
+        FArray<Expression> coefficients = FArray.array(system.variablesNumber(), Expressions.zero
+                ());
         for (Edge edge : edges) {
-            coefficients.set(edge.index(), Numerical.number(edge.getDirection(this)));
+            coefficients.set(edge.index(), Expressions.constant(edge.getDirection(this)));
         }
-        system.addEquation(coefficients, FArray.array(system.variablesNumber() + 1, Numerical
-                .zero()));
+        system.addEquation(coefficients,
+                FArray.array(system.variablesNumber() + 1, Expressions.zero()));
     }
 
     @Override

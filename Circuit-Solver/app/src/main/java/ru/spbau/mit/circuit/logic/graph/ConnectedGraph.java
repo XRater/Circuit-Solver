@@ -7,14 +7,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
-import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.functions.Function;
+import ru.spbau.mit.circuit.logic.math.expressions.Expression;
+import ru.spbau.mit.circuit.logic.math.expressions.Expressions;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
-import ru.spbau.mit.circuit.logic.math.variables.Derivative;
 import ru.spbau.mit.circuit.logic.math.variables.Numerator;
+import ru.spbau.mit.circuit.logic.math.variables.ResultVariable;
 import ru.spbau.mit.circuit.logic.solver.Solver;
+import ru.spbau.mit.circuit.model.Result;
 
 /**
  * Connected graph with known tree structure.
@@ -33,7 +34,7 @@ public class ConnectedGraph {
 
     private List<Cycle> cycles = new ArrayList<>(); // Base system of cycles
 
-    private final Collection<Derivative> variables = new ArrayList<>();
+    private final Collection<ResultVariable> variables = new ArrayList<>();
 
     /**
      * Creates connected graph from the root. Graph will contain only one vertex and zero edges.
@@ -97,22 +98,19 @@ public class ConnectedGraph {
      */
     public void solve() throws CircuitShortingException {
         findCycles();
-        LSystem<
-                Numerical,
-                FArray<Numerical>> system = null;
+        LSystem<Expression, FArray<Expression>> system;
         try {
             system = constructSystem();
         } catch (InconsistentSystemException e) {
             throw new CircuitShortingException();
         }
-        ArrayList<Function> solution = Solver.solve(system);
+        ArrayList<? extends Result> solution = Solver.solve(system);
         setCurrents(solution);
     }
 
-    private void setCurrents(ArrayList<Function> solution) {
+    private void setCurrents(ArrayList<? extends Result> solution) {
         for (Edge edge : edges) {
-            edge.charge().setValue(solution.get(edge.index()));
-            edge.current().setValue();
+            edge.current().setValue(solution.get(edge.index()));
             edge.updateCurrent();
         }
     }
@@ -134,13 +132,12 @@ public class ConnectedGraph {
      *
      * @return constructed linear system.
      */
-    private LSystem<
-            Numerical,
-            FArray<Numerical>> constructSystem() throws InconsistentSystemException {
+    private LSystem<Expression, FArray<Expression>>
+    constructSystem() throws InconsistentSystemException {
 
-        LSystem<Numerical, FArray<Numerical>> system = new LSystem<>(
-                variables.size(), Numerical.zero(), FArray.array(variables.size() + 1, Numerical
-                .zero()));
+        LSystem<Expression, FArray<Expression>> system = new LSystem<>(
+                variables.size(), Expressions.zero(),
+                FArray.array(variables.size() + 1, Expressions.zero()));
 
         for (Vertex node : vertices) {
             node.addEquation(system);

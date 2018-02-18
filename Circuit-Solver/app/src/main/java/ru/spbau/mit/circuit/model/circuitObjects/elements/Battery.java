@@ -2,28 +2,25 @@ package ru.spbau.mit.circuit.model.circuitObjects.elements;
 
 import android.support.annotation.NonNull;
 
+import ru.spbau.mit.circuit.logic.math.expressions.Expression;
+import ru.spbau.mit.circuit.logic.math.expressions.Expressions;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 
 public abstract class Battery extends Element {
 
-    private double voltage = 10;
+    private Expression voltage = Expressions.constant(10);
 
     public Battery(@NonNull Node from, @NonNull Node to) {
         super(from, to);
     }
 
     @Override
-    public double getVoltage() {
+    public Expression getCharacteristicValue() {
         return voltage;
     }
 
     @Override
-    public double getCharacteristicValue() {
-        return voltage;
-    }
-
-    @Override
-    public void setCharacteristicValue(double voltage) {
+    public void setCharacteristicValue(Expression voltage) {
         this.voltage = voltage;
     }
 

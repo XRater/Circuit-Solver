@@ -7,8 +7,11 @@ import java.util.Arrays;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Abel;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Proportional;
+import ru.spbau.mit.circuit.logic.math.expressions.Expression;
 
 public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional<F, FArray<F>> {
+
+    private Expression last;
 
     public static <F extends Field<F>> FArray<F> array(int size, F element) {
         return new FArray<>(size, element);
@@ -51,6 +54,10 @@ public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional
 
     public F get(int i) {
         return data[i];
+    }
+
+    public F back() {
+        return data[data.length - 1];
     }
 
     @Override
@@ -99,5 +106,4 @@ public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional
     public String toString() {
         return Arrays.toString(data);
     }
-
 }
