@@ -124,6 +124,7 @@ public class Drawer {
 
             canvas.drawText(current, e.x() - textSize.width() / 2, e.y() - CELL_SIZE,
                     ELEMENTS_PAINT);
+            PrettyPrinter.print(canvas, e.x() - textSize.width() / 2, e.y() - CELL_SIZE, e);
             canvas.restore();
         }
     }
