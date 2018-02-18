@@ -2,8 +2,6 @@ package ru.spbau.mit.circuit.controler;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -17,7 +15,6 @@ import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 import ru.spbau.mit.circuit.model.exceptions.NodesAreAlreadyConnected;
 import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.storage.Converter;
-import ru.spbau.mit.circuit.storage.StorageException;
 import ru.spbau.mit.circuit.ui.NewCircuitActivity;
 import ru.spbau.mit.circuit.ui.UI;
 
@@ -79,7 +76,8 @@ public class Controller {
         model.removeAll(objects);
     }
 
-    public void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject> toBeAdded)
+    public void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull
+            List<CircuitObject> toBeAdded)
             throws NodesAreAlreadyConnected {
         model.removeThenAdd(toBeDeleted, toBeAdded);
     }

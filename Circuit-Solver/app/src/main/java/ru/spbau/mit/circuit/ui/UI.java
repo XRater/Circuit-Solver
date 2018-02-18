@@ -55,7 +55,8 @@ public class UI {
         controller.removeAll(chosen);
     }
 
-    void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject> toBeAdded)
+    void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject>
+            toBeAdded)
             throws NodesAreAlreadyConnected {
         controller.removeThenAdd(toBeDeleted, toBeAdded);
     }
