@@ -92,13 +92,12 @@ public class Controller {
         ui.deleteUnnecessaryNode(common, first, second);
     }
 
-    public boolean save(Converter.Mode mode, String filename) {
+    public boolean save(Converter.Mode mode, String filename) throws StorageException {
         try {
-            return Tasks.saveTask(mode, converter, model).execute(filename).get();
+            return Tasks.saveTask(mode, converter, model).execute(filename).get().getResult();
         } catch (@NonNull InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            throw new StorageException();
         }
-        return false;
     }
 
     @Nullable
@@ -112,7 +111,7 @@ public class Controller {
 
     public void load(Converter.Mode mode, String filename) throws StorageException {
         try {
-            Model newModel = Tasks.loadTask(mode, converter).execute(filename).get();
+            Model newModel = Tasks.loadTask(mode, converter).execute(filename).get().getResult();
             newModel.setController(this);
             newModel.initializeVerificator();
             this.model = newModel;
@@ -127,7 +126,7 @@ public class Controller {
 
     public void removeFromStorage(Converter.Mode mode, String name) throws StorageException {
         try {
-            Tasks.deleteTask(mode, converter).execute(name).get();
+            Tasks.deleteTask(mode, converter).execute(name).get().getResult();
         } catch (@NonNull InterruptedException | ExecutionException e) {
             throw new StorageException();
         }
