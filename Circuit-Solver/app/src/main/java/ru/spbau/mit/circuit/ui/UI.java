@@ -21,8 +21,8 @@ public class UI {
         this.controller = controller;
     }
 
-    public void load(Converter.Mode mode, String name) {
-        controller.load(mode, name);
+    public Boolean load(Converter.Mode mode, String name) {
+        return controller.load(mode, name);
     }
 
     void calculateCurrents() throws CircuitShortingException, NotImplementedYetException {
@@ -60,7 +60,7 @@ public class UI {
         drawableModel.deleteUnnecessaryNode(common, first, second);
     }
 
-    public boolean save(Converter.Mode mode, String name) {
+    public Boolean save(Converter.Mode mode, String name) {
         return controller.save(mode, name);
     }
 
@@ -82,7 +82,7 @@ public class UI {
         return controller.getModel();
     }
 
-    public void removeFromStorage(Converter.Mode mode, String name) {
-        controller.removeFromStorage(mode, name);
+    public Boolean removeFromStorage(Converter.Mode mode, String name) {
+        return controller.removeFromStorage(mode, name);
     }
 }

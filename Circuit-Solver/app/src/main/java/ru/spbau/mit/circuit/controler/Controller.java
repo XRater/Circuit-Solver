@@ -24,8 +24,6 @@ import ru.spbau.mit.circuit.ui.UI;
  */
 public class Controller {
 
-    // FIXME handle exceptions
-
     private final Logic logic;
     private final UI ui;
     private final Converter converter;
@@ -86,44 +84,44 @@ public class Controller {
         ui.deleteUnnecessaryNode(common, first, second);
     }
 
-    public boolean save(Converter.Mode mode, String filename) {
+    public Boolean save(Converter.Mode mode, String filename) {
         try {
             return Tasks.saveTask(mode, converter, model).execute(filename).get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            return null;
         }
-        return false;
     }
 
     public List<String> getCircuits(Converter.Mode mode) {
         try {
             return Tasks.getCircuitsTask(mode, converter).execute().get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
-    public void load(Converter.Mode mode, String filename) {
+    public Boolean load(Converter.Mode mode, String filename) {
         try {
             Model newModel = Tasks.loadTask(mode, converter).execute(filename).get();
             newModel.setController(this);
             newModel.initializeVerificator();
             this.model = newModel;
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            return null;
         }
 
         ui.setCircuitWasLoaded();
         Intent intent = new Intent(activity.getApplicationContext(), NewCircuitActivity.class);
         activity.startActivity(intent);
+        return true;
     }
 
-    public void removeFromStorage(Converter.Mode mode, String name) {
+    public Boolean removeFromStorage(Converter.Mode mode, String name) {
         try {
             Tasks.deleteTask(mode, converter).execute(name).get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            return null;
         }
+        return true;
     }
 }
