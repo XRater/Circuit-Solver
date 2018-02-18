@@ -30,6 +30,8 @@ public class LoadActivity extends Activity {
             String name = ((TextView) view).getText().toString();
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("Chose action")
+                    .setPositiveButton("Load", (dialog1, which) ->
+                            checkForExceptions(MainActivity.ui.load(mode, name)))
                     .setPositiveButton("Load", (dialog1, which) -> {
                         try {
                             MainActivity.ui.load(mode, name);
@@ -38,6 +40,7 @@ public class LoadActivity extends Activity {
                         }
                     })
                     .setNegativeButton("Delete", (dialog1, which) -> {
+                        checkForExceptions(MainActivity.ui.removeFromStorage(mode, name));
                         try {
                             MainActivity.ui.removeFromStorage(mode, name);
                         } catch (StorageException e) {
@@ -78,6 +81,14 @@ public class LoadActivity extends Activity {
             names.setAdapter(adapter);
             mode = Converter.Mode.DRIVE;
         });
+    }
+
+    private void checkForExceptions(Boolean result) {
+        if (result == null) {
+            Toast.makeText(getApplicationContext(),
+                    "Something went wrong. Please check your Internet connection.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showErrorToast(Converter.Mode mode) {

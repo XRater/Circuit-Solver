@@ -1,8 +1,5 @@
 package ru.spbau.mit.circuit.logic.math.algebra;
 
-import android.graphics.Canvas;
-import android.graphics.Rect;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -10,9 +7,6 @@ import java.util.TreeMap;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Algebra;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
-import ru.spbau.mit.circuit.logic.math.functions.PolyExponent;
-
-import static ru.spbau.mit.circuit.ui.Drawer.ELEMENTS_PAINT;
 
 public abstract class PolyElement<
         F extends Field<F>,
@@ -150,22 +144,6 @@ public abstract class PolyElement<
         return sb.toString();
     }
 
-    public int print(Canvas canvas, int x, int y) {
-        Iterator<Pair<F, G>> iter = data.values().iterator();
-        if (iter.hasNext())
-            x += iter.next().print(canvas, x, y);
-        else
-            System.out.println("(((((((((((((((((");
-        Rect textSize = new Rect();
-        while (iter.hasNext()) {
-            ELEMENTS_PAINT.getTextBounds(" + ", 0, " + ".length(), textSize);
-            canvas.drawText(" + ", x, y, ELEMENTS_PAINT);
-            x += textSize.width();
-            x += iter.next().print(canvas, x, y);
-        }
-        return x;
-    }
-
     protected class Pair<U, V> {
 
         private final U first;
@@ -187,16 +165,6 @@ public abstract class PolyElement<
         @Override
         public String toString() {
             return first + "*" + second;
-        }
-
-        public int print(Canvas canvas, int x, int y) {
-            Rect textSize = new Rect();
-            System.out.println(first.toString() + " " + second.toString());
-            ELEMENTS_PAINT.getTextBounds(first.toString(), 0, first.toString().length(), textSize);
-            canvas.drawText(first.toString(), x, y, ELEMENTS_PAINT);
-            x += textSize.width();
-            x += ((PolyExponent) second).print(canvas, x, y);
-            return x;
         }
     }
 }
