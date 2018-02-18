@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
 
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 
 import java.math.BigDecimal;
@@ -10,6 +12,8 @@ import java.util.Objects;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
 import ru.spbau.mit.circuit.logic.math.functions.exceptions.IllegalFunctionTransformationException;
+
+import static ru.spbau.mit.circuit.ui.Drawer.ELEMENTS_PAINT;
 
 public class PolyExponent implements OrderedGroup<PolyExponent> {
 
@@ -155,22 +159,31 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return res;
     }
 
-    public String print() {
+    public int print(Canvas canvas, int x, int y) {
+        Rect textSize = new Rect();
         if (isIdentity()) {
-            return "1";
+            ELEMENTS_PAINT.getTextBounds("1", 0, "1".length(), textSize);
+            canvas.drawText("1", x, y, ELEMENTS_PAINT);
+            return x + textSize.width();
         }
-        String res = "";
+
         if (mPow != 0) {
-            res += "t";
-            if (mPow != 1) {
-                res += "^" + mPow;
-            }
+            ELEMENTS_PAINT.getTextBounds("t", 0, "t".length(), textSize);
+            canvas.drawText("t", x, y, ELEMENTS_PAINT);
+            x += textSize.width();
+            ELEMENTS_PAINT.getTextBounds(writeNumber(mPow), 0, writeNumber(mPow).length(), textSize);
+            canvas.drawText(writeNumber(mPow), x, y + textSize.height(), ELEMENTS_PAINT);
+            x += textSize.width();
         }
-        if (isEquals(ePow, 0)) {
-            return res;
+        if (!isEquals(ePow, 0)) {
+            ELEMENTS_PAINT.getTextBounds("e", 0, "e".length(), textSize);
+            canvas.drawText("e", x, y, ELEMENTS_PAINT);
+            x += textSize.width();
+            ELEMENTS_PAINT.getTextBounds(writeNumber(ePow), 0, writeNumber(ePow).length(), textSize);
+            canvas.drawText(writeNumber(ePow) + "t", x, y - textSize.height(), ELEMENTS_PAINT);
+            x += textSize.width();
         }
-        res += "exp(" + writeNumber(ePow) + "t)";
-        return res;
+        return x;
     }
 
     @Override
