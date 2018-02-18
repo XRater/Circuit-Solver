@@ -238,12 +238,7 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                     .setView(taskEditText)
                     .setPositiveButton("Set new value", (dialog1, which) -> {
                         String value = String.valueOf(taskEditText.getText());
-                        try {
-                            element.setCharacteristicValue(Expressions.constant(Double
-                                    .parseDouble(value)));
-                        } catch (@NonNull NumberFormatException e) {
-                            // No info
-                        }
+                        InputParser.parseInput(element, value);
                         drawableModel.redraw();
                     })
                     .setNegativeButton("Cancel", null)
