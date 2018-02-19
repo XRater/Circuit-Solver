@@ -14,6 +14,9 @@ import java.util.List;
 
 import ru.spbau.mit.circuit.model.Model;
 
+/**
+ * Base class for working with storages.
+ */
 public class Converter {
 
     private final List<Storage> storageList = new ArrayList<>();
@@ -67,6 +70,9 @@ public class Converter {
         return true;
     }
 
+    /**
+     * Choosing with which storage to work with.
+     */
     public enum Mode {
         LOCAL,
         DRIVE

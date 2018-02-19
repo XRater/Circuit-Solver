@@ -3,19 +3,14 @@ package ru.spbau.mit.circuit.logic.graph;
 
 import android.support.annotation.NonNull;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunctions;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Equation;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
-import ru.spbau.mit.circuit.logic.math.variables.Derivative;
-import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
+import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();
@@ -42,23 +37,16 @@ class Vertex {
     }
 
     /**
-     * Makes new equation corresponding to the first Kirchhoff's law.
+     * Adds new equation corresponding to the first Kirchhoff's law.
      */
-    @NonNull
-    Equation<
-            Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>
-            > getEquation(@NonNull Collection<Derivative> variables) {
-
-        Vector<Numerical, Derivative> vars = new Vector<>(variables, Numerical.zero());
-        Row<Numerical, FunctionVariable, PolyFunction> consts =
-                new Row<>(PolyFunctions.zero());
-
+    void addEquation(@NonNull LSystem<Numerical, FArray<Numerical>> system) throws
+            InconsistentSystemException {
+        FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
         for (Edge edge : edges) {
-            vars.add(edge.current(), Numerical.number(edge.getDirection(this)));
+            coefficients.set(edge.index(), Numerical.number(edge.getDirection(this)));
         }
-        return new Equation<>(vars, consts);
+        system.addEquation(coefficients, FArray.array(system.variablesNumber() + 1, Numerical
+                .zero()));
     }
 
     @Override

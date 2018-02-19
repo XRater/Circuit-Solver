@@ -22,9 +22,9 @@ import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.NotImplementedYetException;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
-import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.storage.Converter;
+import ru.spbau.mit.circuit.storage.StorageException;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableBattery;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableCapacitor;
@@ -32,6 +32,10 @@ import ru.spbau.mit.circuit.ui.DrawableElements.DrawableResistor;
 
 import static ru.spbau.mit.circuit.ui.DrawableModel.getByPoint;
 
+
+/**
+ * All user input is processed in here.
+ */
 public class NewCircuitActivity extends Activity implements SurfaceHolder.Callback,
         OnTouchListener {
 
@@ -170,8 +174,6 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
                 if (chosen instanceof Element) {
                     Point point = getPoint(motionEvent.getX(), motionEvent.getY());
                     drawableModel.move(chosen, point);
-                } else if (chosen instanceof Node) {
-                    // May be we should do something.
                 }
                 return true;
             }
@@ -266,25 +268,36 @@ public class NewCircuitActivity extends Activity implements SurfaceHolder.Callba
     }
 
     private void onSaveClicked() {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "An error occured while saving. Please try again.",
+                Toast.LENGTH_SHORT);
         final EditText taskEditText = new EditText(this);
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Choose where you want to save this circuit.")
                 .setView(taskEditText)
                 .setMessage("Name this circuit")
                 .setPositiveButton("This device", (dialog1, which) -> {
-                    if (!MainActivity.ui.save(Converter.Mode.LOCAL,
-                            String.valueOf(taskEditText.getText()))) {
-                        Toast.makeText(getApplicationContext(),
-                                "This name already exists, please choose another one.",
-                                Toast.LENGTH_SHORT).show();
+                    try {
+                        if (!MainActivity.ui.save(Converter.Mode.LOCAL,
+                                String.valueOf(taskEditText.getText()))) {
+                            Toast.makeText(getApplicationContext(),
+                                    "This name already exists, please choose another one.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (StorageException e) {
+                        toast.show();
                     }
                 })
                 .setNegativeButton("Google Drive", (dialog1, which) -> {
-                    if (!MainActivity.ui.save(Converter.Mode.DRIVE,
-                            String.valueOf(taskEditText.getText()))) {
-                        Toast.makeText(getApplicationContext(),
-                                "This name already exists, please choose another one.",
-                                Toast.LENGTH_SHORT).show();
+                    try {
+                        if (!MainActivity.ui.save(Converter.Mode.DRIVE,
+                                String.valueOf(taskEditText.getText()))) {
+                            Toast.makeText(getApplicationContext(),
+                                    "This name already exists, please choose another one.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (StorageException e) {
+                        toast.show();
                     }
                 })
                 .create();

@@ -4,39 +4,42 @@ import android.support.annotation.NonNull;
 
 import java.lang.reflect.Array;
 
-import ru.spbau.mit.circuit.logic.math.algebra.Field;
-import ru.spbau.mit.circuit.logic.math.algebra.Linear;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Algebra;
+import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 
 /**
  * Base matrix class. May store any values, which implements field interface.
  *
- * @param <T> stored type.
+ * @param <F> stored type.
  */
-public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, Matrix<T>> {
+public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
 
     @NonNull
-    private final T[][] data;
+    private final F[][] data;
     private final int n;
     private final int m;
     @NonNull
-    private final T zero;
+    private final F zero;
 
-    @SuppressWarnings("WeakerAccess")
-    public Matrix(int n, @NonNull T zero) {
-        this(n, n, zero);
-    }
-
-    public Matrix(int n, int m, @NonNull T zero) {
+    private Matrix(int n, int m, @NonNull F zero) {
         this.zero = zero;
         this.n = n;
         this.m = m;
         //noinspection unchecked
-        data = (T[][]) (Array.newInstance(zero.getClass(), n, m));
+        data = (F[][]) (Array.newInstance(zero.getClass(), n, m));
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 data[i][j] = zero.getZero();
             }
         }
+    }
+
+    public static <F extends Field<F>> Matrix<F> matrix(int n, int m, @NonNull F zero) {
+        return new Matrix<>(n, m, zero.getZero());
+    }
+
+    public static <F extends Field<F>> Matrix<F> squareMatrix(int n, @NonNull F zero) {
+        return new Matrix<>(n, n, zero.getZero());
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -56,46 +59,44 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
         return n;
     }
 
-    public void set(int i, int j, T t) {
-        data[i][j] = t;
+    public void set(int i, int j, F f) {
+        data[i][j] = f;
     }
 
-    public T get(int i, int j) {
+    public F get(int i, int j) {
         return data[i][j];
     }
 
     @NonNull
     @Override
-    public Matrix<T> getZero() {
+    public Matrix<F> getZero() {
         return new Matrix<>(n, m, zero);
     }
 
     @NonNull
-    public Matrix<T> getZero(int sz) {
-        return new Matrix<>(sz, zero);
+    public Matrix<F> getZero(int sz) {
+        return new Matrix<>(sz, sz, zero);
     }
 
-    @NonNull
     @Override
-    public Matrix<T> getIdentity() {
+    public Matrix<F> getIdentity() {
         if (n != m) {
             throw new IllegalArgumentException();
         }
         return Matrices.identityMatix(n, zero);
     }
 
-    @NonNull
-    public Matrix<T> getIdentity(int sz) {
+    public Matrix<F> getIdentity(int sz) {
         return Matrices.identityMatix(sz, zero);
     }
 
     @NonNull
     @Override
-    public Matrix<T> add(@NonNull Matrix<T> matrix) {
+    public Matrix<F> add(@NonNull Matrix<F> matrix) {
         if (n != matrix.n || m != matrix.m) {
             throw new IllegalArgumentException();
         }
-        Matrix<T> ans = new Matrix<>(matrix.n, matrix.m, matrix.zero);
+        Matrix<F> ans = new Matrix<>(matrix.n, matrix.m, matrix.zero);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 ans.set(i, j, get(i, j).add(matrix.get(i, j)));
@@ -106,11 +107,11 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
 
     @NonNull
     @Override
-    public Matrix<T> multiply(@NonNull Matrix<T> matrix) {
+    public Matrix<F> multiply(@NonNull Matrix<F> matrix) {
         if (m != matrix.n) {
             throw new IllegalArgumentException();
         }
-        Matrix<T> ans = new Matrix<>(n, matrix.m, matrix.zero);
+        Matrix<F> ans = new Matrix<>(n, matrix.m, matrix.zero);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < matrix.m; j++) {
                 for (int k = 0; k < m; k++) {
@@ -124,13 +125,13 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
 
     @NonNull
     @Override
-    public Matrix<T> negate() {
+    public Matrix<F> negate() {
         return this.multiplyConstant(zero.getIdentity().negate());
     }
 
     @NonNull
     @Override
-    public Matrix<T> reciprocal() {
+    public Matrix<F> reciprocal() {
         throw new UnsupportedOperationException();
     }
 
@@ -169,11 +170,11 @@ public class Matrix<T extends Field<T>> implements Field<Matrix<T>>, Linear<T, M
 
     @NonNull
     @Override
-    public Matrix<T> multiplyConstant(T t) {
-        Matrix<T> ans = new Matrix<>(this.n, this.zero);
+    public Matrix<F> multiplyConstant(F f) {
+        Matrix<F> ans = matrix(n, m, zero);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                ans.set(i, j, get(i, j).multiply(t));
+                ans.set(i, j, get(i, j).multiply(f));
             }
         }
         return ans;
