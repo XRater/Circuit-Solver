@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.linearContainers;
 
 
+import android.support.annotation.NonNull;
+
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
@@ -16,13 +18,14 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Proportional;
  */
 public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional<F, FArray<F>> {
 
-    public static <F extends Field<F>> FArray<F> array(int size, F element) {
+    public static <F extends Field<F>> FArray<F> array(int size, @NonNull F element) {
         return new FArray<>(size, element);
     }
 
+    @NonNull
     @SuppressWarnings("unused")
     @SafeVarargs
-    public static <F extends Field<F>> FArray<F> array(F... array) {
+    public static <F extends Field<F>> FArray<F> array(@NonNull F... array) {
         if (array.length == 0) {
             throw new IllegalArgumentException();
         }
@@ -33,12 +36,13 @@ public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional
         return result;
     }
 
+    @NonNull
     private final F[] data;
     private final int size;
 
     private final F fieldZero;
 
-    private FArray(int size, F element) {
+    private FArray(int size, @NonNull F element) {
         //noinspection unchecked
         data = (F[]) Array.newInstance(element.getClass(), size);
         this.size = size;
@@ -60,8 +64,9 @@ public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional
         return data[i];
     }
 
+    @NonNull
     @Override
-    public FArray<F> add(FArray<F> item) {
+    public FArray<F> add(@NonNull FArray<F> item) {
         if (size != item.size()) {
             throw new IllegalArgumentException();
         }
@@ -71,6 +76,7 @@ public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional
         return this;
     }
 
+    @NonNull
     @Override
     public FArray<F> multiplyConstant(F f) {
         for (int i = 0; i < size; i++) {
@@ -79,6 +85,7 @@ public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional
         return this;
     }
 
+    @NonNull
     @Override
     public FArray<F> negate() {
         for (int i = 0; i < size; i++) {
@@ -97,11 +104,13 @@ public class FArray<F extends Field<F>> implements Abel<FArray<F>>, Proportional
         return true;
     }
 
+    @NonNull
     @Override
     public FArray<F> getZero() {
         return new FArray<>(size, fieldZero);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return Arrays.toString(data);

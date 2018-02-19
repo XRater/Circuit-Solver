@@ -17,7 +17,7 @@ public class Polynom<F extends Field<F>> extends PolyElement<F, Monom, Polynom<F
 
     private final F fieldZero;
 
-    Polynom(F zero) {
+    Polynom(@NonNull F zero) {
         fieldZero = zero.getZero();
     }
 
@@ -31,11 +31,13 @@ public class Polynom<F extends Field<F>> extends PolyElement<F, Monom, Polynom<F
         return fieldZero.getIdentity();
     }
 
+    @NonNull
     @Override
     protected Polynom<F> empty() {
         return new Polynom<>(fieldZero);
     }
 
+    @NonNull
     @Override
     protected Polynom<F> single() {
         Polynom<F> answer = new Polynom<>(fieldZero);
@@ -65,7 +67,7 @@ public class Polynom<F extends Field<F>> extends PolyElement<F, Monom, Polynom<F
      * The method evaluates polynom value from the given matrix of field elements.
      */
     @NonNull
-    public Matrix<F> evaluate(Matrix<F> matrix) {
+    public Matrix<F> evaluate(@NonNull Matrix<F> matrix) {
         Matrix<F> ans = matrix.getZero(matrix.size());
         int pow = 0;
         Matrix<F> power = matrix.getIdentity(matrix.size());

@@ -2,6 +2,7 @@ package ru.spbau.mit.circuit.logic.math.functions;
 
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -56,14 +57,16 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return mPow - o.mPow;
     }
 
+    @NonNull
     @Override
-    public PolyExponent multiply(PolyExponent f) {
+    public PolyExponent multiply(@Nullable PolyExponent f) {
         if (f != null) {
             return new PolyExponent(mPow + f.mPow, ePow + f.ePow);
         }
         throw new IllegalFunctionTransformationException();
     }
 
+    @NonNull
     @Override
     public PolyExponent reciprocal() {
         return PolyExponent.exponent(-mPow, -ePow);
@@ -74,6 +77,7 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return mPow == 0 && isEquals(ePow, 0);
     }
 
+    @NonNull
     @Override
     public PolyExponent getIdentity() {
         return new PolyExponent(0, 0);
@@ -96,6 +100,7 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return false;
     }
 
+    @NonNull
     @Override
     public String toString() {
         if (isIdentity()) {
@@ -115,6 +120,7 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return res;
     }
 
+    @NonNull
     Numerical apply(double x) {
         if (isEquals(x, 0)) {
             if (mPow == 0) {

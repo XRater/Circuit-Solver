@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.Pair;
 import ru.spbau.mit.circuit.logic.math.algebra.PolyElement;
@@ -16,16 +18,19 @@ class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunction> {
         data.put(e, pair(Numerical.identity(), e));
     }
 
+    @NonNull
     @Override
     protected PolyFunction empty() {
         return new PolyFunction();
     }
 
+    @NonNull
     @Override
     protected PolyFunction single() {
         return new PolyFunction(PolyExponent.identity());
     }
 
+    @NonNull
     @Override
     public PolyFunction getZero() {
         return PolyFunctions.zero();
@@ -36,6 +41,7 @@ class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunction> {
         return PolyFunctions.identity();
     }
 
+    @NonNull
     PolyFunction differentiate() {
         PolyFunction answer = empty();
 
@@ -51,6 +57,7 @@ class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunction> {
         return answer;
     }
 
+    @NonNull
     PolyFunction integrate() {
         PolyFunction answer = empty();
 
@@ -80,6 +87,7 @@ class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunction> {
         return answer;
     }
 
+    @NonNull
     Numerical apply(double x) {
         Numerical answer = Numerical.zero();
         for (Pair<Numerical, PolyExponent> pair : data.values()) {

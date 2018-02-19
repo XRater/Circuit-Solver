@@ -15,6 +15,7 @@ import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSyst
 class Vertex {
     private final List<Edge> edges = new LinkedList<>();
 
+    @NonNull
     List<Edge> getEdges() {
         return edges;
     }
@@ -29,6 +30,7 @@ class Vertex {
         return this::treeEdgesIterator;
     }
 
+    @NonNull
     @SuppressWarnings("WeakerAccess")
     Iterator<Edge> treeEdgesIterator() {
         return new treeIterator();
@@ -39,6 +41,7 @@ class Vertex {
 
         Edge e;
 
+        @NonNull
         private Iterator<Edge> iterator = edges.iterator();
 
         @Override
@@ -65,7 +68,7 @@ class Vertex {
     /**
      * Adds new equation corresponding to the first Kirchhoff's law.
      */
-    void addEquation(LinearSystem<Numerical, FArray<Numerical>> system) throws
+    void addEquation(@NonNull LinearSystem<Numerical, FArray<Numerical>> system) throws
             InconsistentSystemException {
         FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
         for (Edge edge : edges) {

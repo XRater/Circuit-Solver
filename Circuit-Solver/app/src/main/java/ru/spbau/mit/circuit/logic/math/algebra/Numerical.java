@@ -33,10 +33,12 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         return new Numerical(value);
     }
 
+    @NonNull
     public static Numerical zero() {
         return zero;
     }
 
+    @NonNull
     public static Numerical identity() {
         return identity;
     }
@@ -49,21 +51,25 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         return value;
     }
 
+    @NonNull
     @Override
-    public Numerical add(Numerical f) {
+    public Numerical add(@NonNull Numerical f) {
         return new Numerical(value + f.value);
     }
 
+    @NonNull
     @Override
-    public Numerical multiply(Numerical numerical) {
+    public Numerical multiply(@NonNull Numerical numerical) {
         return new Numerical(value * numerical.value);
     }
 
+    @NonNull
     @Override
-    public Numerical multiplyConstant(Numerical numerical) {
+    public Numerical multiplyConstant(@NonNull Numerical numerical) {
         return multiply(numerical);
     }
 
+    @NonNull
     @Override
     public Numerical reciprocal() {
         if (!isZero()) {
@@ -72,6 +78,7 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         throw new IllegalInverseException();
     }
 
+    @NonNull
     @Override
     public Numerical negate() {
         return new Numerical(-value);
@@ -87,11 +94,13 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         return isEquals(identity());
     }
 
+    @NonNull
     @Override
     public Numerical getZero() {
         return Numerical.zero();
     }
 
+    @NonNull
     @Override
     public Numerical getIdentity() {
         return Numerical.identity();
@@ -104,7 +113,7 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         return Double.toString(roundedValue);
     }
 
-    public boolean isEquals(Numerical num) {
+    public boolean isEquals(@NonNull Numerical num) {
         return (Math.abs(value - num.value) < precision);
     }
 

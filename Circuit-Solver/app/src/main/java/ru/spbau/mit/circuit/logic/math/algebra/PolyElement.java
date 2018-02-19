@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.algebra;
 
+import android.support.annotation.NonNull;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -44,7 +46,7 @@ public abstract class PolyElement<
      * @param g  target group element
      * @return new PolyElement
      */
-    public I singleton(F cf, G g) {
+    public I singleton(@NonNull F cf, G g) {
         I result = empty();
         result.add(cf, g);
         return result;
@@ -53,7 +55,7 @@ public abstract class PolyElement<
     /**
      * Creates new PolyElement identical to the given one.
      */
-    private I copy(I p) {
+    private I copy(@NonNull I p) {
         I result = empty();
         result.data.putAll(p.data);
         return result;
@@ -61,7 +63,7 @@ public abstract class PolyElement<
 
 
     @Override
-    public I add(I p) {
+    public I add(@NonNull I p) {
         I result = copy(p);
         for (Pair<F, G> pr : data.values()) {
             result.add(pr.first(), pr.second());
@@ -70,7 +72,7 @@ public abstract class PolyElement<
     }
 
     @SuppressWarnings("WeakerAccess")
-    protected void add(F cf, G g) {
+    protected void add(@NonNull F cf, G g) {
         if (cf.isZero()) {
             return;
         }
@@ -85,7 +87,7 @@ public abstract class PolyElement<
     }
 
     @Override
-    public I multiply(I other) {
+    public I multiply(@NonNull I other) {
         if (other.isZero() || isZero()) {
             return getZero();
         }
@@ -108,7 +110,7 @@ public abstract class PolyElement<
     }
 
     @Override
-    public I multiplyConstant(F cf) {
+    public I multiplyConstant(@NonNull F cf) {
         if (cf.isZero() || this.isZero()) {
             return getZero();
         }
@@ -156,7 +158,7 @@ public abstract class PolyElement<
      * @param g group element to divide on.
      * @return new PolyElement object.
      */
-    I div(G g) {
+    I div(@NonNull G g) {
         I answer = empty();
         for (Pair<F, G> pair : data.values()) {
             answer.add(pair.first(), pair.second().divide(g));
@@ -164,6 +166,7 @@ public abstract class PolyElement<
         return answer;
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

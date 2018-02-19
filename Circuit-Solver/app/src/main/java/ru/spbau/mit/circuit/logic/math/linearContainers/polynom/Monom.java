@@ -12,6 +12,7 @@ class Monom implements OrderedGroup<Monom> {
 
     private final static Monom identity = new Monom(0);
 
+    @NonNull
     public static Monom identity() {
         return identity;
     }
@@ -35,21 +36,25 @@ class Monom implements OrderedGroup<Monom> {
         return power - o.power;
     }
 
+    @NonNull
     @Override
-    public Monom multiply(Monom monom) {
+    public Monom multiply(@NonNull Monom monom) {
         return monom(monom.power + power);
     }
 
+    @NonNull
     @Override
     public Monom reciprocal() {
         throw new UnsupportedOperationException();
     }
 
+    @NonNull
     @Override
     public Monom getIdentity() {
         return identity;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "x^" + String.valueOf(power);

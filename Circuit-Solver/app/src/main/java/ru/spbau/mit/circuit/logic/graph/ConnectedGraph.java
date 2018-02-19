@@ -135,7 +135,6 @@ public class ConnectedGraph {
      * @return constructed linear system.
      */
     @NonNull
-    private LSystem<
     private LinearSystem<
             Numerical,
             FArray<Numerical>> constructSystem() throws InconsistentSystemException {

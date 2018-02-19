@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.QuotElement;
 
@@ -21,11 +23,13 @@ public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction,
         down = PolyFunctions.constant(1);
     }
 
+    @NonNull
     @Override
     protected Function empty() {
         return new Function();
     }
 
+    @NonNull
     @Override
     protected Function single() {
         Function f = new Function();
@@ -33,11 +37,13 @@ public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction,
         return f;
     }
 
+    @NonNull
     @Override
     public Function getZero() {
         return Functions.constant(0);
     }
 
+    @NonNull
     @Override
     public Function getIdentity() {
         return Functions.identity();

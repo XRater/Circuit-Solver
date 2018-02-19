@@ -1,6 +1,8 @@
 package ru.spbau.mit.circuit.logic.math.algebra;
 
 
+import android.support.annotation.NonNull;
+
 /**
  * Simple pair class. Stores two values of any types.
  */
@@ -26,6 +28,7 @@ public class Pair<U, V> {
         return second;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return first + "*" + second;

@@ -64,6 +64,7 @@ class Tasks {
             this.model = model;
         }
 
+        @NonNull
         @Override
         public ResultHolder<Boolean> doInBackground(String... filename) {
             try {
@@ -103,7 +104,7 @@ class Tasks {
 
         @Nullable
         @Override
-        public ResultHolder<Model> doInBackground(String... filename) {
+        public ResultHolder<Model> doInBackground(@NonNull String... filename) {
             if (filename.length != 1) {
                 throw new IllegalArgumentException();
             }
@@ -125,6 +126,7 @@ class Tasks {
             this.converter = converter;
         }
 
+        @NonNull
         @Override
         public ResultHolder<Boolean> doInBackground(String... filename) {
             try {
@@ -138,13 +140,14 @@ class Tasks {
     static class ResultHolder<R> {
 
         private R result;
+        @Nullable
         private StorageException exception = null;
 
         private ResultHolder(R result) {
             this.result = result;
         }
 
-        private ResultHolder(StorageException exception) {
+        private ResultHolder(@Nullable StorageException exception) {
             this.exception = exception;
         }
 
