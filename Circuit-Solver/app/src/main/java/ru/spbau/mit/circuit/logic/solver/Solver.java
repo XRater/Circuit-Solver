@@ -37,6 +37,7 @@ public class Solver {
      * @param systemToSolve system to solve
      * @throws CircuitShortingException if the system expected to has more then one solution
      */
+    @NonNull
     public static ArrayList<Function> solve(LSystem<Numerical, FArray<Numerical>> systemToSolve)
             throws CircuitShortingException {
 
@@ -116,8 +117,8 @@ public class Solver {
      */
 
     @NonNull
-    private static ArrayList<Numerical> getCoefficients(Matrix<Function> matrixExponent,
-                                                        Matrix<Function> constPart)
+    private static ArrayList<Numerical> getCoefficients(@NonNull Matrix<Function> matrixExponent,
+                                                        @NonNull Matrix<Function> constPart)
             throws InconsistentSystemException {
         ArrayList<NumericalVariable> variables = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -154,7 +155,7 @@ public class Solver {
      * @param a matrix to check
      * @return true if matrix is getZero matrix and false otherwise
      */
-    private static boolean isZeroMatrix(RealMatrix a) {
+    private static boolean isZeroMatrix(@NonNull RealMatrix a) {
         for (int i = 0; i < a.getRowDimension(); i++) {
             for (int j = 0; j < a.getRowDimension(); j++) {
                 if (a.getEntry(i, j) != 0) {
@@ -165,7 +166,8 @@ public class Solver {
         return true;
     }
 
-    private static RealVector getRightSideConstants(ArrayList<FArray<Numerical>> solution) {
+    @NonNull
+    private static RealVector getRightSideConstants(@NonNull ArrayList<FArray<Numerical>> solution) {
         int size = solution.get(0).size();
         RealVector vector = new ArrayRealVector(n);
         for (int i = 0; i < n; i++) {
@@ -174,7 +176,8 @@ public class Solver {
         return vector;
     }
 
-    private static RealMatrix getRightSideMatrix(ArrayList<FArray<Numerical>> solution) {
+    @NonNull
+    private static RealMatrix getRightSideMatrix(@NonNull ArrayList<FArray<Numerical>> solution) {
         RealMatrix matrix = new Array2DRowRealMatrix(solution.size(), solution.size());
         for (int i = 0; i < n; i++) {
             FArray<Numerical> right = solution.get(i);

@@ -8,15 +8,6 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
 class Monom implements OrderedGroup<Monom> {
 
     private static final Monom zero = new Monom();
-
-    public static Monom identity() {
-        return identity();
-    }
-
-    public static Monom monom(int n) {
-        return new Monom(n);
-    }
-
     private final int power;
 
     private Monom() {
@@ -25,6 +16,15 @@ class Monom implements OrderedGroup<Monom> {
 
     private Monom(int p) {
         power = p;
+    }
+
+    @NonNull
+    public static Monom identity() {
+        return identity();
+    }
+
+    public static Monom monom(int n) {
+        return new Monom(n);
     }
 
     public int power() {
@@ -36,21 +36,25 @@ class Monom implements OrderedGroup<Monom> {
         return power - o.power;
     }
 
+    @NonNull
     @Override
-    public Monom multiply(Monom monom) {
+    public Monom multiply(@NonNull Monom monom) {
         return monom(monom.power + power);
     }
 
+    @NonNull
     @Override
     public Monom reciprocal() {
         throw new UnsupportedOperationException();
     }
 
+    @NonNull
     @Override
     public Monom getIdentity() {
         return identity();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "x^" + String.valueOf(power);

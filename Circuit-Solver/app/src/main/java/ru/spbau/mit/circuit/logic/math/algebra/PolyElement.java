@@ -1,5 +1,12 @@
 package ru.spbau.mit.circuit.logic.math.algebra;
 
+<<<<<<< HEAD
+=======
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.support.annotation.NonNull;
+
+>>>>>>> 6b82495abf2f455407fd3ea4d0df763b0fbbbdfc
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -37,20 +44,20 @@ public abstract class PolyElement<
      */
     protected abstract I single();
 
-    public I singleton(F cf, G g) {
+    public I singleton(@NonNull F cf, G g) {
         I result = empty();
         result.add(cf, g);
         return result;
     }
 
-    private I copy(I p) {
+    private I copy(@NonNull I p) {
         I result = empty();
         result.data.putAll(p.data);
         return result;
     }
 
     @Override
-    public I add(I p) {
+    public I add(@NonNull I p) {
         I result = copy(p);
         for (Pair<F, G> pr : data.values()) {
             result.add(pr.first, pr.second);
@@ -59,7 +66,7 @@ public abstract class PolyElement<
     }
 
     @SuppressWarnings("WeakerAccess")
-    protected void add(F cf, G g) {
+    protected void add(@NonNull F cf, G g) {
         if (cf.isZero()) {
             return;
         }
@@ -74,7 +81,7 @@ public abstract class PolyElement<
     }
 
     @Override
-    public I multiply(I other) {
+    public I multiply(@NonNull I other) {
         if (other.isZero() || isZero()) {
             return getZero();
         }
@@ -97,7 +104,7 @@ public abstract class PolyElement<
     }
 
     @Override
-    public I multiplyConstant(F cf) {
+    public I multiplyConstant(@NonNull F cf) {
         if (cf.isZero() || this.isZero()) {
             return getZero();
         }
@@ -136,7 +143,7 @@ public abstract class PolyElement<
         return single();
     }
 
-    I div(G g) {
+    I div(@NonNull G g) {
         I answer = empty();
         for (Pair<F, G> pair : data.values()) {
             answer.add(pair.first, pair.second.divide(g));
@@ -144,10 +151,12 @@ public abstract class PolyElement<
         return answer;
     }
 
+    @NonNull
     protected Pair<F, G> pair(F f, G g) {
         return new Pair<>(f, g);
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -162,6 +171,25 @@ public abstract class PolyElement<
         return sb.toString();
     }
 
+<<<<<<< HEAD
+=======
+    public int print(@NonNull Canvas canvas, int x, int y) {
+        Iterator<Pair<F, G>> iter = data.values().iterator();
+        if (iter.hasNext())
+            x += iter.next().print(canvas, x, y);
+        else
+            System.out.println("(((((((((((((((((");
+        Rect textSize = new Rect();
+        while (iter.hasNext()) {
+            ELEMENTS_PAINT.getTextBounds(" + ", 0, " + ".length(), textSize);
+            canvas.drawText(" + ", x, y, ELEMENTS_PAINT);
+            x += textSize.width();
+            x += iter.next().print(canvas, x, y);
+        }
+        return x;
+    }
+
+>>>>>>> 6b82495abf2f455407fd3ea4d0df763b0fbbbdfc
     protected class Pair<U, V> {
 
         private final U first;
@@ -180,9 +208,23 @@ public abstract class PolyElement<
             return second;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return first + "*" + second;
         }
+<<<<<<< HEAD
+=======
+
+        public int print(@NonNull Canvas canvas, int x, int y) {
+            Rect textSize = new Rect();
+            System.out.println(first.toString() + " " + second.toString());
+            ELEMENTS_PAINT.getTextBounds(first.toString(), 0, first.toString().length(), textSize);
+            canvas.drawText(first.toString(), x, y, ELEMENTS_PAINT);
+            x += textSize.width();
+            x += ((PolyExponent) second).print(canvas, x, y);
+            return x;
+        }
+>>>>>>> 6b82495abf2f455407fd3ea4d0df763b0fbbbdfc
     }
 }

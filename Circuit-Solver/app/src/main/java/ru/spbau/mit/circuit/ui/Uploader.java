@@ -9,6 +9,9 @@ import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
+/**
+ * Uploading a circuit to DrawableModel after loading.
+ */
 public class Uploader {
     public static void load(@NonNull DrawableModel drawableModel) {
         Model model = MainActivity.ui.getModel();

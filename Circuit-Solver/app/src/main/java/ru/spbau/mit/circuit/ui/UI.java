@@ -16,6 +16,9 @@ import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.storage.StorageException;
 
+/**
+ * Base class that calls methods of Controller.
+ */
 public class UI {
     private final Controller controller;
     private boolean circuitWasLoaded = false;

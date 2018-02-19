@@ -126,8 +126,7 @@ public class DrawableWire extends Wire implements Drawable {
         }
         Point p = new Point(to().x() / CELL_SIZE, to().y() / CELL_SIZE);
         if (prev[p.x()][p.y()] == null) {
-            // FIXME it must be handled normally
-            // i still dont know how
+            // What if we cant draw a wire?
             return;
         }
         while (!p.equals(start)) {

@@ -18,10 +18,23 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
     @SuppressWarnings("FieldCanBeLocal")
     private static int roundingScale = 14;
 
+<<<<<<< HEAD
     public static double round(double value) {
         value = new BigDecimal(value)
                 .setScale(roundingScale, RoundingMode.HALF_UP).doubleValue();
         return value;
+=======
+    private Numerical(Complex value) {
+        this.value = value;
+    }
+
+    private Numerical(double value) {
+        this.value = new Complex(value);
+    }
+
+    public static Numerical number(double value) {
+        return new Numerical(value);
+>>>>>>> 6b82495abf2f455407fd3ea4d0df763b0fbbbdfc
     }
 
     private final double value;
@@ -33,37 +46,56 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         return new Numerical(value);
     }
 
+    @NonNull
     public static Numerical zero() {
         return zero;
     }
 
+    @NonNull
     public static Numerical identity() {
         return identity;
     }
 
+<<<<<<< HEAD
     private Numerical(double value) {
         this.value = round(value);
     }
 
+=======
+>>>>>>> 6b82495abf2f455407fd3ea4d0df763b0fbbbdfc
     public double value() {
         return value;
     }
 
+    @NonNull
     @Override
+<<<<<<< HEAD
     public Numerical add(Numerical f) {
         return new Numerical(value + f.value);
+=======
+    public Numerical add(@NonNull Numerical f) {
+        return new Numerical(value.add(f.value));
+>>>>>>> 6b82495abf2f455407fd3ea4d0df763b0fbbbdfc
     }
 
+    @NonNull
     @Override
+<<<<<<< HEAD
     public Numerical multiply(Numerical numerical) {
         return new Numerical(value * numerical.value);
+=======
+    public Numerical multiply(@NonNull Numerical numerical) {
+        return new Numerical(value.multiply(numerical.value));
+>>>>>>> 6b82495abf2f455407fd3ea4d0df763b0fbbbdfc
     }
 
+    @NonNull
     @Override
-    public Numerical multiplyConstant(Numerical numerical) {
+    public Numerical multiplyConstant(@NonNull Numerical numerical) {
         return multiply(numerical);
     }
 
+    @NonNull
     @Override
     public Numerical reciprocal() {
         if (!isZero()) {
@@ -72,6 +104,7 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         throw new IllegalInverseException();
     }
 
+    @NonNull
     @Override
     public Numerical negate() {
         return new Numerical(-value);
@@ -87,11 +120,13 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         return isEquals(identity());
     }
 
+    @NonNull
     @Override
     public Numerical getZero() {
         return Numerical.zero();
     }
 
+    @NonNull
     @Override
     public Numerical getIdentity() {
         return Numerical.identity();
@@ -104,8 +139,13 @@ public class Numerical implements Field<Numerical>, Comparable<Numerical> {
         return Double.toString(roundedValue);
     }
 
+<<<<<<< HEAD
     public boolean isEquals(Numerical num) {
         return (Math.abs(value - num.value) < precision);
+=======
+    public boolean isEquals(@NonNull Numerical num) {
+        return Complex.equals(value, num.value, precision);
+>>>>>>> 6b82495abf2f455407fd3ea4d0df763b0fbbbdfc
     }
 
     @Override

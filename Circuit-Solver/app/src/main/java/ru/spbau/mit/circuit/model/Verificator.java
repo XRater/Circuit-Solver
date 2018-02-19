@@ -42,7 +42,7 @@ class Verificator {
      * @param node node to check
      * @return true if node is isolated and false otherwise.
      */
-    boolean isIsolated(Node node) {
+    boolean isIsolated(@NonNull Node node) {
         for (Element element : model.elements()) {
             if (element.adjacent(node)) {
                 return false;

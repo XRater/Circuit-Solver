@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.algebra;
 
+import android.support.annotation.NonNull;
+
 import org.junit.Test;
 
 import ru.spbau.mit.circuit.logic.math.algebra.dummies.DummyOG;
@@ -9,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 
 public class PolyElementTest {
 
+    @NonNull
     private DummyP zero = DummyP.zero();
 
     private DummyP d2_1 = zero.singleton(Numerical.number(2), DummyOG.element(1));

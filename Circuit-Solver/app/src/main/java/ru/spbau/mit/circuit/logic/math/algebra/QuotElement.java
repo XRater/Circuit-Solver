@@ -1,5 +1,7 @@
 package ru.spbau.mit.circuit.logic.math.algebra;
 
+import android.support.annotation.NonNull;
+
 import ru.spbau.mit.circuit.logic.math.algebra.exceptions.IllegalInverseException;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.OrderedGroup;
@@ -35,7 +37,7 @@ public abstract class QuotElement<
     }
 
     @Override
-    public I add(I other) {
+    public I add(@NonNull I other) {
         A nUp = up.multiply(other.down).add(other.up.multiply(down));
         if (nUp.isZero()) {
             return empty();
@@ -44,7 +46,7 @@ public abstract class QuotElement<
     }
 
     @Override
-    public I multiply(I other) {
+    public I multiply(@NonNull I other) {
         A nUp = up.multiply(other.up);
         if (up.isZero()) {
             return empty();
@@ -53,7 +55,7 @@ public abstract class QuotElement<
     }
 
     @Override
-    public I multiplyConstant(F f) {
+    public I multiplyConstant(@NonNull F f) {
         return construct(up.multiplyConstant(f), down);
     }
 
@@ -90,6 +92,7 @@ public abstract class QuotElement<
         return single();
     }
 
+    @NonNull
     @Override
     public String toString() {
         if (isZero()) {

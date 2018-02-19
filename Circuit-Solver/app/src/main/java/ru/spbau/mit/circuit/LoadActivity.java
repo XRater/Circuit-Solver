@@ -12,7 +12,9 @@ import android.widget.Toast;
 import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.storage.StorageException;
 
-
+/**
+ * Class for loading a circuit that was saved before.
+ */
 public class LoadActivity extends Activity {
     private Converter.Mode mode;
 

@@ -4,6 +4,7 @@ package ru.spbau.mit.circuit.logic.math.functions;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -79,14 +80,16 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return mPow - o.mPow;
     }
 
+    @NonNull
     @Override
-    public PolyExponent multiply(PolyExponent f) {
+    public PolyExponent multiply(@Nullable PolyExponent f) {
         if (f != null) {
             return new PolyExponent(mPow + f.mPow, ePow + f.ePow);
         }
         throw new IllegalFunctionTransformationException();
     }
 
+    @NonNull
     @Override
     public PolyExponent reciprocal() {
         return PolyExponent.exponent(-mPow, -ePow);
@@ -97,6 +100,7 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return mPow == 0 && isEquals(ePow, 0);
     }
 
+    @NonNull
     @Override
     public PolyExponent getIdentity() {
         return new PolyExponent(0, 0);
@@ -127,6 +131,7 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return 1;
     }
 
+    @NonNull
     Numerical apply(double x) {
         if (isEquals(x, 0)) {
             if (mPow == 0) {
@@ -140,6 +145,7 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         throw new UnsupportedOperationException();
     }
 
+    @NonNull
     @Override
     public String toString() {
         if (isIdentity()) {
@@ -159,7 +165,7 @@ public class PolyExponent implements OrderedGroup<PolyExponent> {
         return res;
     }
 
-    public int print(Canvas canvas, int x, int y) {
+    public int print(@NonNull Canvas canvas, int x, int y) {
         Rect textSize = new Rect();
         if (isIdentity()) {
             ELEMENTS_PAINT.getTextBounds("1", 0, "1".length(), textSize);
