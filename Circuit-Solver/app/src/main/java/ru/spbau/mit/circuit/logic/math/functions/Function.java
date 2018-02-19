@@ -1,46 +1,31 @@
 package ru.spbau.mit.circuit.logic.math.functions;
 
-import android.graphics.Canvas;
-import android.support.annotation.NonNull;
-
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.algebra.QuotElement;
 
 public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction, Function> {
 
-    // zero / id
-    Function() {
+    /**
+     * Base constructor. Creates zero / id function.
+     */
+    private Function() {
         up = PolyFunctions.zero().empty();
         down = PolyFunctions.zero().single();
     }
 
+    /**
+     * Constructs function of PolyFunction.
+     */
     Function(PolyFunction f) {
         up = f;
         down = PolyFunctions.constant(1);
     }
 
-    public PolyFunction getUp() {
-        return up;
-    }
-
-    public PolyFunction getDown() {
-        return down;
-    }
-
-    public int print(@NonNull Canvas canvas, int x, int y) {
-        if (!down.isIdentity()) {
-            throw new UnsupportedOperationException();
-        }
-        return up.print(canvas, x, y);
-    }
-
-    @NonNull
     @Override
     protected Function empty() {
         return new Function();
     }
 
-    @NonNull
     @Override
     protected Function single() {
         Function f = new Function();
@@ -48,13 +33,11 @@ public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction,
         return f;
     }
 
-    @NonNull
     @Override
     public Function getZero() {
         return Functions.constant(0);
     }
 
-    @NonNull
     @Override
     public Function getIdentity() {
         return Functions.identity();
@@ -78,7 +61,6 @@ public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction,
         return PolyExponent.identity();
     }
 
-
     public Function integrate() {
         if (!down.isIdentity()) {
             throw new IllegalArgumentException();
@@ -94,14 +76,13 @@ public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction,
         throw new UnsupportedOperationException();
     }
 
-
     /**
      * Evaluates function in point
      *
      * @param x point to evaluate in.
      * @return result, represented as Numerical object
      */
-//    @SuppressWarnings("SameParameterValue")
+    @SuppressWarnings("SameParameterValue")
     public Numerical apply(double x) {
         return up.apply(x).divide(down.apply(x));
     }

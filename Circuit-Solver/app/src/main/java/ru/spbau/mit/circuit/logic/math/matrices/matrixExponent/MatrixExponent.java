@@ -28,6 +28,7 @@ import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
 public class MatrixExponent {
 
     private static final Function functionZero = Functions.zero();
+    @SuppressWarnings("FieldCanBeLocal")
     private static int roundingScale = 2;
 
     public static Matrix<Function> matrixExponent(@NonNull RealMatrix matrix) {
@@ -54,8 +55,6 @@ public class MatrixExponent {
 
         // initializes multiply coefficient
         Polynom<Function> coefficient = Polynoms.constant(Functions.constant(1));
-//        new Polynom<>(functionZero,
-//                Collections.singletonList(Functions.constant(1)));
 
         // initializes subtractColumn
         SubtractColumn subtractColumn = new SubtractColumn(rootList);
@@ -64,14 +63,9 @@ public class MatrixExponent {
         for (int i = 0; i < rootList.size(); i++) {
             ans = ans.add(coefficient.multiply(
                     Polynoms.constant(subtractColumn.first())));
-//                    new Polynom<>(functionZero,
-//                            Collections.singletonList(subtractColumn.first()))));
             subtractColumn.next();
             coefficient = coefficient.multiply(
                     Polynoms.linearWithConstant(Functions.constant(-rootList.get(i).getReal())));
-//                    new Polynom<>(functionZero,
-//                    Arrays.asList(Functions.constant(
-//                            -rootList.get(i).getReal()), Functions.constant(1))));
         }
 
         return ans;

@@ -12,7 +12,7 @@ import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
-import ru.spbau.mit.circuit.logic.math.linearSystems.LSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
 import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 import ru.spbau.mit.circuit.logic.math.variables.Derivative;
 import ru.spbau.mit.circuit.logic.math.variables.Numerator;
@@ -28,6 +28,7 @@ public class ConnectedGraph {
     private final Collection<Derivative> variables = new ArrayList<>();
     @SuppressWarnings("unused")
     private int verticesNumber = 0; // number of vertices
+    @SuppressWarnings("unused")
     private int edgesNumber = 0; // number of edges
     @NonNull
     private LinkedHashSet<Vertex> vertices = new LinkedHashSet<>();
@@ -98,9 +99,7 @@ public class ConnectedGraph {
      */
     public void solve() throws CircuitShortingException {
         findCycles();
-        LSystem<
-                Numerical,
-                FArray<Numerical>> system = null;
+        LinearSystem<Numerical, FArray<Numerical>> system;
         try {
             system = constructSystem();
         } catch (InconsistentSystemException e) {
@@ -137,10 +136,11 @@ public class ConnectedGraph {
      */
     @NonNull
     private LSystem<
+    private LinearSystem<
             Numerical,
             FArray<Numerical>> constructSystem() throws InconsistentSystemException {
 
-        LSystem<Numerical, FArray<Numerical>> system = new LSystem<>(
+        LinearSystem<Numerical, FArray<Numerical>> system = new LinearSystem<>(
                 variables.size(), Numerical.zero(), FArray.array(variables.size() + 1, Numerical
                 .zero()));
 

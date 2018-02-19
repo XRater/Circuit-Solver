@@ -4,6 +4,10 @@ import android.support.annotation.NonNull;
 
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 
+/**
+ * Fabricity class for polynom class.
+ */
+@SuppressWarnings("WeakerAccess")
 public class Polynoms {
 
     public static <C extends Field<C>> Polynom<C> zero(@NonNull C zero) {

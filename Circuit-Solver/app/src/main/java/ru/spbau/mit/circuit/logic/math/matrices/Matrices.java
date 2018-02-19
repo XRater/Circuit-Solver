@@ -9,7 +9,6 @@ import org.apache.commons.math3.linear.RealVector;
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.functions.Functions;
-import ru.spbau.mit.circuit.logic.math.linearContainers.polynom.Polynom;
 
 /**
  * Class to create different kinds of matrices.
@@ -91,13 +90,5 @@ public class Matrices {
             }
         }
         return answer;
-    }
-
-    /**
-     * This method was created to speed up apply method of polynom, but it did not work well yet.
-     */
-    @Deprecated
-    public static Matrix<Function> applyInPolynom(RealMatrix matrix, Polynom<Function> polynom) {
-        return null;
     }
 }

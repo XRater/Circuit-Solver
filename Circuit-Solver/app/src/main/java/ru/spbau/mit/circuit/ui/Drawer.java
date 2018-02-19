@@ -116,9 +116,9 @@ public class Drawer {
         for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
             Function current = e.getCurrent();
-            System.out.println(current);
             Rect textSize = new Rect();
-            ELEMENTS_PAINT.getTextBounds(current.toString(), 0, current.toString().length(), textSize);
+            ELEMENTS_PAINT.getTextBounds(current.toString(), 0, current.toString().length(),
+                    textSize);
             canvas.save();
             if (e.isVertical()) {
                 canvas.translate(e.x() + Drawer.getOffsetX(), e.y() + Drawer.getOffsetY());

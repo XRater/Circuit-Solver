@@ -1,7 +1,5 @@
 package ru.spbau.mit.circuit.logic.math.matrices;
 
-import android.support.annotation.NonNull;
-
 import java.lang.reflect.Array;
 
 import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Algebra;
@@ -14,14 +12,22 @@ import ru.spbau.mit.circuit.logic.math.algebra.interfaces.Field;
  */
 public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
 
-    @NonNull
     private final F[][] data;
     private final int n;
     private final int m;
-    @NonNull
     private final F zero;
 
-    private Matrix(int n, int m, @NonNull F zero) {
+    @SuppressWarnings("WeakerAccess")
+    public static <F extends Field<F>> Matrix<F> matrix(int n, int m, F zero) {
+        return new Matrix<>(n, m, zero.getZero());
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public static <F extends Field<F>> Matrix<F> squareMatrix(int n, F zero) {
+        return new Matrix<>(n, n, zero.getZero());
+    }
+
+    private Matrix(int n, int m, F zero) {
         this.zero = zero;
         this.n = n;
         this.m = m;
@@ -32,14 +38,6 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
                 data[i][j] = zero.getZero();
             }
         }
-    }
-
-    public static <F extends Field<F>> Matrix<F> matrix(int n, int m, @NonNull F zero) {
-        return new Matrix<>(n, m, zero.getZero());
-    }
-
-    public static <F extends Field<F>> Matrix<F> squareMatrix(int n, @NonNull F zero) {
-        return new Matrix<>(n, n, zero.getZero());
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -67,13 +65,11 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
         return data[i][j];
     }
 
-    @NonNull
     @Override
     public Matrix<F> getZero() {
         return new Matrix<>(n, m, zero);
     }
 
-    @NonNull
     public Matrix<F> getZero(int sz) {
         return new Matrix<>(sz, sz, zero);
     }
@@ -90,9 +86,8 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
         return Matrices.identityMatix(sz, zero);
     }
 
-    @NonNull
     @Override
-    public Matrix<F> add(@NonNull Matrix<F> matrix) {
+    public Matrix<F> add(Matrix<F> matrix) {
         if (n != matrix.n || m != matrix.m) {
             throw new IllegalArgumentException();
         }
@@ -105,9 +100,8 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
         return ans;
     }
 
-    @NonNull
     @Override
-    public Matrix<F> multiply(@NonNull Matrix<F> matrix) {
+    public Matrix<F> multiply(Matrix<F> matrix) {
         if (m != matrix.n) {
             throw new IllegalArgumentException();
         }
@@ -123,13 +117,11 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
         return ans;
     }
 
-    @NonNull
     @Override
     public Matrix<F> negate() {
         return this.multiplyConstant(zero.getIdentity().negate());
     }
 
-    @NonNull
     @Override
     public Matrix<F> reciprocal() {
         throw new UnsupportedOperationException();
@@ -168,7 +160,6 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
         return true;
     }
 
-    @NonNull
     @Override
     public Matrix<F> multiplyConstant(F f) {
         Matrix<F> ans = matrix(n, m, zero);
@@ -180,7 +171,6 @@ public class Matrix<F extends Field<F>> implements Algebra<F, Matrix<F>> {
         return ans;
     }
 
-    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

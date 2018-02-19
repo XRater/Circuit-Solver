@@ -20,6 +20,7 @@ public class FunctionVariable extends Variable<Function> {
         super(name);
     }
 
+    @SuppressWarnings("unused")
     public Numerical initialValue() {
         return initialValue;
     }
