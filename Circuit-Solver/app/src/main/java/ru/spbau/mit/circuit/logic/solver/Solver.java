@@ -170,9 +170,6 @@ public class Solver {
             FArray<Numerical> right = solution.get(i);
             for (int j = 0; j < n; j++) {
                 matrix.setEntry(i, j, right.get(j).value());
-                //                Derivative derivative = system.get(i).coefficients().valueAt(j);
-//                Numerical c = right.get(derivative.parent());
-//                matrix.setEntry(i, j, c == null ? 0 : c.value());
             }
         }
         return matrix;
