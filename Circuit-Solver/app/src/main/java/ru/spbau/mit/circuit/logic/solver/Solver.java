@@ -153,8 +153,8 @@ public class Solver {
     }
 
     @NonNull
-    private static RealVector getRightSideConstants(@NonNull ArrayList<FArray<Numerical>>
-                                                                solution) {
+    private static RealVector getRightSideConstants(
+            @NonNull ArrayList<FArray<Numerical>> solution) {
         int size = solution.get(0).size();
         RealVector vector = new ArrayRealVector(n);
         for (int i = 0; i < n; i++) {
