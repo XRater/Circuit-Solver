@@ -23,7 +23,7 @@ public class Converter {
 
     public Converter(@NonNull Activity activity) {
         storageList.add(new Local(activity));
-        storageList.add(new DriveStorage(activity));
+//        storageList.add(new DriveStorage(activity));
     }
 
     private Storage getStorage(Mode mode) {
