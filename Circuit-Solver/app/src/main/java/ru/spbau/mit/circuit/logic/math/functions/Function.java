@@ -75,7 +75,6 @@ public class Function extends QuotElement<Numerical, PolyExponent, PolyFunction,
     }
 
     public Function differentiate() {
-        System.out.println(this);
         if (down.isIdentity()) {
             return construct(up.differentiate(), down);
         }

@@ -81,7 +81,6 @@ class Verificator {
         Set<Node> visited = new HashSet<>();
         while (!queue.isEmpty()) {
             Node node = queue.poll();
-            System.out.println(node);
             if (visited.contains(node)) {
                 continue;
             }
@@ -90,7 +89,6 @@ class Verificator {
                 return true;
             }
             for (Wire wire : node.wires()) {
-                System.out.println(wire);
                 queue.add(wire.opposite(node));
             }
         }
