@@ -121,7 +121,8 @@ public class Model implements Serializable {
      * @param toBeDeleted list to remove at first
      * @param toBeAdded   list to add after
      */
-    public void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject> toBeAdded)
+    public void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull
+            List<CircuitObject> toBeAdded)
             throws NodesAreAlreadyConnected {
         List<CircuitObject> deleted = new LinkedList<>();
         List<CircuitObject> added = new LinkedList<>();
@@ -248,7 +249,9 @@ public class Model implements Serializable {
 
             first.replace(from, to);
             removeOne(second);
-            removeOne(common);
+            if (nodes.contains(common) || common == null) {
+                throw new RuntimeException(); // should never happen
+            }
 
             controller.deleteUnnecessaryNode(common, first, second);
 
