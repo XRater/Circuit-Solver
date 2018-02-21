@@ -3,7 +3,7 @@ package ru.spbau.mit.circuit.logic.math.functions;
 import android.support.annotation.NonNull;
 
 /**
- * Fabricity class for functions.
+ * Factory class for functions.
  */
 @SuppressWarnings("unused")
 public class Functions {

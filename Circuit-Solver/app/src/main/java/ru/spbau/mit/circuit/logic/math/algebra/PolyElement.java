@@ -146,6 +146,7 @@ public abstract class PolyElement<
     }
 
     /**
+     * Сhecks that PolyElement contains only one monom.
      * @return true if PolyElement contains only one monom and false otherwise.
      */
     public boolean isSingle() {

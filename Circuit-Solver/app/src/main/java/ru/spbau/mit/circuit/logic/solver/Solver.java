@@ -41,14 +41,9 @@ public class Solver {
             throws CircuitShortingException {
 
         n = systemToSolve.variablesNumber();
-        System.out.println(systemToSolve);
 
         // Solve initial system
         ArrayList<FArray<Numerical>> solution = systemToSolve.getSolution();
-
-        for (int i = 0; i < solution.size(); i++) {
-            System.out.println(solution.get(i));
-        }
 
         RealMatrix A = getRightSideMatrix(solution);
         RealVector constants = getRightSideConstants(solution);
@@ -59,18 +54,11 @@ public class Solver {
             for (int i = 0; i < n; i++) {
                 answer.add(Functions.constant(constants.getEntry(i)).integrate());
             }
-            for (int i = 0; i < answer.size(); i++) {
-                System.out.println(answer.get(i));
-            }
             return answer;
         }
 
-//        throw new RuntimeException();
-
         // Evaluate general solution
         Matrix<Function> matrixExponent = MatrixExponent.matrixExponent(A);
-
-        System.out.println(matrixExponent);
 
         // Evaluate particle solution
         Matrix<Function> underIntegralMatrix = MatrixExponent.matrixExponent(A.scalarMultiply(-1))

@@ -4,7 +4,6 @@ package ru.spbau.mit.circuit.logic.math.matrices.matrixExponent;
 import android.support.annotation.NonNull;
 
 import org.apache.commons.math3.complex.Complex;
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 
@@ -102,19 +101,4 @@ public class MatrixExponent {
                 .setScale(roundingScale, RoundingMode.HALF_UP).doubleValue();
         return new Complex(realPart, imaginaryPart);
     }
-
-    public static void main(String[] args) {
-        RealMatrix matrix = new Array2DRowRealMatrix(3, 3);
-        matrix.setEntry(0, 0, -1);
-        matrix.setEntry(0, 1, 0);
-        matrix.setEntry(0, 2, 1);
-        matrix.setEntry(1, 0, 1);
-        matrix.setEntry(1, 1, 0);
-        matrix.setEntry(1, 2, -1);
-        matrix.setEntry(2, 0, -1);
-        matrix.setEntry(2, 1, 0);
-        matrix.setEntry(2, 2, 1);
-        System.out.println(matrixExponent(matrix));
-    }
-
 }
