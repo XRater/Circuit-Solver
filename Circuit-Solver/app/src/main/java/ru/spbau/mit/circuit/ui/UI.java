@@ -68,6 +68,14 @@ public class UI {
         drawableModel.deleteUnnecessaryNode(common, first, second);
     }
 
+    public void deleteUnnecessaryNode(@NonNull Node node, Wire wire) {
+        drawableModel.deleteUnnecessaryNode(node, wire);
+    }
+
+    public void deleteUnnecessaryNode(@NonNull Node common) {
+        drawableModel.deleteUnnecessaryNode(common);
+    }
+
     public boolean save(Converter.Mode mode, String name) throws StorageException {
         return controller.save(mode, name);
     }

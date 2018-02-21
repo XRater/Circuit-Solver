@@ -169,7 +169,8 @@ public class DrawableModel {
 
     /**
      * Checking if an element can be centered in point.
-     * @param point new center.
+     *
+     * @param point   new center.
      * @param element element that is moved.
      * @return true if can move.
      */
@@ -265,6 +266,9 @@ public class DrawableModel {
         if (drawable instanceof Wire) {
             drawableWires.remove((DrawableWire) drawable);
             deleteOldWirePosition((DrawableWire) drawable);
+        }
+        if (drawable instanceof Node) {
+            field.remove(((Node) drawable).position());
         }
     }
 
@@ -373,7 +377,8 @@ public class DrawableModel {
                 toBeDeleted.add(wire);
             }
 
-            DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node, drawableWires);
+            DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node,
+                    drawableWires);
             DrawableWire newWire2 = new DrawableWire((DrawableNode) wire.to(), node, drawableWires);
 
             toBeAdded.add(newWire1);
@@ -512,6 +517,24 @@ public class DrawableModel {
 
         realNodes.remove(common);
         DrawableWire.mergePath(del1, del2, common);
+        redraw();
+    }
+
+    void deleteUnnecessaryNode(@NonNull Node node, Wire wire) {
+        drawableWires.remove(wire);
+        realNodes.remove(node);
+
+        deleteOldObjectPosition((Drawable) node);
+        deleteOldObjectPosition((Drawable) wire);
+
+        redraw();
+    }
+
+
+    void deleteUnnecessaryNode(@NonNull Node node) {
+        //noinspection SuspiciousMethodCalls
+        realNodes.remove(node);
+        field.remove(node.position());
         redraw();
     }
 

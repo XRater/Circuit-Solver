@@ -59,7 +59,7 @@ class Verificator {
     @Nullable
     Node findUnnecessaryNode() {
         for (Node node : model.nodes()) {
-            if (node.wires().size() != 2) {
+            if (node.wires().size() > 2) {
                 continue;
             }
             boolean elementEnd = false;

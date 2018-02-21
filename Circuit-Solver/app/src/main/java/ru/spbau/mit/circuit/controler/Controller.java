@@ -79,7 +79,8 @@ public class Controller {
         model.removeAll(objects);
     }
 
-    public void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject> toBeAdded)
+    public void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull
+            List<CircuitObject> toBeAdded)
             throws NodesAreAlreadyConnected {
         model.removeThenAdd(toBeDeleted, toBeAdded);
     }
@@ -90,6 +91,14 @@ public class Controller {
 
     public void deleteUnnecessaryNode(@NonNull Node common, Wire first, Wire second) {
         ui.deleteUnnecessaryNode(common, first, second);
+    }
+
+    public void deleteUnnecessaryNode(@NonNull Node node, Wire wire) {
+        ui.deleteUnnecessaryNode(node, wire);
+    }
+
+    public void deleteUnnecessaryNode(@NonNull Node node) {
+        ui.deleteUnnecessaryNode(node);
     }
 
     public boolean save(Converter.Mode mode, String filename) throws StorageException {

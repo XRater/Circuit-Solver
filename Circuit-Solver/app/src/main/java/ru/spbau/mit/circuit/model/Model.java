@@ -188,7 +188,7 @@ public class Model implements Serializable {
     }
 
     /**
-     * Inner add method. Model might be incorrect after this method.
+     * Inner remove method. Model might be incorrect after this method.
      */
     private void removeOne(CircuitObject object) {
         if (object instanceof Node) {
@@ -215,12 +215,6 @@ public class Model implements Serializable {
             }
             wire.to().deleteWire(wire);
             wire.from().deleteWire(wire);
-            if (verificator.isIsolated(wire.from())) {
-                remove(wire.from());
-            }
-            if (verificator.isIsolated(wire.to())) {
-                remove(wire.to());
-            }
             wires.remove(object);
         } else {
             throw new IllegalArgumentException();
@@ -234,6 +228,25 @@ public class Model implements Serializable {
     private void clearNodes() {
         Node node = verificator.findUnnecessaryNode();
         while (node != null) {
+
+            if (node.wires().size() == 0) {
+                removeOne(node);
+                controller.deleteUnnecessaryNode(node);
+
+                node = verificator.findUnnecessaryNode();
+                continue;
+            }
+
+            if (node.wires().size() == 1) {
+                Wire wire = node.wires().iterator().next();
+                controller.deleteUnnecessaryNode(node, wire);
+
+                removeOne(wire);
+                removeOne(node);
+
+                node = verificator.findUnnecessaryNode();
+                continue;
+            }
 
             Iterator<Wire> iter = node.wires().iterator();
             Wire first = iter.next();
@@ -249,9 +262,7 @@ public class Model implements Serializable {
 
             first.replace(from, to);
             removeOne(second);
-            if (nodes.contains(common) || common == null) {
-                throw new RuntimeException(); // should never happen
-            }
+            removeOne(common);
 
             controller.deleteUnnecessaryNode(common, first, second);
 
