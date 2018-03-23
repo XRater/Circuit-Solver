@@ -14,25 +14,24 @@
         android:orientation="vertical">
 
         <Button
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:onClick="onNewCircuit"
             android:text="New Circuit"
-            android:textColorLink="@color/colorPrimaryDark" />
+            android:textColorLink="@color/colorPrimaryDark"
+            android:textSize="24sp" />
 
         <Button
+            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:onClick="onLoadCircuit"
-            android:text="Load Circuit" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onSettings"
-            android:text="Settings" />
-
-
+            android:text="Load Circuit"
+            android:textColorLink="@color/colorPrimaryDark"
+            android:textSize="24sp" />
     </LinearLayout>
 
 </RelativeLayout>

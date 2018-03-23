@@ -1,53 +1,55 @@
 package ru.spbau.mit.circuit.ui.DrawableElements;
 
-import ru.spbau.mit.circuit.model.elements.Capacitor;
-import ru.spbau.mit.circuit.model.point.Point;
-import ru.spbau.mit.circuit.ui.Drawer;
-import ru.spbau.mit.circuit.ui.MyCanvas;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.support.annotation.NonNull;
 
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Capacitor;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
+import ru.spbau.mit.circuit.ui.DrawableNode;
+import ru.spbau.mit.circuit.ui.Drawer;
+
+import static ru.spbau.mit.circuit.ui.Drawer.CELL_SIZE;
+import static ru.spbau.mit.circuit.ui.Drawer.NODE_RADIUS;
+import static ru.spbau.mit.circuit.ui.Drawer.WIRE_PAINT;
 
 public class DrawableCapacitor extends Capacitor implements Drawable {
-    private int x;
-    private int y;
 
-    protected DrawableCapacitor(Point from, Point to) {
+    protected DrawableCapacitor(@NonNull DrawableNode from, @NonNull DrawableNode to) {
         super(from, to);
     }
 
-    public DrawableCapacitor(Point center) {
-        super(new Point(center.x() - 2 * Drawer.CELL_SIZE, center.y()),
-                new Point(center.x() + 2 * Drawer.CELL_SIZE, center.y()));
-        x = center.x();
-        y = center.y();
+    public DrawableCapacitor(@NonNull Point center) {
+        super(new DrawableNode(center.x() - 2 * Drawer.CELL_SIZE, center.y()),
+                new DrawableNode(center.x() + 2 * Drawer.CELL_SIZE, center.y()));
     }
 
     @Override
-    public void draw(MyCanvas canvas) {
-        canvas.drawLine(x - Drawer.CELL_SIZE * 2, y, x - Drawer.CELL_SIZE / 2, y, Drawer
-                .elementsPaint);
-        canvas.drawLine(x + Drawer.CELL_SIZE * 2, y, x + Drawer.CELL_SIZE / 2, y, Drawer
-                .elementsPaint);
-        canvas.drawLine(x - Drawer.CELL_SIZE / 2, y - Drawer.CELL_SIZE * 3 / 4, x - Drawer.CELL_SIZE
-                / 2, y + Drawer.CELL_SIZE * 3 / 4, Drawer.elementsPaint);
-        canvas.drawLine(x + Drawer.CELL_SIZE / 2, y - Drawer.CELL_SIZE * 3 / 4, x + Drawer.CELL_SIZE
-                / 2, y + Drawer.CELL_SIZE * 3 / 4, Drawer.elementsPaint);
-    }
+    public void draw(@NonNull Canvas canvas) {
+        String capacity = String.format("%.2f", getCharacteristicValue()) + "F";
+        Rect capacitySize = new Rect();
+        Drawer.ELEMENTS_PAINT.getTextBounds(capacity, 0, capacity.length(), capacitySize);
 
-    @Override
-    public int x() {
-        return x;
-    }
+        canvas.save();
+        if (!isHorizontal()) {
+            canvas.translate(x() + Drawer.getOffsetX(), y() + Drawer.getOffsetY());
+            canvas.rotate(90);
+            canvas.translate(-x() - Drawer.getOffsetX(), -y() - Drawer.getOffsetY());
+        }
 
-    @Override
-    public int y() {
-        return y;
-    }
+        canvas.drawLine(x() - CELL_SIZE * 2, y(), x() - CELL_SIZE / 4, y(),
+                Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() + Drawer.CELL_SIZE * 2, y(), x() + Drawer.CELL_SIZE / 4, y(),
+                Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() - Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4,
+                x() - Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
+        canvas.drawLine(x() + Drawer.CELL_SIZE / 4, y() - Drawer.CELL_SIZE * 3 / 4,
+                x() + Drawer.CELL_SIZE / 4, y() + Drawer.CELL_SIZE * 3 / 4, Drawer.ELEMENTS_PAINT);
 
-    @Override
-    public void updatePosition(int nx, int ny) {
-        x = nx;
-        y = ny;
-        this.setPosition(new Point(nx - 2 * Drawer.CELL_SIZE, ny), new Point(nx + 2 * Drawer
-                .CELL_SIZE, ny));
+        canvas.drawText(capacity, x() - capacitySize.width() / 2, y() + CELL_SIZE / 4 * 5, Drawer.ELEMENTS_PAINT);
+
+        canvas.restore();
+        canvas.drawCircle(from.x(), from.y(), NODE_RADIUS, WIRE_PAINT);
+        canvas.drawCircle(to.x(), to.y(), NODE_RADIUS, WIRE_PAINT);
     }
 }

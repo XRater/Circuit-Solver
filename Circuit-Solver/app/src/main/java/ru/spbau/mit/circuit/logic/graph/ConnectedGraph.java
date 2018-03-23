@@ -1,73 +1,72 @@
 package ru.spbau.mit.circuit.logic.graph;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.DecompositionSolver;
-import org.apache.commons.math3.linear.LUDecomposition;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-import org.apache.commons.math3.linear.SingularMatrixException;
+
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
+import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.functions.Function;
+import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
+import ru.spbau.mit.circuit.logic.math.variables.Derivative;
+import ru.spbau.mit.circuit.logic.math.variables.Numerator;
+import ru.spbau.mit.circuit.logic.solver.Solver;
 
+/**
+ * Connected graph with known tree structure.
+ */
 public class ConnectedGraph {
 
-    private final Node root;
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
+    private final Vertex root; // root of the graph
+    private final Collection<Derivative> variables = new ArrayList<>();
+    @SuppressWarnings("unused")
+    private int verticesNumber = 0; // number of vertices
+    @SuppressWarnings("unused")
+    private int edgesNumber = 0; // number of edges
+    @NonNull
+    private LinkedHashSet<Vertex> vertices = new LinkedHashSet<>();
+    @NonNull
+    private List<Edge> edges = new ArrayList<>();
+    @NonNull
+    private List<Cycle> cycles = new ArrayList<>(); // Base system of cycles
 
-    private int n = 0;
-    private int m = 0;
-
-    private Set<Node> nodes = new HashSet<>();
-    private ArrayList<Edge> edges = new ArrayList<>();
-
-    private ArrayList<Cycle> cycles = new ArrayList<>();
-
-    private RealVector solution;
-
-    ConnectedGraph(Node root) {
+    /**
+     * Creates connected graph from the root. Graph will contain only one vertex and zero edges.
+     */
+    ConnectedGraph(Vertex root) {
+        Numerator.refresh();
         this.root = root;
-        n++;
+        verticesNumber++;
     }
 
-    public void solve() throws CircuitShortingException {
-        findCycles();
-        RealMatrix system = constructSystem();
-        RealVector voltages = constructAnswer();
-        System.out.println(voltages);
-
-        DecompositionSolver solver = null;
-        try {
-            solver = new LUDecomposition(system).getSolver();
-            solution = solver.solve(voltages);
-        } catch (SingularMatrixException e) {
-            throw new CircuitShortingException();
-        }
-        //solution = solver.solve(voltages);
-
-        System.out.println(solution);
-    }
-
-    public void setCurrents() {
-        for (int i = 0; i < edges.size(); i++) {
-            edges.get(i).setCurrent(solution.getEntry(i));
-        }
-    }
-
-    void add(Node u, Edge edge) {
-        nodes.add(u);
+    /**
+     * Adds new vertex and new edge. Edge must be adjacent to vertex, edge will be added to tree
+     * structure.
+     *
+     * @param u    new vertex
+     * @param edge new edge
+     */
+    void add(Vertex u, @NonNull Edge edge) {
+        vertices.add(u);
         edge.addToTree();
         addEdge(edge);
-        n++;
+        verticesNumber++;
     }
 
+    /**
+     * Adds all edges adjacent to graph vertices to the graph. Added edges will not be in tree
+     * structure.
+     */
     void addEdges() {
-        for (Node node : nodes) {
-            for (Edge edge : node.getEdges()) {
+        for (Vertex vertex : vertices) {
+            for (Edge edge : vertex.getEdges()) {
                 if (edge.index() == -1) {
                     addEdge(edge);
                 }
@@ -75,46 +74,107 @@ public class ConnectedGraph {
         }
     }
 
+
+    /**
+     * Adds one edge to the graph. Edge will not be in tree structure.
+     * <p>
+     * Edge must be not added to the graph yet (edge must have index equals to -1).
+     *
+     * @param edge edge to add.
+     */
+    private void addEdge(@NonNull Edge edge) {
+        if (edge.index() != -1) {
+            throw new IllegalArgumentException();
+        }
+        variables.add(edge.current());
+        edge.setIndex(edges.size());
+        edges.add(edge);
+        edgesNumber++;
+    }
+
+    /**
+     * Finds charges and currents for every model item, and sets found values.
+     *
+     * @throws CircuitShortingException if circuit had cycle.
+     */
+    public void solve() throws CircuitShortingException {
+        findCycles();
+        LinearSystem<Numerical, FArray<Numerical>> system;
+        try {
+            system = constructSystem();
+        } catch (InconsistentSystemException e) {
+            throw new CircuitShortingException();
+        }
+        ArrayList<Function> solution = Solver.solve(system);
+        setCurrents(solution);
+    }
+
+    private void setCurrents(@NonNull ArrayList<Function> solution) {
+        for (Edge edge : edges) {
+            edge.charge().setValue(solution.get(edge.index()));
+            edge.current().setValue();
+            edge.updateCurrent();
+        }
+    }
+
+    /**
+     * The method finds base cycle system of the graph.
+     */
     private void findCycles() {
         for (Edge edge : edges) {
             if (!edge.isInTree()) {
                 Cycle cycle = getCycle(edge);
-                System.out.println(cycle);
                 cycles.add(cycle);
             }
         }
     }
 
-    private RealMatrix constructSystem() {
-        RealMatrix system = new Array2DRowRealMatrix(m, m);
-        int index = 0;
-        for (Node node : nodes) {
-            system.setRowVector(index++, node.getEquation(m));
+    /**
+     * The method constructs linear system of the graph, corresponding to the Om's laws.
+     *
+     * @return constructed linear system.
+     */
+    @NonNull
+    private LinearSystem<
+            Numerical,
+            FArray<Numerical>> constructSystem() throws InconsistentSystemException {
+
+        LinearSystem<Numerical, FArray<Numerical>> system = new LinearSystem<>(
+                variables.size(), Numerical.zero(), FArray.array(variables.size() + 1, Numerical
+                .zero()));
+
+        for (Vertex node : vertices) {
+            node.addEquation(system);
         }
         for (Cycle cycle : cycles) {
-            system.setRowVector(index++, cycle.getEquation(m));
+            cycle.addEquation(system);
         }
-        for (int i = 0; i < m; i++) {
-            System.out.println(Arrays.toString(system.getRow(i)));
-        }
+
         return system;
     }
 
-    private RealVector constructAnswer() {
-        RealVector answer = new ArrayRealVector(m);
-        for (int i = 0; i <= m - n; i++) {
-            answer.setEntry(i + n - 1, cycles.get(i).getVoltage());
+    /**
+     * The method finds cycle through the given edge. Edge must be not in the tree structure.
+     *
+     * @param edge edge to find cycle through.
+     */
+    private Cycle getCycle(@NonNull Edge edge) {
+        if (edge.isInTree()) {
+            throw new IllegalArgumentException();
         }
-        return answer;
-    }
-
-    private Cycle getCycle(Edge edge) {
         Path path = new Path();
         findPath(path, edge.from(), edge.to());
         return new Cycle(path, edge);
     }
 
-    private boolean findPath(Path path, Node from, Node to) {
+    /**
+     * The method finds path from the begin vertex to the to vertex.
+     * <p>
+     * Found path will have edges only from tree structure. Path will be stored on path argument.
+     *
+     * @return true if path was found and false otherwise.
+     */
+    private boolean findPath(@NonNull Path path, @NonNull Vertex from, Vertex to) {
         if (from.equals(to)) {
             return true;
         }
@@ -130,18 +190,14 @@ public class ConnectedGraph {
         return false;
     }
 
-    private void addEdge(Edge edge) {
-        edge.setIndex(edges.size());
-        edges.add(edge);
-        m++;
-    }
-
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (Edge edge : edges) {
             sb.append(edge.toString()).append("\n");
         }
+        sb.append("Variables ").append(variables.toString()).append("\n");
         return sb.toString();
     }
 }

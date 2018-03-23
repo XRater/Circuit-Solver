@@ -1,41 +1,64 @@
 package ru.spbau.mit.circuit.logic.graph;
 
+import android.support.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import ru.spbau.mit.circuit.model.Model;
-import ru.spbau.mit.circuit.model.elements.Element;
-import ru.spbau.mit.circuit.model.point.Point;
+import ru.spbau.mit.circuit.model.circuitObjects.Item;
+import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
+import ru.spbau.mit.circuit.model.circuitObjects.nodes.Node;
+import ru.spbau.mit.circuit.model.circuitObjects.wires.Wire;
 
+/**
+ * Graph representation of model. May contain more than one component.
+ */
 public class Graph {
 
-    private HashMap<Point, VisitableNode> nodes = new HashMap<>();
+    // Vertexes of graph. Every vertex knows all adjacent edges.
+    @NonNull
+    private Map<Node, VisitableVertex> vertices = new HashMap<>();
 
-    public Graph(Model model) {
-
-        int number = 0; //FOR DEBUG
-        for (Element element : model.getElements()) {
-            if (!nodes.containsKey(element.getFrom())) {
-                System.out.println(element.getFrom().toString() + " " + number);
-                VisitableNode node = new VisitableNode(number++);
-                nodes.put(element.getFrom(), node);
-            }
-            if (!nodes.containsKey(element.getTo())) {
-                System.out.println(element.getTo().toString() + " " + number);
-                VisitableNode node = new VisitableNode(number++);
-                nodes.put(element.getTo(), node);
-            }
+    /**
+     * Constructs graph from the model object. Every element and wire will become edges,
+     * nodes will become vertices.
+     */
+    public Graph(@NonNull Model model) {
+        // Store all model nodes.
+        for (Node node : model.nodes()) {
+            vertices.put(node, new VisitableVertex());
         }
-
-        for (Element element : model.getElements()) {
-            addNewEdge(nodes.get(element.getFrom()), nodes.get(element.getTo()), element);
+        // Add edge for every wire.
+        for (Wire wire : model.wires()) {
+            addNewEdge(vertices.get(wire.from()), vertices.get(wire.to()),
+                    wire);
+        }
+        // Add edge for every element.
+        for (Element element : model.elements()) {
+            addNewEdge(vertices.get(element.from()), vertices.get(element.to()),
+                    element);
         }
     }
 
+    // Creates new edge for the given item. Updates adjacent edges of its end vertices.
+    private void addNewEdge(@NonNull Vertex u, @NonNull Vertex v, Item item) {
+        Edge e = new Edge(item, u, v);
+        u.add(e);
+        v.add(e);
+    }
+
+    /**
+     * The method decomposes the graph.
+     *
+     * @return list of connected subgraphs of the initial graph.
+     */
+    @NonNull
     public List<ConnectedGraph> decompose() {
         List<ConnectedGraph> graphs = new LinkedList<>();
-        for (VisitableNode node : nodes.values()) {
+        for (VisitableVertex node : vertices.values()) {
             if (!node.visited) {
                 ConnectedGraph graph = addAdjacentEdges(new ConnectedGraph(node), node);
                 graphs.add(graph);
@@ -45,17 +68,20 @@ public class Graph {
         return graphs;
     }
 
-    private void addNewEdge(Node u, Node v, Element element) {
-        Edge e = new Edge(element, u, v);
-        u.add(e);
-        v.add(e);
-    }
-
-    private ConnectedGraph addAdjacentEdges(ConnectedGraph graph, VisitableNode node) {
+    /**
+     * Adds all neighbour vertices to the connected graph. This recursive function will build
+     * connected component of the initial vertex.
+     *
+     * @param graph to update
+     * @param node  node to work with
+     * @return updated graph.
+     */
+    @NonNull
+    private ConnectedGraph addAdjacentEdges(@NonNull ConnectedGraph graph, @NonNull VisitableVertex node) {
         node.visited = true;
         for (Edge edge : node.getEdges()) {
-            VisitableNode u = (VisitableNode) edge.to();
-            VisitableNode v = (VisitableNode) edge.from();
+            VisitableVertex u = (VisitableVertex) edge.to();
+            VisitableVertex v = (VisitableVertex) edge.from();
             if (!u.visited) {
                 graph.add(u, edge);
                 addAdjacentEdges(graph, u);
@@ -68,12 +94,11 @@ public class Graph {
         return graph;
     }
 
-    private class VisitableNode extends Node {
+    /**
+     * Class to check if vertex was already visited.
+     */
+    private class VisitableVertex extends Vertex {
         private boolean visited;
-
-        private VisitableNode(int ID) {
-            super(ID);
-        }
     }
 
 }

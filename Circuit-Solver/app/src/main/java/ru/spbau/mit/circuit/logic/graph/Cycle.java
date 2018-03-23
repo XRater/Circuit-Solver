@@ -1,17 +1,20 @@
 package ru.spbau.mit.circuit.logic.graph;
 
-
-import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.RealVector;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Deque;
+
+import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
+import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 
 class Cycle {
 
     private final ArrayList<Edge> edges = new ArrayList<>();
 
-    Cycle(Path path, Edge e) {
+    Cycle(@NonNull Path path, @NonNull Edge e) {
         Deque<Edge> pathEdges = path.edges();
         if (!pathEdges.getLast().adjacent(e) ||
                 !pathEdges.getFirst().adjacent(e)) {
@@ -22,28 +25,51 @@ class Cycle {
         edges.add(e);
     }
 
-    double getVoltage() {
-        double voltage = 0;
-        Node curr = edges.get(0).getAdjacent(edges.get(1));
+
+    void addEquation(@NonNull LinearSystem<Numerical, FArray<Numerical>> system) throws
+            InconsistentSystemException {
+
+        FArray<Numerical> coefficients = FArray.array(system.variablesNumber(), Numerical.zero());
+        FArray<Numerical> constant = FArray.array(system.variablesNumber() + 1, Numerical.zero());
+        Numerical voltage = Numerical.zero();
+
+        Vertex curr = edges.get(0).getAdjacent(edges.get(1));
         curr = edges.get(0).getPair(curr);
         for (Edge edge : edges) {
-            voltage += edge.getVoltage() * edge.getDirection(curr);
+            coefficients.set(edge.index(),
+                    Numerical.number(edge.getResistance() * edge.getDirection(curr)));
+
+            if (edge.getCapacity() != 0) {
+                constant.set(edge.index(),
+                        Numerical.number(-edge.getDirection(curr) / edge.getCapacity()));
+            }
+
+            voltage = voltage.add(Numerical.number(-edge.getVoltage() * edge.getDirection(curr)));
             curr = edge.getPair(curr);
         }
-        return voltage;
-    }
 
-    RealVector getEquation(int m) {
-        RealVector equation = new ArrayRealVector(m);
-        Node curr = edges.get(0).getAdjacent(edges.get(1));
-        curr = edges.get(0).getPair(curr);
-        for (Edge edge : edges) {
-            equation.setEntry(edge.index(), edge.getResistance() * edge.getDirection(curr));
-            curr = edge.getPair(curr);
+        constant.set(system.variablesNumber(), voltage);
+
+        try {
+            system.addEquation(coefficients, constant);
+        } catch (InconsistentSystemException e) {
+            for (int i = 0; i < system.variablesNumber(); i++) {
+                if (!coefficients.get(i).isZero()) {
+                    throw new RuntimeException(); // should never happen
+                }
+            }
+            if (!constant.get(system.variablesNumber()).isZero()) {
+                throw new InconsistentSystemException();
+            }
+            for (int i = 0; i < system.variablesNumber(); i++) {
+                coefficients.set(i, constant.get(i));
+            }
+            system.addEquation(coefficients,
+                    FArray.array(system.variablesNumber() + 1, Numerical.zero()));
         }
-        return equation;
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
