@@ -42,7 +42,7 @@ class Verificator {
      * @param node node to check
      * @return true if node is isolated and false otherwise.
      */
-    boolean isIsolated(Node node) {
+    boolean isIsolated(@NonNull Node node) {
         for (Element element : model.elements()) {
             if (element.adjacent(node)) {
                 return false;
@@ -59,7 +59,7 @@ class Verificator {
     @Nullable
     Node findUnnecessaryNode() {
         for (Node node : model.nodes()) {
-            if (node.wires().size() != 2) {
+            if (node.wires().size() > 2) {
                 continue;
             }
             boolean elementEnd = false;
@@ -81,7 +81,6 @@ class Verificator {
         Set<Node> visited = new HashSet<>();
         while (!queue.isEmpty()) {
             Node node = queue.poll();
-            System.out.println(node);
             if (visited.contains(node)) {
                 continue;
             }
@@ -90,7 +89,6 @@ class Verificator {
                 return true;
             }
             for (Wire wire : node.wires()) {
-                System.out.println(wire);
                 queue.add(wire.opposite(node));
             }
         }

@@ -2,187 +2,111 @@ package ru.spbau.mit.circuit.logic.math.functions;
 
 import android.support.annotation.NonNull;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
-
-import ru.spbau.mit.circuit.logic.math.algebra.Field;
-import ru.spbau.mit.circuit.logic.math.algebra.Linear;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
+import ru.spbau.mit.circuit.logic.math.algebra.Pair;
+import ru.spbau.mit.circuit.logic.math.algebra.PolyElement;
 import ru.spbau.mit.circuit.logic.math.functions.exceptions.IllegalDoubleConvertionException;
 
-@SuppressWarnings("WeakerAccess")
-public class PolyFunction implements Field<PolyFunction>, Linear<Numerical, PolyFunction> {
+import static ru.spbau.mit.circuit.logic.math.algebra.Pair.pair;
 
-    private final Map<PolyExponent, PolyExponent> data = new TreeMap<>();
+class PolyFunction extends PolyElement<Numerical, PolyExponent, PolyFunction> {
 
-    private PolyFunction() {
+    PolyFunction() {
     }
 
-    PolyFunction(@NonNull PolyExponent f) {
-        add(f);
-    }
-
-    private PolyFunction(@NonNull PolyFunction function) {
-        for (PolyExponent f : function.data.values()) {
-            add(f);
-        }
+    private PolyFunction(PolyExponent e) {
+        data.put(e, pair(Numerical.identity(), e));
     }
 
     @NonNull
     @Override
-    public PolyFunction add(@NonNull PolyFunction item) {
-        PolyFunction result = new PolyFunction(this);
-        for (PolyExponent function : item.data.values()) {
-            result.add(function);
-        }
-        return result;
-    }
-
-    private void add(@NonNull PolyExponent function) {
-        if (function.isZero()) {
-            return;
-        }
-        if (data.containsKey(function)) {
-            data.put(function, data.get(function).add(function));
-            if (data.get(function).isZero()) {
-                data.remove(function);
-            }
-        } else {
-            data.put(function, function);
-        }
+    protected PolyFunction empty() {
+        return new PolyFunction();
     }
 
     @NonNull
     @Override
-    public PolyFunction multiply(@NonNull PolyFunction other) {
-        if (other.isZero() || isZero()) {
-            return PolyFunctions.zero();
-        }
-        PolyFunction result = new PolyFunction();
-        for (PolyExponent f : data.values()) {
-            for (PolyExponent g : other.data.values()) {
-                result.add(f.multiply(g));
-            }
-        }
-        return result;
-    }
-
-    @NonNull
-    @Override
-    public PolyFunction negate() {
-        return this.multiplyConstant(Numerical.number(-1));
-    }
-
-    @NonNull
-    @Override
-    public PolyFunction reciprocal() {
-        throw new UnsupportedOperationException();
-    }
-
-    @NonNull
-    @Override
-    public PolyFunction multiplyConstant(@NonNull Numerical cf) {
-        if (cf.isZero() || this.isZero()) {
-            return PolyFunctions.zero();
-        }
-        PolyFunction result = new PolyFunction();
-        for (PolyExponent function : data.values()) {
-            result.add(function.multiplyConstant(cf));
-        }
-        return result;
+    protected PolyFunction single() {
+        return new PolyFunction(PolyExponent.identity());
     }
 
     @NonNull
     @Override
     public PolyFunction getZero() {
-        return PolyFunctions.constant(0);
+        return PolyFunctions.zero();
     }
 
-    @NonNull
     @Override
     public PolyFunction getIdentity() {
         return PolyFunctions.identity();
     }
 
-    @Override
-    public boolean isZero() {
-        return data.size() == 0;
-    }
-
-    @Override
-    public boolean isIdentity() {
-        return data.size() == 1 && data.values().iterator().next().isIdentity();
-    }
-
     @NonNull
-    private PolyFunction div(@NonNull PolyExponent gcd) {
-        PolyFunction answer = new PolyFunction();
-        for (PolyExponent function : data.values()) {
-            answer.add(function.divide(gcd));
-        }
-        return answer;
-    }
+    PolyFunction differentiate() {
+        PolyFunction answer = empty();
 
-    @NonNull
-    PolyFunction div(@NonNull PolyFunction function) {
-        if (function.data.size() == 1) {
-            return div(function.data.values().iterator().next());
-        }
-        return this;
-    }
-
-    @NonNull
-    public PolyFunction differentiate() {
-        PolyFunction ans = new PolyFunction();
-        for (PolyExponent exponent : data.values()) {
-            ans = ans.add(exponent.differentiate());
-        }
-        return ans;
-    }
-
-    @NonNull
-    public PolyFunction integrate() {
-        PolyFunction answer = new PolyFunction();
-
-        for (PolyExponent exponent : data.values()) {
-            answer = answer.add(exponent.integrate());
+        for (Pair<Numerical, PolyExponent> pair : data.values()) {
+            Numerical cf = pair.first();
+            PolyExponent exponent = pair.second();
+            answer.add(cf.multiply(Numerical.number(exponent.exponent())),
+                    PolyExponent.exponent(exponent.power(), exponent.exponent()));
+            answer.add(cf.multiply(Numerical.number(exponent.power())),
+                    PolyExponent.exponent(exponent.power() - 1, exponent.exponent()));
         }
 
         return answer;
     }
 
     @NonNull
-    public Numerical apply(double x) {
+    PolyFunction integrate() {
+        PolyFunction answer = empty();
+
+        for (Pair<Numerical, PolyExponent> pair : data.values()) {
+            Numerical cf = pair.first();
+            PolyExponent exponent = pair.second();
+            if (exponent.isIdentity()) {
+                answer.add(cf, PolyExponent.exponent(1, 0));
+                continue;
+            }
+            if (exponent.isExponent()) {
+                answer.add(cf.divide(Numerical.number(exponent.exponent())),
+                        PolyExponent.exponent(exponent.power(), exponent.exponent()));
+            } else {
+                if (exponent.isPower()) {
+                    if (exponent.power() == -1) {
+                        throw new UnsupportedOperationException();
+                    }
+                    answer.add(cf.divide(Numerical.number(exponent.power() + 1)),
+                            PolyExponent.exponent(exponent.power() + 1, exponent.exponent()));
+                } else {
+                    throw new UnsupportedOperationException();
+                }
+            }
+        }
+
+        return answer;
+    }
+
+    @NonNull
+    Numerical apply(double x) {
         Numerical answer = Numerical.zero();
-        for (PolyExponent exponent : data.values()) {
-            answer = answer.add(exponent.apply(x));
+        for (Pair<Numerical, PolyExponent> pair : data.values()) {
+            answer = answer.add(pair.first().multiply(pair.second().apply(x)));
         }
         return answer;
     }
 
-    public double doubleValue() {
+    double doubleValue() {
         if (data.size() == 0) {
             return 0;
         }
         if (data.size() != 1) {
             throw new IllegalDoubleConvertionException();
         }
-        return data.values().iterator().next().doubleValue();
+        return data.values().iterator().next().first().value();
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (data.values().isEmpty()) {
-            return "0";
-        }
-        Iterator<PolyExponent> iter = data.values().iterator();
-        sb.append(iter.next().toString());
-        while (iter.hasNext()) {
-            sb.append(" ").append(iter.next().toString());
-        }
-        return sb.toString();
+    PolyExponent front() {
+        return data.keySet().iterator().next();
     }
 }

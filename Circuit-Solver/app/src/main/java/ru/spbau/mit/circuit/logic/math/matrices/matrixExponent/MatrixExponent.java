@@ -7,16 +7,17 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.logic.math.functions.Functions;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Polynom;
+import ru.spbau.mit.circuit.logic.math.linearContainers.polynom.Polynom;
+import ru.spbau.mit.circuit.logic.math.linearContainers.polynom.Polynoms;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrices;
 import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
 
@@ -26,9 +27,10 @@ import ru.spbau.mit.circuit.logic.math.matrices.Matrix;
 public class MatrixExponent {
 
     private static final Function functionZero = Functions.zero();
+    @SuppressWarnings("FieldCanBeLocal")
+    private static int roundingScale = 2;
 
     public static Matrix<Function> matrixExponent(@NonNull RealMatrix matrix) {
-
         Map<Complex, Integer> roots = getEigenValues(matrix);
         Polynom<Function> polynom = buildVariablePolynom(roots);
         return polynom.evaluate(Matrices.getFunctionMatrix(matrix));
@@ -36,7 +38,7 @@ public class MatrixExponent {
 
     @NonNull
     private static Polynom<Function> buildVariablePolynom(@NonNull Map<Complex, Integer> roots) {
-        Polynom<Function> ans = new Polynom<>(functionZero);
+        Polynom<Function> ans = Polynoms.zero(functionZero);
 
         // Make list of roots with duplicates
         List<Complex> rootList = new ArrayList<>();
@@ -51,8 +53,7 @@ public class MatrixExponent {
         }
 
         // initializes multiply coefficient
-        Polynom<Function> coefficient = new Polynom<>(functionZero,
-                Collections.singletonList(Functions.constant(1)));
+        Polynom<Function> coefficient = Polynoms.constant(Functions.constant(1));
 
         // initializes subtractColumn
         SubtractColumn subtractColumn = new SubtractColumn(rootList);
@@ -60,12 +61,10 @@ public class MatrixExponent {
         // updates answer polynom
         for (int i = 0; i < rootList.size(); i++) {
             ans = ans.add(coefficient.multiply(
-                    new Polynom<>(functionZero,
-                            Collections.singletonList(subtractColumn.first()))));
+                    Polynoms.constant(subtractColumn.first())));
             subtractColumn.next();
-            coefficient = coefficient.multiply(new Polynom<>(functionZero,
-                    Arrays.asList(Functions.constant(
-                            -rootList.get(i).getReal()), Functions.constant(1))));
+            coefficient = coefficient.multiply(
+                    Polynoms.linearWithConstant(Functions.constant(-rootList.get(i).getReal())));
         }
 
         return ans;
@@ -83,6 +82,7 @@ public class MatrixExponent {
         EigenDecomposition eg = new EigenDecomposition(matrix);
         for (int i = 0; i < matrix.getRowDimension(); i++) {
             Complex value = new Complex(eg.getRealEigenvalue(i), eg.getImagEigenvalue(i));
+            value = round(value);
             if (ans.containsKey(value)) {
                 ans.put(value, ans.get(value) + 1);
             } else {
@@ -92,4 +92,13 @@ public class MatrixExponent {
         return ans;
     }
 
+    private static Complex round(@NonNull Complex value) {
+        double realPart = value.getReal();
+        realPart = new BigDecimal(realPart)
+                .setScale(roundingScale, RoundingMode.HALF_UP).doubleValue();
+        double imaginaryPart = value.getImaginary();
+        imaginaryPart = new BigDecimal(imaginaryPart)
+                .setScale(roundingScale, RoundingMode.HALF_UP).doubleValue();
+        return new Complex(realPart, imaginaryPart);
+    }
 }

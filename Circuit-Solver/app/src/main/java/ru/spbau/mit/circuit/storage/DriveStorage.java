@@ -1,6 +1,5 @@
 package ru.spbau.mit.circuit.storage;
 
-
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -76,7 +75,6 @@ public class DriveStorage implements Storage {
 
                     return driveResourceClient.createFile(parent, changeSet, contents);
                 });
-        System.out.println("done " + filename);
     }
 
     @NonNull
@@ -91,11 +89,9 @@ public class DriveStorage implements Storage {
 
         try {
             Tasks.await(queryTask);
-            System.out.println("QueryTasks finished");
             for (Metadata metadata : queryTask.getResult()) {
                 circuitsNames.add(metadata.getTitle());
             }
-            System.out.println(circuitsNames.toString());
         } catch (@NonNull ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }

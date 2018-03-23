@@ -10,12 +10,11 @@ import java.util.List;
 
 import ru.spbau.mit.circuit.logic.CircuitShortingException;
 import ru.spbau.mit.circuit.logic.math.algebra.Numerical;
-import ru.spbau.mit.circuit.logic.math.functions.PolyFunction;
-import ru.spbau.mit.circuit.logic.math.linearContainers.Vector;
+import ru.spbau.mit.circuit.logic.math.functions.Function;
+import ru.spbau.mit.circuit.logic.math.linearContainers.FArray;
 import ru.spbau.mit.circuit.logic.math.linearSystems.LinearSystem;
-import ru.spbau.mit.circuit.logic.math.linearSystems.Row;
+import ru.spbau.mit.circuit.logic.math.linearSystems.exceptions.InconsistentSystemException;
 import ru.spbau.mit.circuit.logic.math.variables.Derivative;
-import ru.spbau.mit.circuit.logic.math.variables.FunctionVariable;
 import ru.spbau.mit.circuit.logic.math.variables.Numerator;
 import ru.spbau.mit.circuit.logic.solver.Solver;
 
@@ -28,10 +27,9 @@ public class ConnectedGraph {
     private final Vertex root; // root of the graph
     private final Collection<Derivative> variables = new ArrayList<>();
     @SuppressWarnings("unused")
-    @NonNull
     private int verticesNumber = 0; // number of vertices
+    @SuppressWarnings("unused")
     private int edgesNumber = 0; // number of edges
-
     @NonNull
     private LinkedHashSet<Vertex> vertices = new LinkedHashSet<>();
     @NonNull
@@ -101,16 +99,20 @@ public class ConnectedGraph {
      */
     public void solve() throws CircuitShortingException {
         findCycles();
-        LinearSystem<
-                Numerical,
-                Vector<Numerical, Derivative>,
-                Row<Numerical, FunctionVariable, PolyFunction>> system = constructSystem();
-        Solver.solve(system);
-        setCurrents();
+        LinearSystem<Numerical, FArray<Numerical>> system;
+        try {
+            system = constructSystem();
+        } catch (InconsistentSystemException e) {
+            throw new CircuitShortingException();
+        }
+        ArrayList<Function> solution = Solver.solve(system);
+        setCurrents(solution);
     }
 
-    private void setCurrents() {
+    private void setCurrents(@NonNull ArrayList<Function> solution) {
         for (Edge edge : edges) {
+            edge.charge().setValue(solution.get(edge.index()));
+            edge.current().setValue();
             edge.updateCurrent();
         }
     }
@@ -128,27 +130,24 @@ public class ConnectedGraph {
     }
 
     /**
-     * The method constructs linear system of the graph, corresponding to the
-     * Kirchhoff's laws.
+     * The method constructs linear system of the graph, corresponding to the Om's laws.
      *
      * @return constructed linear system.
      */
     @NonNull
     private LinearSystem<
             Numerical,
-            Vector<Numerical, Derivative>,
-            Row<Numerical, FunctionVariable, PolyFunction>> constructSystem() {
+            FArray<Numerical>> constructSystem() throws InconsistentSystemException {
 
-        LinearSystem<Numerical,
-                Vector<Numerical, Derivative>,
-                Row<Numerical, FunctionVariable, PolyFunction>> system =
-                new LinearSystem<>(edgesNumber);
+        LinearSystem<Numerical, FArray<Numerical>> system = new LinearSystem<>(
+                variables.size(), Numerical.zero(), FArray.array(variables.size() + 1, Numerical
+                .zero()));
 
         for (Vertex node : vertices) {
-            system.addEquation(node.getEquation(variables));
+            node.addEquation(system);
         }
         for (Cycle cycle : cycles) {
-            system.addEquation(cycle.getEquation(variables));
+            cycle.addEquation(system);
         }
 
         return system;

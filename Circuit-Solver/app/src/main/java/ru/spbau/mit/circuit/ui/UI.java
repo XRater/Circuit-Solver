@@ -16,6 +16,9 @@ import ru.spbau.mit.circuit.model.interfaces.CircuitObject;
 import ru.spbau.mit.circuit.storage.Converter;
 import ru.spbau.mit.circuit.storage.StorageException;
 
+/**
+ * Base class that calls methods of Controller.
+ */
 public class UI {
     private final Controller controller;
     private boolean circuitWasLoaded = false;
@@ -55,7 +58,8 @@ public class UI {
         controller.removeAll(chosen);
     }
 
-    void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject> toBeAdded)
+    void removeThenAdd(@NonNull List<CircuitObject> toBeDeleted, @NonNull List<CircuitObject>
+            toBeAdded)
             throws NodesAreAlreadyConnected {
         controller.removeThenAdd(toBeDeleted, toBeAdded);
     }
@@ -64,7 +68,15 @@ public class UI {
         drawableModel.deleteUnnecessaryNode(common, first, second);
     }
 
-    public boolean save(Converter.Mode mode, String name) {
+    public void deleteUnnecessaryNode(@NonNull Node node, Wire wire) {
+        drawableModel.deleteUnnecessaryNode(node, wire);
+    }
+
+    public void deleteUnnecessaryNode(@NonNull Node common) {
+        drawableModel.deleteUnnecessaryNode(common);
+    }
+
+    public boolean save(Converter.Mode mode, String name) throws StorageException {
         return controller.save(mode, name);
     }
 

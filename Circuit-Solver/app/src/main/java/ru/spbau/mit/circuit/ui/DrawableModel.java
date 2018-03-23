@@ -23,6 +23,10 @@ import ru.spbau.mit.circuit.model.interfaces.WireEnd;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
+/**
+ * Class for storing and checking all invariants to draw model,
+ * move objects and to create new elements.
+ */
 public class DrawableModel {
     @NonNull
     private static Map<Point, Drawable> field = new LinkedHashMap<>();
@@ -165,7 +169,8 @@ public class DrawableModel {
 
     /**
      * Checking if an element can be centered in point.
-     * @param point new center.
+     *
+     * @param point   new center.
      * @param element element that is moved.
      * @return true if can move.
      */
@@ -262,6 +267,9 @@ public class DrawableModel {
             drawableWires.remove((DrawableWire) drawable);
             deleteOldWirePosition((DrawableWire) drawable);
         }
+        if (drawable instanceof Node) {
+            field.remove(((Node) drawable).position());
+        }
     }
 
     private void addNewWirePosition(@NonNull DrawableWire wire) {
@@ -280,8 +288,7 @@ public class DrawableModel {
         for (Point p : path) {
             DrawableNode node = (DrawableNode) field.get(p);
             if (node != null) {
-                if (!node.isRealNode())
-                {
+                if (!node.isRealNode()) {
                     boolean flag = false;
                     // Now we are checking if this Point is covered with any of other wires.
                     for (DrawableWire another : drawableWires) {
@@ -370,7 +377,8 @@ public class DrawableModel {
                 toBeDeleted.add(wire);
             }
 
-            DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node, drawableWires);
+            DrawableWire newWire1 = new DrawableWire((DrawableNode) wire.from(), node,
+                    drawableWires);
             DrawableWire newWire2 = new DrawableWire((DrawableNode) wire.to(), node, drawableWires);
 
             toBeAdded.add(newWire1);
@@ -509,6 +517,24 @@ public class DrawableModel {
 
         realNodes.remove(common);
         DrawableWire.mergePath(del1, del2, common);
+        redraw();
+    }
+
+    void deleteUnnecessaryNode(@NonNull Node node, Wire wire) {
+        drawableWires.remove(wire);
+        realNodes.remove(node);
+
+        deleteOldObjectPosition((Drawable) node);
+        deleteOldObjectPosition((Drawable) wire);
+
+        redraw();
+    }
+
+
+    void deleteUnnecessaryNode(@NonNull Node node) {
+        //noinspection SuspiciousMethodCalls
+        realNodes.remove(node);
+        field.remove(node.position());
         redraw();
     }
 

@@ -7,11 +7,15 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 
+import ru.spbau.mit.circuit.logic.math.functions.Function;
 import ru.spbau.mit.circuit.model.circuitObjects.elements.Element;
 import ru.spbau.mit.circuit.model.circuitObjects.nodes.Point;
 import ru.spbau.mit.circuit.ui.DrawableElements.Drawable;
 import ru.spbau.mit.circuit.ui.DrawableElements.DrawableWire;
 
+/**
+ * A class for drawing all objects.
+ */
 public class Drawer {
     public static final int CELL_SIZE = 70;
     public static final int FIELD_SIZE = 25;
@@ -111,10 +115,10 @@ public class Drawer {
     private void showCurrents(@NonNull DrawableModel drawableModel) {
         for (Drawable d : drawableModel.drawables()) {
             Element e = (Element) d;
-            String current = e.getCurrent() + "A";
-            System.out.println(current);
+            Function current = e.getCurrent();
             Rect textSize = new Rect();
-            ELEMENTS_PAINT.getTextBounds(current, 0, current.length(), textSize);
+            ELEMENTS_PAINT.getTextBounds(current.toString(), 0, current.toString().length(),
+                    textSize);
             canvas.save();
             if (e.isVertical()) {
                 canvas.translate(e.x() + Drawer.getOffsetX(), e.y() + Drawer.getOffsetY());
@@ -122,8 +126,7 @@ public class Drawer {
                 canvas.translate(-e.x() - Drawer.getOffsetX(), -e.y() - Drawer.getOffsetY());
             }
 
-            canvas.drawText(current, e.x() - textSize.width() / 2, e.y() - CELL_SIZE,
-                    ELEMENTS_PAINT);
+            PrettyPrinter.print(canvas, e.x() - textSize.width() / 2, e.y() - CELL_SIZE, e);
             canvas.restore();
         }
     }

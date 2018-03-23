@@ -2,14 +2,16 @@ package ru.spbau.mit.circuit.logic.math.functions;
 
 import android.support.annotation.NonNull;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
+/**
+ * Factory class for functions.
+ */
+@SuppressWarnings("unused")
 public class Functions {
 
     @NonNull
     private static Function zero = Functions.constant(0);
     @NonNull
     private static Function identity = Functions.constant(1);
-
 
     private Functions() {
     }

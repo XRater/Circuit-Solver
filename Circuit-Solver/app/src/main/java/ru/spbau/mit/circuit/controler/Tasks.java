@@ -21,13 +21,9 @@ import ru.spbau.mit.circuit.storage.StorageException;
  */
 class Tasks {
 
-    //FIXME handle exceptions!
-
     /**
      * The method takes model as an argument.
-     * <p>
      * Returned task saves circuit, represented by model, to the storage.
-     * <p>
      * Requires target file name to execute.
      */
     static SaveTask saveTask(Converter.Mode mode, Converter converter, Model model) {
@@ -43,7 +39,6 @@ class Tasks {
 
     /**
      * Returned task loads circuit from the storage.
-     * <p>
      * Requires target file name to execute.
      */
     static LoadTask loadTask(Converter.Mode mode, Converter converter) {
@@ -52,19 +47,16 @@ class Tasks {
 
     /**
      * Returned task deletes circuit from the storage.
-     * <p>
      * Requires target filename to execute.
      */
     static DeleteTask deleteTask(Converter.Mode mode, Converter converter) {
         return new DeleteTask(mode, converter);
     }
 
-    static class SaveTask extends AsyncTask<String, Void, Boolean> {
+    static class SaveTask extends AsyncTask<String, Void, ResultHolder<Boolean>> {
         private final Converter.Mode mode;
         private final Converter converter;
         private final Model model;
-
-        private Throwable t;
 
         SaveTask(Converter.Mode mode, Converter converter, Model model) {
             this.converter = converter;
@@ -72,14 +64,14 @@ class Tasks {
             this.model = model;
         }
 
+        @NonNull
         @Override
-        public Boolean doInBackground(String... filename) {
+        public ResultHolder<Boolean> doInBackground(String... filename) {
             try {
-                return converter.save(mode, model, filename[0]);
+                return new ResultHolder<>(converter.save(mode, model, filename[0]));
             } catch (StorageException e) {
-                t = e;
+                return new ResultHolder<>(e);
             }
-            return false;
         }
     }
 
@@ -100,12 +92,10 @@ class Tasks {
         }
     }
 
-    static class LoadTask extends AsyncTask<String, Void, Model> {
+    static class LoadTask extends AsyncTask<String, Void, ResultHolder<Model>> {
 
         private final Converter.Mode mode;
         private final Converter converter;
-
-        private Throwable t;
 
         private LoadTask(Converter.Mode mode, Converter converter) {
             this.mode = mode;
@@ -114,44 +104,59 @@ class Tasks {
 
         @Nullable
         @Override
-        public Model doInBackground(@NonNull String... filename) {
+        public ResultHolder<Model> doInBackground(@NonNull String... filename) {
             if (filename.length != 1) {
                 throw new IllegalArgumentException();
             }
             try {
-                return converter.load(mode, filename[0]);
+                return new ResultHolder<>(converter.load(mode, filename[0]));
             } catch (StorageException e) {
-                t = e;
+                return new ResultHolder<>(e);
             }
-            return null;
         }
     }
 
-    static class DeleteTask extends AsyncTask<String, Void, Boolean> {
+    static class DeleteTask extends AsyncTask<String, Void, ResultHolder<Boolean>> {
 
         private final Converter.Mode mode;
         private final Converter converter;
-
-        private Throwable t;
 
         private DeleteTask(Converter.Mode mode, Converter converter) {
             this.mode = mode;
             this.converter = converter;
         }
 
+        @NonNull
         @Override
-        public Boolean doInBackground(String... filename) {
+        public ResultHolder<Boolean> doInBackground(String... filename) {
             try {
-                return converter.delete(mode, filename[0]);
+                return new ResultHolder<>(converter.delete(mode, filename[0]));
             } catch (StorageException e) {
-                t = e;
-                return false;
+                return new ResultHolder<>(e);
             }
         }
+    }
 
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
+    static class ResultHolder<R> {
+
+        private R result;
+        @Nullable
+        private StorageException exception = null;
+
+        private ResultHolder(R result) {
+            this.result = result;
+        }
+
+        private ResultHolder(@Nullable StorageException exception) {
+            this.exception = exception;
+        }
+
+        R getResult() throws StorageException {
+            if (exception != null) {
+                throw exception;
+            }
+
+            return result;
         }
     }
 }
